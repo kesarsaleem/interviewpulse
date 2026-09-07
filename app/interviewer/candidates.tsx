@@ -1,0 +1,884 @@
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  TextInput,
+  ActivityIndicator,
+  RefreshControl,
+  Alert,
+} from 'react-native';
+import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+
+import { supabase } from '../../lib/supabase/client';
+import { useAuth } from '../../hooks/useAuth';
+import { getDb } from '../../lib/sqlite/schema';
+import { runSync } from '../../lib/sync/syncEngine';
+import { getLocalInterviews } from '../../services/feedbackService';
+import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
+
+export default function CandidatesScreen() {
+  const { user } = useAuth();
+
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const [candidates, setCandidates] = useState<any[]>([]);
+  const [userFeedbackMap, setUserFeedbackMap] = useState<Record<string, any>>({});
+  const [search, setSearch] = useState('');
+  const [selectedStage, setSelectedStage] = useState<string>('all');
+
+  const loadCandidates = useCallback(async () => {
+    try {
+      if (!user?.id) return;
+
+      // 1. Offline-First: load cached candidates from SQLite
+      const local = getLocalInterviews();
+      if (local.length > 0) {
+        setCandidates(local);
+      }
+
+      const db = getDb();
+      const localFeedbacks = db.getAllSync<any>(
+        'SELECT id, candidate_id, stage_id, overall_verdict FROM feedback WHERE interviewer_id = ?',
+        [user.id]
+      );
+      const fbMap: Record<string, any> = {};
+      localFeedbacks.forEach((f) => {
+        fbMap[`${f.candidate_id}_${f.stage_id}`] = f;
+        fbMap[f.candidate_id] = f;
+      });
+      setUserFeedbackMap(fbMap);
+
+      // 2. Online fetch from Supabase
+      const { data: assignedJobs, error: jobError } = await supabase
+        .from('job_interviewers')
+        .select('job_id')
+        .eq('user_id', user.id);
+
+      if (jobError) throw jobError;
+
+      const jobIds = assignedJobs?.map((x) => x.job_id) || [];
+      if (jobIds.length === 0) {
+        if (local.length === 0) setCandidates([]);
+        return;
+      }
+
+      const { data: remoteCandidates, error: candError } = await supabase
+        .from('candidates')
+        .select(`
+          id,
+          full_name,
+          email,
+          current_role,
+          current_company,
+          interview_date,
+          interview_time,
+          current_stage_id,
+          job_id,
+          jobs (
+            id,
+            title,
+            department
+          ),
+          stages (
+            id,
+            name
+          )
+        `)
+        .in('job_id', jobIds);
+
+      if (candError) throw candError;
+
+      if (remoteCandidates) {
+        setCandidates(remoteCandidates);
+
+        // Fetch remote feedbacks for this user to keep state in sync
+        const { data: remoteFeedbacks } = await supabase
+          .from('feedback')
+          .select('id, candidate_id, stage_id, overall_verdict')
+          .eq('interviewer_id', user.id);
+
+        if (remoteFeedbacks) {
+          const updatedFbMap = { ...fbMap };
+          remoteFeedbacks.forEach((f) => {
+            updatedFbMap[`${f.candidate_id}_${f.stage_id}`] = f;
+            updatedFbMap[f.candidate_id] = f;
+          });
+          setUserFeedbackMap(updatedFbMap);
+        }
+      }
+    } catch (err: any) {
+      console.warn('Error loading candidates:', err);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [user?.id]);
+
+  useEffect(() => {
+    loadCandidates();
+  }, [loadCandidates]);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadCandidates();
+  };
+
+  const handleManualSync = async () => {
+    if (!user?.id) return;
+    try {
+      setSyncing(true);
+      await runSync(user.id);
+      await loadCandidates();
+      Alert.alert('Synced', 'Candidates and evaluation loops updated.');
+    } catch (err: any) {
+      Alert.alert('Sync Notice', 'Offline mode or sync failed: ' + (err?.message || 'Check connection'));
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  // Distinct stages for horizontal filter pills
+  const availableStages = useMemo(() => {
+    const stageMap = new Map<string, string>();
+    candidates.forEach((c) => {
+      const stageName = c.stages?.name;
+      const stageId = c.current_stage_id;
+      if (stageName && stageId) {
+        stageMap.set(stageId, stageName);
+      }
+    });
+    return Array.from(stageMap.entries()).map(([id, name]) => ({ id, name }));
+  }, [candidates]);
+
+  // Filtered candidate list
+  const filteredCandidates = useMemo(() => {
+    return candidates.filter((item) => {
+      // Stage filter
+      if (selectedStage !== 'all' && item.current_stage_id !== selectedStage) {
+        return false;
+      }
+
+      // Search query
+      if (search.trim()) {
+        const q = search.toLowerCase();
+        const name = (item.full_name || '').toLowerCase();
+        const role = (item.current_role || '').toLowerCase();
+        const company = (item.current_company || '').toLowerCase();
+        const job = (item.jobs?.title || '').toLowerCase();
+        const dept = (item.jobs?.department || '').toLowerCase();
+
+        return (
+          name.includes(q) ||
+          role.includes(q) ||
+          company.includes(q) ||
+          job.includes(q) ||
+          dept.includes(q)
+        );
+      }
+
+      return true;
+    });
+  }, [candidates, selectedStage, search]);
+
+  const getInitials = (name: string) => {
+    if (!name) return 'C';
+    const parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <View style={styles.loadingCard}>
+          <ActivityIndicator size="large" color="#2563EB" />
+          <Text style={styles.loadingText}>Loading assigned candidates...</Text>
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <InterviewerDrawer visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
+
+      {/* MODERN SaaS TOP HEADER */}
+      <View style={styles.header}>
+        <View style={styles.headerTop}>
+          <Pressable
+            style={styles.menuButton}
+            onPress={() => setDrawerOpen(true)}
+            hitSlop={12}
+          >
+            <Ionicons name="menu-outline" size={26} color="#FFFFFF" />
+          </Pressable>
+
+          <View style={styles.headerTitleWrap}>
+            <Text style={styles.headerTitle}>Candidates</Text>
+            <Text style={styles.headerSubtitle}>
+              {candidates.length} assigned candidate{candidates.length === 1 ? '' : 's'}
+            </Text>
+          </View>
+
+          <Pressable
+            style={styles.syncBtn}
+            onPress={handleManualSync}
+            disabled={syncing}
+            hitSlop={10}
+          >
+            {syncing ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <>
+                <Ionicons name="sync-outline" size={15} color="#FFFFFF" />
+                <Text style={styles.syncBtnText}>Sync</Text>
+              </>
+            )}
+          </Pressable>
+        </View>
+
+        {/* SEARCH BAR (INTEGRATED IN HEADER CARD) */}
+        <View style={styles.searchBar}>
+          <Ionicons name="search-outline" size={18} color="#94A3B8" />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search candidate, role, company, or job..."
+            placeholderTextColor="#94A3B8"
+            value={search}
+            onChangeText={setSearch}
+            returnKeyType="search"
+          />
+          {search.length > 0 && (
+            <Pressable onPress={() => setSearch('')} hitSlop={8}>
+              <Ionicons name="close-circle" size={18} color="#94A3B8" />
+            </Pressable>
+          )}
+        </View>
+      </View>
+
+      {/* HORIZONTAL STAGE FILTER PILLS */}
+      {availableStages.length > 0 && (
+        <View style={styles.filterSection}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.filterPillsScroll}
+          >
+            <Pressable
+              style={[styles.filterPill, selectedStage === 'all' && styles.activeFilterPill]}
+              onPress={() => setSelectedStage('all')}
+            >
+              <Text style={[styles.filterPillText, selectedStage === 'all' && styles.activeFilterPillText]}>
+                All Stages ({candidates.length})
+              </Text>
+            </Pressable>
+
+            {availableStages.map((stg) => {
+              const count = candidates.filter((c) => c.current_stage_id === stg.id).length;
+              const active = selectedStage === stg.id;
+              return (
+                <Pressable
+                  key={stg.id}
+                  style={[styles.filterPill, active && styles.activeFilterPill]}
+                  onPress={() => setSelectedStage(stg.id)}
+                >
+                  <Ionicons
+                    name="layers-outline"
+                    size={13}
+                    color={active ? '#FFFFFF' : '#64748B'}
+                    style={{ marginRight: 4 }}
+                  />
+                  <Text style={[styles.filterPillText, active && styles.activeFilterPillText]}>
+                    {stg.name} ({count})
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </View>
+      )}
+
+      {/* CANDIDATES LIST */}
+      <ScrollView
+        style={styles.scrollArea}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#2563EB" />}
+      >
+        {filteredCandidates.length === 0 ? (
+          <View style={styles.emptyCard}>
+            <View style={styles.emptyIconCircle}>
+              <Ionicons name="people-outline" size={36} color="#94A3B8" />
+            </View>
+            <Text style={styles.emptyTitle}>No Candidates Found</Text>
+            <Text style={styles.emptySubtitle}>
+              {search.trim() || selectedStage !== 'all'
+                ? 'Try modifying your search keywords or stage filter.'
+                : 'When hiring managers assign you to candidate interview loops, they will appear here.'}
+            </Text>
+            {(search.trim() || selectedStage !== 'all') && (
+              <Pressable
+                style={styles.clearFilterBtn}
+                onPress={() => {
+                  setSearch('');
+                  setSelectedStage('all');
+                }}
+              >
+                <Text style={styles.clearFilterBtnText}>Reset Filters</Text>
+              </Pressable>
+            )}
+          </View>
+        ) : (
+          filteredCandidates.map((candidate) => {
+            const fbKey = `${candidate.id}_`;
+            const userFb = userFeedbackMap[fbKey] || userFeedbackMap[candidate.id];
+            const hasSubmitted = !!userFb;
+            const stageName = candidate.stages?.name || 'Interview Stage';
+            const jobTitle = candidate.jobs?.title || 'Open Position';
+            const department = candidate.jobs?.department;
+            const initials = getInitials(candidate.full_name || 'Candidate');
+
+            return (
+              <View key={candidate.id} style={styles.candidateCard}>
+                {/* TOP HEADER: AVATAR, NAME, ROLE, STAGE BADGE */}
+                <View style={styles.cardHeader}>
+                  <View style={styles.avatar}>
+                    <Text style={styles.avatarText}>{initials}</Text>
+                  </View>
+
+                  <View style={styles.headerInfo}>
+                    <Text style={styles.candidateName} numberOfLines={1}>
+                      {candidate.full_name}
+                    </Text>
+                    <Text style={styles.candidateRole} numberOfLines={1}>
+                      {candidate.current_role || 'Candidate'}
+                      {candidate.current_company ? ` • ${candidate.current_company}` : ''}
+                    </Text>
+                    <View style={styles.jobBadgeRow}>
+                      <Ionicons name="briefcase-outline" size={11} color="#475569" />
+                      <Text style={styles.jobText} numberOfLines={1}>
+                        {jobTitle}
+                        {department ? ` (${department})` : ''}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.stageBadge}>
+                    <Ionicons name="layers-outline" size={11} color="#2563EB" />
+                    <Text style={styles.stageBadgeText} numberOfLines={1}>
+                      {stageName}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* DIVIDER */}
+                <View style={styles.cardDivider} />
+
+                {/* SCHEDULE AND CONTACT METRICS */}
+                <View style={styles.infoRow}>
+                  {candidate.interview_date ? (
+                    <View style={styles.infoPill}>
+                      <Ionicons name="calendar-outline" size={13} color="#2563EB" />
+                      <Text style={styles.infoText}>
+                        {candidate.interview_date}{candidate.interview_time ? ` at ${candidate.interview_time}` : ''}
+                      </Text>
+                    </View>
+                  ) : null}
+
+                  {candidate.email ? (
+                    <View style={styles.infoPill}>
+                      <Ionicons name="mail-outline" size={13} color="#64748B" />
+                      <Text style={styles.infoText} numberOfLines={1}>
+                        {candidate.email}
+                      </Text>
+                    </View>
+                  ) : null}
+
+                  {hasSubmitted ? (
+                    <View style={[styles.statusPill, styles.submittedPill]}>
+                      <Ionicons name="checkmark-circle" size={13} color="#15803D" />
+                      <Text style={styles.submittedPillText}>Feedback In</Text>
+                    </View>
+                  ) : (
+                    <View style={[styles.statusPill, styles.pendingPill]}>
+                      <Ionicons name="hourglass-outline" size={13} color="#B45309" />
+                      <Text style={styles.pendingPillText}>Scorecard Pending</Text>
+                    </View>
+                  )}
+                </View>
+
+                {/* CARD ACTIONS */}
+                <View style={styles.cardActions}>
+                  {hasSubmitted ? (
+                    <View style={styles.actionButtonGroup}>
+                      <Pressable
+                        style={styles.btnSecondary}
+                        onPress={() =>
+                          router.push({
+                            pathname: '/candidates/[id]/panel',
+                            params: {
+                              id: candidate.id,
+                              stageId: candidate.current_stage_id,
+                            },
+                          })
+                        }
+                      >
+                        <Ionicons name="people-outline" size={15} color="#2563EB" />
+                        <Text style={styles.btnSecondaryText}>Panel Summary</Text>
+                      </Pressable>
+
+                      <Pressable
+                        style={styles.btnDark}
+                        onPress={() =>
+                          router.push({
+                            pathname: '/interviewer/feedback-details',
+                            params: {
+                              feedbackId: userFb.id,
+                              candidateId: candidate.id,
+                              stageId: candidate.current_stage_id,
+                            },
+                          })
+                        }
+                      >
+                        <Text style={styles.btnDarkText}>View Feedback</Text>
+                        <Ionicons name="chevron-forward" size={14} color="#FFFFFF" />
+                      </Pressable>
+                    </View>
+                  ) : (
+                    <View style={styles.actionButtonGroup}>
+                      <Pressable
+                        style={styles.btnSecondary}
+                        onPress={() =>
+                          router.push({
+                            pathname: '/candidates/[id]/panel',
+                            params: {
+                              id: candidate.id,
+                              stageId: candidate.current_stage_id,
+                            },
+                          })
+                        }
+                      >
+                        <Ionicons name="people-outline" size={15} color="#2563EB" />
+                        <Text style={styles.btnSecondaryText}>Panel</Text>
+                      </Pressable>
+
+                      <Pressable
+                        style={styles.btnPrimary}
+                        onPress={() =>
+                          router.push({
+                            pathname: '/feedback/[candidateId]',
+                            params: {
+                              candidateId: candidate.id,
+                              stageId: candidate.current_stage_id,
+                              jobId: candidate.job_id,
+                            },
+                          })
+                        }
+                      >
+                        <Ionicons name="create-outline" size={15} color="#FFFFFF" />
+                        <Text style={styles.btnPrimaryText}>Give Feedback</Text>
+                      </Pressable>
+                    </View>
+                  )}
+                </View>
+              </View>
+            );
+          })
+        )}
+      </ScrollView>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+  },
+  loadingCard: {
+    padding: 24,
+    borderRadius: 22,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  loadingText: {
+    marginTop: 12,
+    color: '#64748B',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+  },
+  header: {
+    backgroundColor: '#06235C',
+    paddingTop: 52,
+    paddingBottom: 20,
+    paddingHorizontal: 18,
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  menuButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitleWrap: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  headerTitle: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '800',
+    letterSpacing: -0.3,
+  },
+  headerSubtitle: {
+    color: '#93C5FD',
+    fontSize: 12,
+    marginTop: 2,
+  },
+  syncBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2563EB',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 12,
+    gap: 5,
+    borderWidth: 1,
+    borderColor: '#3B82F6',
+  },
+  syncBtnText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 12,
+  },
+  searchBar: {
+    backgroundColor: '#FFFFFF',
+    height: 46,
+    borderRadius: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    gap: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 13,
+    color: '#0F172A',
+  },
+  filterSection: {
+    marginTop: 14,
+    marginBottom: 4,
+  },
+  filterPillsScroll: {
+    paddingHorizontal: 18,
+    gap: 8,
+  },
+  filterPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  activeFilterPill: {
+    backgroundColor: '#2563EB',
+    borderColor: '#2563EB',
+  },
+  filterPillText: {
+    fontSize: 12,
+    color: '#475569',
+    fontWeight: '700',
+  },
+  activeFilterPillText: {
+    color: '#FFFFFF',
+  },
+  scrollArea: {
+    flex: 1,
+  },
+  listContent: {
+    paddingHorizontal: 18,
+    paddingTop: 14,
+    paddingBottom: 40,
+  },
+  emptyCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 32,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    marginTop: 16,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.03,
+    shadowRadius: 6,
+    elevation: 1,
+  },
+  emptyIconCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#F1F5F9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 14,
+  },
+  emptyTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#0F172A',
+    marginBottom: 4,
+  },
+  emptySubtitle: {
+    fontSize: 13,
+    color: '#64748B',
+    textAlign: 'center',
+    lineHeight: 18,
+    maxWidth: 270,
+  },
+  clearFilterBtn: {
+    marginTop: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#EFF6FF',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+  },
+  clearFilterBtnText: {
+    color: '#2563EB',
+    fontWeight: '700',
+    fontSize: 12,
+  },
+  candidateCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 22,
+    padding: 18,
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 16,
+    backgroundColor: '#EFF6FF',
+    borderWidth: 1,
+    borderColor: '#DBEAFE',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  avatarText: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#2563EB',
+  },
+  headerInfo: {
+    flex: 1,
+    marginRight: 8,
+  },
+  candidateName: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#0F172A',
+    marginBottom: 2,
+  },
+  candidateRole: {
+    fontSize: 12.5,
+    color: '#475569',
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  jobBadgeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  jobText: {
+    fontSize: 11,
+    color: '#64748B',
+    flex: 1,
+  },
+  stageBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#EFF6FF',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    gap: 4,
+    maxWidth: 100,
+  },
+  stageBadgeText: {
+    fontSize: 10.5,
+    color: '#2563EB',
+    fontWeight: '700',
+  },
+  cardDivider: {
+    height: 1,
+    backgroundColor: '#F1F5F9',
+    marginVertical: 14,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flexWrap: 'wrap',
+    marginBottom: 14,
+  },
+  infoPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    paddingHorizontal: 9,
+    paddingVertical: 5,
+    borderRadius: 8,
+    gap: 5,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  infoText: {
+    fontSize: 11.5,
+    color: '#334155',
+    fontWeight: '600',
+  },
+  statusPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 9,
+    paddingVertical: 5,
+    borderRadius: 8,
+    gap: 4,
+    marginLeft: 'auto',
+  },
+  submittedPill: {
+    backgroundColor: '#ECFDF5',
+  },
+  submittedPillText: {
+    fontSize: 11,
+    color: '#15803D',
+    fontWeight: '700',
+  },
+  pendingPill: {
+    backgroundColor: '#FFFBEB',
+  },
+  pendingPillText: {
+    fontSize: 11,
+    color: '#B45309',
+    fontWeight: '700',
+  },
+  cardActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  actionButtonGroup: {
+    flexDirection: 'row',
+    gap: 10,
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  btnPrimary: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#2563EB',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 12,
+    gap: 6,
+    shadowColor: '#2563EB',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  btnPrimaryText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  btnSecondary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#EFF6FF',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#DBEAFE',
+    gap: 5,
+  },
+  btnSecondaryText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#2563EB',
+  },
+  btnDark: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1E293B',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 12,
+    gap: 4,
+  },
+  btnDarkText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+});
