@@ -118,7 +118,9 @@ export async function pushPendingChanges(userId: string): Promise<void> {
       }
 
       if (op.entity === 'feedback_score') {
-        const { error } = await supabase.from('feedback_scores').upsert(payload);
+        const { error } = op.operation === 'delete'
+          ? await supabase.from('feedback_scores').delete().eq('id', op.entity_id)
+          : await supabase.from('feedback_scores').upsert(payload);
         if (error) throw error;
 
         // Verify if any remaining score mutations for this feedback row exist in queue
@@ -285,4 +287,3 @@ export async function retryFailedSync(userId: string, jobId?: string): Promise<v
   db.runSync(`UPDATE candidates SET sync_status = 'pending' WHERE sync_status = 'failed'`);
   return runSync(userId, jobId);
 }
-

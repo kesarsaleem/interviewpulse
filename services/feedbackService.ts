@@ -155,6 +155,11 @@ export function updateFeedback(params: {
     version: updatedVersion,
   };
 
+  const previousScores = db.getAllSync<{ id: string; feedback_id: string }>(
+    `SELECT id, feedback_id FROM feedback_scores WHERE feedback_id = ?`,
+    [params.feedbackId]
+  );
+
   db.withTransactionSync(() => {
     db.runSync(
       `UPDATE feedback SET
@@ -185,6 +190,20 @@ export function updateFeedback(params: {
 
     const { sync_status: _syncStatus, ...payload } = updatedFeedback;
     enqueueMutation('feedback', params.feedbackId, 'update', payload);
+
+    // Remove queued creates/updates for the old score set and enqueue deletes
+    // for rows that may already exist on the server.
+    db.runSync(
+      `DELETE FROM sync_queue
+       WHERE entity = 'feedback_score'
+         AND payload LIKE ?`,
+      [`%"feedback_id":"${params.feedbackId}"%`]
+    );
+    previousScores.forEach((score) => {
+      enqueueMutation('feedback_score', score.id, 'delete', {
+        feedback_id: score.feedback_id,
+      });
+    });
 
     if (params.values.scores && params.values.scores.length > 0) {
       db.runSync(`DELETE FROM feedback_scores WHERE feedback_id = ?`, [params.feedbackId]);

@@ -17,6 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { supabase } from '../../lib/supabase/client';
 import { useAuth } from '../../hooks/useAuth';
+import { ROUTES } from '../../constants/routes';
 import { useTheme } from '../../context/ThemeContext';
 import { getDb } from '../../lib/sqlite/schema';
 import {
@@ -185,7 +186,7 @@ export default function InterviewerSettingsScreen() {
         style: 'destructive',
         onPress: async () => {
           await signOut();
-          router.replace('/login');
+          router.replace(ROUTES.login);
         },
       },
     ]);

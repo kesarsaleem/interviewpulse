@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import * as Linking from 'expo-linking';
 import { supabase } from '../lib/supabase/client';
 import type { Profile } from '../types';
+import { ROUTES } from '../constants/routes';
 
 interface AuthContextValue {
   user: Profile | null;
@@ -127,7 +129,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const { error } =
       await supabase.auth.resetPasswordForEmail(
-        email
+        email,
+        { redirectTo: Linking.createURL(ROUTES.resetPassword) }
       );
 
     return {

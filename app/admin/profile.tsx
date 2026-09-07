@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { supabase } from "../../lib/supabase/client";
 import { useAuth } from "../../hooks/useAuth";
+import { ROUTES } from "../../constants/routes";
 
 export default function AdminProfileScreen() {
   const { user, signOut } = useAuth();
@@ -136,7 +137,7 @@ export default function AdminProfileScreen() {
         style: "destructive",
         onPress: async () => {
           await signOut();
-          router.replace("/login");
+          router.replace(ROUTES.login);
         },
       },
     ]);

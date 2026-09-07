@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { supabase } from "../../lib/supabase/client";
 import { useAuth } from "../../hooks/useAuth";
+import { ROUTES } from "../../constants/routes";
 import { useTheme } from "../../context/ThemeContext";
 import { ThemeMode } from "../../types";
 
@@ -63,7 +64,7 @@ export default function AdminSettingsScreen() {
             try {
               await supabase.auth.signOut({ scope: "global" });
               await signOut();
-              router.replace("/login");
+              router.replace(ROUTES.login);
             } catch (err: any) {
               Alert.alert("Error", err.message || "Failed to sign out.");
             }

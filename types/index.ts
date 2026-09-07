@@ -134,7 +134,7 @@ export type ActivityAction =
 // =========================================================
 // Local sync queue (SQLite side, not persisted server-side)
 // =========================================================
-export type SyncOperationType = 'create' | 'update';
+export type SyncOperationType = 'create' | 'update' | 'delete';
 export type SyncEntity = 'candidate' | 'feedback' | 'feedback_score';
 
 export interface SyncOperation {

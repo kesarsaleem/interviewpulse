@@ -18,6 +18,7 @@ supabase
 } from "../../lib/supabase/client";
 
 import { useAuth } from "../../hooks/useAuth";
+import { ROUTES } from "../../constants/routes";
 
 
 export default function Sidebar({
@@ -163,7 +164,7 @@ const logout = () => {
             closeDrawer();
           }
 
-          router.replace("/login");
+          router.replace(ROUTES.login);
         },
       },
     ]

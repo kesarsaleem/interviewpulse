@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { supabase } from '../../lib/supabase/client';
 import { useAuth } from '../../hooks/useAuth';
+import { runSync } from '../../lib/sync/syncEngine';
 
 interface DashboardStats {
   jobs: number;
@@ -53,6 +54,7 @@ export default function AdminDashboard() {
   });
   const [recentJobs, setRecentJobs] = useState<any[]>([]);
   const [activities, setActivities] = useState<ActivityItem[]>([]);
+  const [syncing, setSyncing] = useState(false);
 
   const loadDashboardData = useCallback(async () => {
     try {
@@ -237,6 +239,20 @@ export default function AdminDashboard() {
     await loadDashboardData();
   };
 
+  const syncNow = async () => {
+    if (!user?.id) return;
+    try {
+      setSyncing(true);
+      await runSync(user.id);
+      await loadDashboardData();
+      Alert.alert('Sync Complete', 'Local data and server data are in sync.');
+    } catch (err: any) {
+      Alert.alert('Sync Failed', err?.message || 'Unable to complete synchronization.');
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const getTimeAgo = (isoDate: string) => {
     if (!isoDate) return '';
     const diff = (Date.now() - new Date(isoDate).getTime()) / 1000;
@@ -328,9 +344,19 @@ export default function AdminDashboard() {
           <Text style={styles.userRole}>Admin & Hiring Operations</Text>
         </View>
 
-        <Pressable style={styles.refreshBtn} onPress={onRefresh} hitSlop={10}>
-          <Ionicons name="refresh-outline" size={20} color="#2563EB" />
-        </Pressable>
+        <View style={styles.headerActions}>
+          <Pressable style={styles.refreshBtn} onPress={onRefresh} hitSlop={10}>
+            <Ionicons name="refresh-outline" size={20} color="#2563EB" />
+          </Pressable>
+          <Pressable
+            style={[styles.syncBtn, syncing && styles.syncBtnDisabled]}
+            onPress={syncNow}
+            disabled={syncing}
+          >
+            <Ionicons name="sync-outline" size={18} color="#FFFFFF" />
+            <Text style={styles.syncBtnText}>{syncing ? 'Syncing' : 'Sync'}</Text>
+          </Pressable>
+        </View>
       </View>
 
       {/* STATS OVERVIEW CARDS */}
@@ -578,6 +604,11 @@ const styles = StyleSheet.create({
   headerLeft: {
     flex: 1,
   },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   greeting: {
     fontSize: 13,
     color: '#64748B',
@@ -604,6 +635,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: '#DBEAFE',
+  },
+  syncBtn: {
+    minHeight: 38,
+    paddingHorizontal: 12,
+    borderRadius: 19,
+    backgroundColor: '#2563EB',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+  },
+  syncBtnDisabled: {
+    opacity: 0.65,
+  },
+  syncBtnText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
   },
   sectionTitle: {
     fontSize: 15,
