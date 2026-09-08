@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   Alert,
   Image,
-  Animated
+  Animated,
+  ScrollView
 } from "react-native";
 
 import {
@@ -187,6 +188,14 @@ export default function InterviewerDrawer({
           ]}
         >
 
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.drawerScroll}
+          >
+
+          {/* BLUE HEADER */}
+
+          <View style={styles.drawerHeader}>
 
           {/* LOGO */}
 
@@ -255,6 +264,8 @@ export default function InterviewerDrawer({
               </View>
 
             </View>
+
+          </View>
 
           </View>
 
@@ -448,6 +459,7 @@ export default function InterviewerDrawer({
 
           </Pressable>
 
+          </ScrollView>
 
         </Animated.View>
 
@@ -566,6 +578,12 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
     /* DRAWER */
 
+    drawerScroll: {
+      flexGrow: 1,
+      paddingBottom: 30,
+    },
+
+
     drawer: {
 
       width: "80%",
@@ -591,18 +609,22 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
     /* LOGO */
 
+    drawerHeader: {
+      backgroundColor: "#06235C",
+      marginHorizontal: -18,
+      marginTop: -52,
+      paddingTop: 60,
+      paddingHorizontal: 18,
+      paddingBottom: 24,
+      borderBottomLeftRadius: 28,
+      borderBottomRightRadius: 28,
+      marginBottom: 20,
+    },
+
     logoContainer: {
-
       flexDirection: "row",
-
       alignItems: "center",
-
-      marginBottom: 22,
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-      borderRadius: 18,
-      backgroundColor: colors.primaryLight,
-
+      marginBottom: 18,
     },
 
 
@@ -619,7 +641,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
     logoText: {
 
-      color: colors.text,
+      color: "#FFFFFF",
 
       fontSize: 20,
 
@@ -643,13 +665,9 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
       paddingTop: 16,
       paddingHorizontal: 12,
       borderRadius: 18,
-      backgroundColor: colors.surface,
+      backgroundColor: "transparent",
 
-      borderBottomWidth: 1,
-
-      borderColor: colors.border,
-
-      marginBottom: 20,
+      marginBottom: 0,
 
     },
 
@@ -688,7 +706,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
     name: {
 
-      color: colors.text,
+      color: "#FFFFFF",
 
       fontSize: 15,
 
@@ -699,7 +717,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
     email: {
 
-      color: colors.secondaryText,
+      color: "#CBD5E1",
 
       fontSize: 11,
 

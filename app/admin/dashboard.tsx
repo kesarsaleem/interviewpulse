@@ -59,6 +59,7 @@ export default function AdminDashboard() {
   const [recentJobs, setRecentJobs] = useState<any[]>([]);
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [syncing, setSyncing] = useState(false);
+  const [conflictCount, setConflictCount] = useState(0);
 
   const loadDashboardData = useCallback(async () => {
     try {
@@ -139,6 +140,16 @@ export default function AdminDashboard() {
         .limit(3);
 
       setRecentJobs(jobsData || []);
+
+      const { count: conflicts, error: conflictErr } = await supabase
+        .from('activity_logs')
+        .select('*', { count: 'exact', head: true })
+        .eq('action', 'conflict_detected');
+      if (conflictErr) {
+        console.warn('Dashboard conflict count error:', conflictErr);
+      } else {
+        setConflictCount(conflicts || 0);
+      }
 
       // 6. Recent Activity Logs
       console.log('[DASHBOARD] Fetching recent activity logs...');
@@ -362,6 +373,29 @@ export default function AdminDashboard() {
           </Pressable>
         </View>
       </View>
+
+      {conflictCount > 0 && (
+        <View
+          style={{
+            marginBottom: 16,
+            padding: 14,
+            borderRadius: 12,
+            borderWidth: 1,
+            borderColor: colors.warning,
+            backgroundColor: colors.warningLight,
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          <Ionicons name="warning-outline" size={20} color={colors.warning} />
+          <Text style={{ flex: 1, marginLeft: 10, color: colors.text, fontWeight: '600' }}>
+            {conflictCount} sync conflict{conflictCount === 1 ? '' : 's'} need review.
+          </Text>
+          <Pressable onPress={() => router.push('/admin/compare')}>
+            <Text style={{ color: colors.primary, fontWeight: '700' }}>Review</Text>
+          </Pressable>
+        </View>
+      )}
 
       {/* STATS OVERVIEW CARDS */}
       <Text style={styles.sectionTitle}>Overview</Text>

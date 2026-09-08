@@ -12,4 +12,6 @@ export const ROUTES = {
   adminProfile: '/admin/profile',
 
   interviewerHome: '/interviewer',
+  interviewerCandidates: '/interviewer/candidates',
+  interviewerAddCandidate: '/interviewer/add-candidate',
 } as const;

@@ -17,7 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { supabase } from '../../lib/supabase/client';
 
-type SortOption = 'newest' | 'oldest' | 'name_asc' | 'interview_date';
+type SortOption = 'newest' | 'oldest' | 'name_asc' | 'interview_date' | 'last_activity';
 
 export default function AdminCandidatesScreen() {
   const { colors } = useTheme();
@@ -56,7 +56,31 @@ export default function AdminCandidatesScreen() {
         .order('created_at', { ascending: false });
 
       if (candErr) throw candErr;
-      setCandidates(candData || []);
+      const candidateIds = (candData || []).map((candidate) => candidate.id);
+      const lastActivityByCandidate: Record<string, string> = {};
+      if (candidateIds.length > 0) {
+        const { data: activityData, error: activityErr } = await supabase
+          .from('activity_logs')
+          .select('candidate_id, created_at')
+          .in('candidate_id', candidateIds)
+          .order('created_at', { ascending: false });
+        if (activityErr) {
+          console.warn('Candidate activity fetch error:', activityErr);
+        } else {
+          (activityData || []).forEach((activity) => {
+            if (!lastActivityByCandidate[activity.candidate_id]) {
+              lastActivityByCandidate[activity.candidate_id] = activity.created_at;
+            }
+          });
+        }
+      }
+      setCandidates(
+        (candData || []).map((candidate) => ({
+          ...candidate,
+          last_activity_at:
+            lastActivityByCandidate[candidate.id] || candidate.updated_at || candidate.created_at,
+        }))
+      );
 
       // 2. Fetch Jobs for filter
       const { data: jobsData, error: jobsErr } = await supabase
@@ -167,6 +191,9 @@ export default function AdminCandidatesScreen() {
           if (!a.interview_date) return 1;
           if (!b.interview_date) return -1;
           return a.interview_date.localeCompare(b.interview_date);
+        }
+        if (sortBy === 'last_activity') {
+          return new Date(b.last_activity_at || 0).getTime() - new Date(a.last_activity_at || 0).getTime();
         }
         return 0;
       });
@@ -373,7 +400,8 @@ export default function AdminCandidatesScreen() {
                 newest: 'interview_date',
                 interview_date: 'name_asc',
                 name_asc: 'oldest',
-                oldest: 'newest',
+                oldest: 'last_activity',
+                last_activity: 'newest',
               };
               setSortBy(nextSort[sortBy]);
             }}
@@ -386,7 +414,9 @@ export default function AdminCandidatesScreen() {
                 ? 'Scheduled'
                 : sortBy === 'name_asc'
                 ? 'Name'
-                : 'Oldest'}
+                : sortBy === 'oldest'
+                ? 'Oldest'
+                : 'Last Activity'}
             </Text>
           </Pressable>
         </View>

@@ -234,6 +234,15 @@ export default function CandidatesScreen() {
           </View>
 
           <Pressable
+            style={styles.addBtn}
+            onPress={() => router.push('/interviewer/add-candidate')}
+            hitSlop={10}
+          >
+            <Ionicons name="person-add-outline" size={15} color="#FFFFFF" />
+            <Text style={styles.addBtnText}>Add</Text>
+          </Pressable>
+
+          <Pressable
             style={styles.syncBtn}
             onPress={handleManualSync}
             disabled={syncing}
@@ -583,6 +592,23 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     gap: 5,
     borderWidth: 1,
     borderColor: colors.accent,
+  },
+  addBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    paddingHorizontal: 11,
+    paddingVertical: 8,
+    borderRadius: 12,
+    gap: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.25)',
+    marginRight: 6,
+  },
+  addBtnText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 12,
   },
   syncBtnText: {
     color: '#FFFFFF',

@@ -745,6 +745,23 @@ export default function CandidateDetail() {
       <View style={styles.decisionActionsCard}>
         <Text style={styles.decisionActionsTitle}>Hiring Decision & Actions</Text>
         <View style={styles.actionsBtnGroup}>
+          <Pressable
+            style={styles.advanceBtn}
+            onPress={() =>
+              router.push({
+                pathname: '/feedback/[candidateId]',
+                params: {
+                  candidateId: candidate.id,
+                  stageId: candidate.current_stage_id,
+                },
+              })
+            }
+            disabled={actionLoading}
+          >
+            <Ionicons name="create-outline" size={18} color="#FFFFFF" />
+            <Text style={styles.advanceBtnText}>Give Feedback</Text>
+          </Pressable>
+
           {!isFinalStage && decisionState === 'pending' && (
             <Pressable style={styles.advanceBtn} onPress={moveNextStage} disabled={actionLoading}>
               <Ionicons name="arrow-forward-circle" size={18} color="#FFFFFF" />

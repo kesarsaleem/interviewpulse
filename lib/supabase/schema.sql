@@ -382,7 +382,11 @@ create policy "feedback_insert_own_only"
     interviewer_id = auth.uid()
     and exists (
       select 1 from candidates c
-      where c.id = candidate_id and is_job_panel_member(auth.uid(), c.job_id)
+      where c.id = candidate_id
+        and (
+          is_job_panel_member(auth.uid(), c.job_id)
+          or is_job_admin(auth.uid(), c.job_id)
+        )
     )
   );
 

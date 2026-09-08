@@ -12,13 +12,16 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams, useSegments } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
 
 import { supabase } from '../../lib/supabase/client';
 import { useAuth } from '../../hooks/useAuth';
+import { getDb } from '../../lib/sqlite/schema';
+import { enqueueMutation } from '../../lib/sync/syncEngine';
+import uuid from 'react-native-uuid';
 
 const REFERRAL_SOURCES = [
   { id: 'linkedin', label: 'LinkedIn' },
@@ -32,9 +35,16 @@ export default function AddOrEditCandidate() {
   const styles = createStyles(colors);
   const { user } = useAuth();
   const params = useLocalSearchParams();
-  const candidateId = (params.candidateId || params.id) as string | undefined;
+  const segments = useSegments();
+  const isInterviewerRoute = segments[0] === 'interviewer';
+  // The shared form is create-only on the interviewer route. Candidate
+  // editing remains available only through the admin route.
+  const candidateId = isInterviewerRoute
+    ? undefined
+    : (params.candidateId || params.id) as string | undefined;
   const initialJobId = (params.jobId as string) || '';
   const isEditing = !!candidateId;
+  const isInterviewer = user?.role === 'interviewer';
 
   const [jobs, setJobs] = useState<any[]>([]);
   const [selectedJobId, setSelectedJobId] = useState<string>(initialJobId);
@@ -299,7 +309,21 @@ export default function AddOrEditCandidate() {
           .update(payload)
           .eq('id', candidateId);
 
-        if (updateErr) throw updateErr;
+        if (updateErr) {
+          const db = getDb();
+          db.runSync(
+            `UPDATE candidates SET job_id = ?, full_name = ?, email = ?, phone = ?, current_role = ?,
+             current_company = ?, resume_url = ?, referral_source = ?, current_stage_id = ?,
+             interview_date = ?, interview_time = ?, updated_at = ?, sync_status = 'pending' WHERE id = ?`,
+            [
+              payload.job_id, payload.full_name, payload.email, payload.phone, payload.current_role,
+              payload.current_company, payload.resume_url, payload.referral_source,
+              payload.current_stage_id, payload.interview_date, payload.interview_time,
+              payload.updated_at, candidateId,
+            ]
+          );
+          enqueueMutation('candidate', candidateId, 'update', payload);
+        }
 
         Alert.alert('Success', 'Candidate details updated successfully', [
           { text: 'OK', onPress: () => router.back() },
@@ -315,7 +339,38 @@ export default function AddOrEditCandidate() {
           .select()
           .single();
 
-        if (insertErr) throw insertErr;
+        if (insertErr) {
+          const offlineId = uuid.v4() as string;
+          const now = new Date().toISOString();
+          const db = getDb();
+          db.runSync(
+            `INSERT INTO candidates
+             (id, job_id, full_name, email, phone, current_role, current_company, resume_url,
+              referral_source, current_stage_id, interview_date, interview_time, created_by,
+              created_at, updated_at, sync_status)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
+            [
+              offlineId, payload.job_id, payload.full_name, payload.email, payload.phone,
+              payload.current_role, payload.current_company, payload.resume_url,
+              payload.referral_source, payload.current_stage_id, payload.interview_date,
+              payload.interview_time, currentUserId, now, now,
+            ]
+          );
+          enqueueMutation('candidate', offlineId, 'create', {
+            id: offlineId,
+            ...payload,
+            created_by: currentUserId,
+            created_at: now,
+          });
+          Alert.alert('Saved Offline', 'Candidate saved locally and will sync when you are online.', [
+            {
+              text: 'OK',
+              onPress: () =>
+                router.replace(isInterviewer ? '/interviewer/candidates' : '/admin/candidates'),
+            },
+          ]);
+          return;
+        }
 
         // Log candidate_added event to activity_logs
         try {
@@ -336,11 +391,16 @@ export default function AddOrEditCandidate() {
         Alert.alert('Success', 'Candidate added to hiring pipeline!', [
           {
             text: 'View Profile',
-            onPress: () =>
-              router.replace({
-                pathname: '/admin/candidate-detail',
-                params: { id: newCandidate.id },
-              }),
+            onPress: () => {
+              if (isInterviewer) {
+                router.replace('/interviewer/candidates');
+              } else {
+                router.replace({
+                  pathname: '/admin/candidate-detail',
+                  params: { id: newCandidate.id },
+                });
+              }
+            },
           },
           {
             text: 'Add Another',
@@ -387,7 +447,7 @@ export default function AddOrEditCandidate() {
         </Pressable>
         <View style={styles.headerTitleWrap}>
           <Text style={styles.title}>
-            {isEditing ? 'Edit Candidate' : 'Add New Candidate'}
+            {isEditing ? 'Edit Candidate' : isInterviewer ? 'Add Candidate' : 'Add New Candidate'}
           </Text>
           <Text style={styles.subtitle}>
             {isEditing

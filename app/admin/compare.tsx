@@ -255,6 +255,16 @@ export default function CompareCandidatesScreen() {
     return { labels, series };
   }, [selectedCandidateRow, criteria]);
 
+  const deepDiveFeedbacks = useMemo(() => {
+    if (!selectedCandidateRow) return [];
+
+    return [...selectedCandidateRow.feedbacks].sort((a, b) => {
+      const aPosition = a.stages?.position ?? Number.MAX_SAFE_INTEGER;
+      const bPosition = b.stages?.position ?? Number.MAX_SAFE_INTEGER;
+      return aPosition - bPosition;
+    });
+  }, [selectedCandidateRow]);
+
   // --- ACTIONS IN DEEP DIVE ---
 
   const handleAdvanceStage = async () => {
@@ -324,6 +334,29 @@ export default function CompareCandidatesScreen() {
         onPress: async () => {
           try {
             setActionLoading(true);
+
+            const updatedAt = new Date().toISOString();
+            const { error: candidateUpdateError } = await supabase
+              .from('candidates')
+              .update({
+                decision_status: 'hired',
+                updated_at: updatedAt,
+              })
+              .eq('id', cand.id);
+
+            if (candidateUpdateError) throw candidateUpdateError;
+
+            try {
+              const { getDb } = require('../../lib/sqlite/schema');
+              const db = getDb();
+              db.runSync(
+                `UPDATE candidates SET decision_status = 'hired', updated_at = ? WHERE id = ?`,
+                [updatedAt, cand.id]
+              );
+            } catch (e) {
+              console.warn('[HIRE CANDIDATE] Local candidate mirror update note:', e);
+            }
+
             if (user?.id) {
               await supabase.from('activity_logs').insert({
                 candidate_id: cand.id,
@@ -360,6 +393,29 @@ export default function CompareCandidatesScreen() {
         onPress: async () => {
           try {
             setActionLoading(true);
+
+            const updatedAt = new Date().toISOString();
+            const { error: candidateUpdateError } = await supabase
+              .from('candidates')
+              .update({
+                decision_status: 'rejected',
+                updated_at: updatedAt,
+              })
+              .eq('id', cand.id);
+
+            if (candidateUpdateError) throw candidateUpdateError;
+
+            try {
+              const { getDb } = require('../../lib/sqlite/schema');
+              const db = getDb();
+              db.runSync(
+                `UPDATE candidates SET decision_status = 'rejected', updated_at = ? WHERE id = ?`,
+                [updatedAt, cand.id]
+              );
+            } catch (e) {
+              console.warn('[REJECT CANDIDATE] Local candidate mirror update note:', e);
+            }
+
             if (user?.id) {
               await supabase.from('activity_logs').insert({
                 candidate_id: cand.id,
@@ -606,7 +662,7 @@ export default function CompareCandidatesScreen() {
                       </Text>
                     </View>
                   ) : (
-                    selectedCandidateRow.feedbacks.map((fb) => {
+                    deepDiveFeedbacks.map((fb) => {
                       const reviewerName = fb.profiles?.name || 'Interviewer';
                       const vCfg = VERDICT_CONFIG[fb.overall_verdict] || VERDICT_CONFIG.maybe;
 
