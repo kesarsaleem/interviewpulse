@@ -33,8 +33,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .eq('id', userId)
       .single();
 
-    console.log("PROFILE DATA:", data);
-    console.log("PROFILE ERROR:", error);
+    if (__DEV__ && error) {
+      console.warn('Profile load failed:', error.message);
+    }
 
     if (data) {
       try {
@@ -121,28 +122,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
 
-  const resetPassword = async (
-    email: string
-  ) => {
+ const resetPassword = async (
+  email: string
+) => {
 
-    try {
-      const { error } =
-        await supabase.auth.resetPasswordForEmail(
-          email
-        );
+  try {
+    const { error } =
+      await supabase.auth.resetPasswordForEmail(
+        email,
+        {
+          redirectTo: 'interviewpulse://reset-password'
+        }
+      );
 
-      return {
-        error: error
-          ? humanizeAuthError(error.message)
-          : null
-      };
-    } catch (err) {
-      // Catches thrown exceptions (e.g. network-level failures) that
-      // don't come back as a normal {error} result.
-      const message = err instanceof Error ? err.message : String(err);
-      return { error: humanizeAuthError(message) };
-    }
-  };
+    return {
+      error: error
+        ? humanizeAuthError(error.message)
+        : null
+    };
+
+  } catch (err) {
+
+    const message =
+      err instanceof Error
+        ? err.message
+        : String(err);
+
+    return {
+      error: humanizeAuthError(message)
+    };
+  }
+};
 
 
   const signOut = async () => {
@@ -173,7 +183,9 @@ function humanizeAuthError(message: string | undefined | null): string {
   const safeMessage = message ?? '';
   const lower = safeMessage.toLowerCase();
 
-  console.error('Auth error (raw):', safeMessage);
+  if (__DEV__) {
+    console.error('Auth error:', safeMessage);
+  }
 
   if (lower.includes('invalid login')) {
     return 'Incorrect email or password.';

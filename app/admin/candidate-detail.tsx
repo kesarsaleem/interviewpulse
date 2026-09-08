@@ -18,13 +18,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../lib/supabase/client';
 import { useAuth } from '../../hooks/useAuth';
 import { RadarChart, RadarSeries } from '../../components/charts/RadarChart';
+import { saveCandidateDecision } from '../../services/decisionService';
 
 const VERDICT_CONFIG: Record<string, { label: string; bg: string; text: string; icon: string }> = {
   strong_yes: { label: 'Strong Yes', bg: '#DCFCE7', text: '#15803D', icon: 'checkmark-circle' },
-  yes: { label: 'Yes', bg: '#EFF6FF', text: '#2563EB', icon: 'thumbs-up' },
   maybe: { label: 'Maybe', bg: '#FEF3C7', text: '#B45309', icon: 'help-circle' },
   no: { label: 'No', bg: '#FEE2E2', text: '#DC2626', icon: 'close-circle' },
-  strong_no: { label: 'Strong No', bg: '#7F1D1D', text: '#FFFFFF', icon: 'hand-left' },
 };
 
 const CHART_COLORS = ['#2563EB', '#16A34A', '#D97706', '#7C3AED', '#DC2626'];
@@ -234,8 +233,10 @@ export default function CandidateDetail() {
               }
 
               // 2. Insert activity_logs
-              const actorId =
-                user?.id || (await supabase.auth.getUser()).data.user?.id || '00000000-0000-0000-0000-000000000000';
+              if (!user?.id) {
+                throw new Error('You must be signed in to record stage activity.');
+              }
+              const actorId = user.id;
               const actPayload = {
                 candidate_id: candidate.id,
                 user_id: actorId,
@@ -298,78 +299,20 @@ export default function CandidateDetail() {
         onPress: async () => {
           try {
             setActionLoading(true);
-            console.log('[HIRE CANDIDATE] Initiating hire for:', candidate.id, candidate.full_name);
-
-            // 1. Update candidates table decision_status = 'hired'
-            try {
-              const { data: cUpdate, error: cErr } = await supabase
-                .from('candidates')
-                .update({
-                  decision_status: 'hired',
-                  updated_at: new Date().toISOString(),
-                })
-                .eq('id', candidate.id)
-                .select();
-
-              if (cErr) {
-                console.warn('[HIRE CANDIDATE] Candidate table update note:', cErr.message);
-              } else {
-                console.log('[HIRE CANDIDATE] Candidate table updated:', cUpdate);
-              }
-            } catch (e) {
-              console.warn('[HIRE CANDIDATE] Candidate update note:', e);
+            if (!user?.id) {
+              Alert.alert('Error', 'You must be signed in to make a hiring decision.');
+              return;
             }
-
-            // Update SQLite mirror
-            try {
-              const { getDb } = require('../../lib/sqlite/schema');
-              const db = getDb();
-              db.runSync(
-                `UPDATE candidates SET decision_status = 'hired', updated_at = ? WHERE id = ?`,
-                [new Date().toISOString(), candidate.id]
-              );
-            } catch (e) {}
-
-            // 2. Insert activity_logs
-            const actorId =
-              user?.id || (await supabase.auth.getUser()).data.user?.id || '00000000-0000-0000-0000-000000000000';
-            const actPayload = {
-              candidate_id: candidate.id,
-              user_id: actorId,
-              action: 'marked_hire',
-              metadata: {
-                candidate_name: candidate.full_name,
-              },
-            };
-
-            console.log('[HIRE CANDIDATE] Inserting activity log:', actPayload);
-            const { data: actResult, error: actError } = await supabase
-              .from('activity_logs')
-              .insert(actPayload)
-              .select();
-
-            console.log('ACTIVITY INSERT RESULT', actResult, actError);
-
-            // Insert into SQLite activity_logs
-            try {
-              const { getDb } = require('../../lib/sqlite/schema');
-              const db = getDb();
-              const actId = require('react-native-uuid').v4();
-              db.runSync(
-                `INSERT INTO activity_logs (id, candidate_id, user_id, action, metadata, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
-                [
-                  actId,
-                  candidate.id,
-                  actorId,
-                  'marked_hire',
-                  JSON.stringify(actPayload.metadata),
-                  new Date().toISOString(),
-                ]
-              );
-            } catch (e) {}
-
-            console.log('ACTION SUCCESS');
+            const result = await saveCandidateDecision({
+              candidate,
+              status: 'hired',
+              actorId: user.id,
+            });
             setDecisionState('hired');
+            if (result.queued) {
+              Alert.alert('Saved Offline', 'The hiring decision will sync when you are online.');
+              return;
+            }
             await refreshCandidate();
             await refreshActivity();
 
@@ -395,78 +338,20 @@ export default function CandidateDetail() {
         onPress: async () => {
           try {
             setActionLoading(true);
-            console.log('[REJECT CANDIDATE] Initiating reject for:', candidate.id, candidate.full_name);
-
-            // 1. Update candidates table decision_status = 'rejected'
-            try {
-              const { data: cUpdate, error: cErr } = await supabase
-                .from('candidates')
-                .update({
-                  decision_status: 'rejected',
-                  updated_at: new Date().toISOString(),
-                })
-                .eq('id', candidate.id)
-                .select();
-
-              if (cErr) {
-                console.warn('[REJECT CANDIDATE] Candidate table update note:', cErr.message);
-              } else {
-                console.log('[REJECT CANDIDATE] Candidate table updated:', cUpdate);
-              }
-            } catch (e) {
-              console.warn('[REJECT CANDIDATE] Candidate update note:', e);
+            if (!user?.id) {
+              Alert.alert('Error', 'You must be signed in to make a hiring decision.');
+              return;
             }
-
-            // Update SQLite mirror
-            try {
-              const { getDb } = require('../../lib/sqlite/schema');
-              const db = getDb();
-              db.runSync(
-                `UPDATE candidates SET decision_status = 'rejected', updated_at = ? WHERE id = ?`,
-                [new Date().toISOString(), candidate.id]
-              );
-            } catch (e) {}
-
-            // 2. Insert activity_logs
-            const actorId =
-              user?.id || (await supabase.auth.getUser()).data.user?.id || '00000000-0000-0000-0000-000000000000';
-            const actPayload = {
-              candidate_id: candidate.id,
-              user_id: actorId,
-              action: 'marked_reject',
-              metadata: {
-                candidate_name: candidate.full_name,
-              },
-            };
-
-            console.log('[REJECT CANDIDATE] Inserting activity log:', actPayload);
-            const { data: actResult, error: actError } = await supabase
-              .from('activity_logs')
-              .insert(actPayload)
-              .select();
-
-            console.log('ACTIVITY INSERT RESULT', actResult, actError);
-
-            // Insert into SQLite activity_logs
-            try {
-              const { getDb } = require('../../lib/sqlite/schema');
-              const db = getDb();
-              const actId = require('react-native-uuid').v4();
-              db.runSync(
-                `INSERT INTO activity_logs (id, candidate_id, user_id, action, metadata, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
-                [
-                  actId,
-                  candidate.id,
-                  actorId,
-                  'marked_reject',
-                  JSON.stringify(actPayload.metadata),
-                  new Date().toISOString(),
-                ]
-              );
-            } catch (e) {}
-
-            console.log('ACTION SUCCESS');
+            const result = await saveCandidateDecision({
+              candidate,
+              status: 'rejected',
+              actorId: user.id,
+            });
             setDecisionState('rejected');
+            if (result.queued) {
+              Alert.alert('Saved Offline', 'The rejection decision will sync when you are online.');
+              return;
+            }
             await refreshCandidate();
             await refreshActivity();
 

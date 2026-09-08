@@ -111,23 +111,14 @@ Deno.serve(async (request) => {
       return response({ error: "Request body must be valid JSON." }, 400);
     }
 
-    const rawEmail = typeof body?.email === "string" ? body.email : "";
-    const email = sanitizeEmail(rawEmail);
+    const email = sanitizeEmail(
+      typeof body?.email === "string" ? body.email : "",
+    );
     const name = typeof body?.name === "string" ? body.name.trim() : "";
     const department =
       typeof body?.department === "string" && body.department.trim()
         ? body.department.trim()
         : null;
-
-    // Debug log — check Supabase Dashboard → Edge Functions →
-    // invite-interviewer → Logs to see exactly what arrived,
-    // including hidden character codes.
-    console.log("Invite request received", {
-      rawEmail,
-      rawEmailCharCodes: Array.from(rawEmail).map((c) => c.charCodeAt(0)),
-      sanitizedEmail: email,
-      name,
-    });
 
     if (!email || !name) {
       return response({ error: "Name and email are required." }, 400);
@@ -137,7 +128,6 @@ Deno.serve(async (request) => {
       return response(
         {
           error: `Invalid email address: ${email}`,
-          debugCharCodes: Array.from(email).map((c) => c.charCodeAt(0)),
         },
         400,
       );
@@ -160,7 +150,7 @@ Deno.serve(async (request) => {
       });
 
     if (inviteError) {
-      console.error("inviteUserByEmail failed:", inviteError);
+      console.error("inviteUserByEmail failed:", inviteError.message);
       const message = inviteError.message || "Could not send invitation.";
       const lowerMessage = message.toLowerCase();
 

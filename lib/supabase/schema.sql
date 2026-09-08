@@ -482,6 +482,16 @@ create policy "feedback_delete_admin_only"
 -- =========================================================
 -- TABLE PRIVILEGES FOR AUTHENTICATED & ANON ROLES
 -- =========================================================
+revoke all on public.profiles from anon;
+revoke all on public.jobs from anon;
+revoke all on public.stages from anon;
+revoke all on public.criteria from anon;
+revoke all on public.job_interviewers from anon;
+revoke all on public.candidates from anon;
+revoke all on public.feedback from anon;
+revoke all on public.feedback_scores from anon;
+revoke all on public.activity_logs from anon;
+
 grant all on public.profiles to authenticated;
 grant all on public.jobs to authenticated;
 grant all on public.stages to authenticated;

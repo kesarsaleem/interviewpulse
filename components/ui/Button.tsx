@@ -24,13 +24,6 @@ const variantClasses: Record<Variant, string> = {
   ghost: 'bg-transparent active:bg-background',
 };
 
-const textVariantClasses: Record<Variant, string> = {
-  primary: 'text-white',
-  secondary: 'text-white',
-  outline: 'text-white',
-  danger: 'text-white',
-  ghost: 'text-purple-400',
-};
 const sizeClasses: Record<Size, string> = {
   sm: 'px-3 py-2 min-h-[40px]',
   md: 'px-4 py-3 min-h-[48px]',
@@ -87,7 +80,15 @@ export function Button({
       ) : (
         <>
           {icon}
-          <Text className={['font-semibold text-base', textVariantClasses[variant], icon ? 'ml-2' : ''].join(' ')}>
+          <Text
+            className={['font-semibold text-base', icon ? 'ml-2' : ''].join(' ')}
+            style={{
+              color:
+                variant === 'outline' || variant === 'ghost'
+                  ? colors.primary
+                  : '#FFFFFF',
+            }}
+          >
             {label}
           </Text>
         </>

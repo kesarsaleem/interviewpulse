@@ -21,10 +21,8 @@ import { RadarChart, RadarSeries } from '../../components/charts/RadarChart';
 
 const VERDICT_CONFIG: Record<string, { label: string; bg: string; text: string; icon: string }> = {
   strong_yes: { label: 'Strong Yes', bg: '#DCFCE7', text: '#15803D', icon: 'checkmark-circle' },
-  yes: { label: 'Yes', bg: '#EFF6FF', text: '#2563EB', icon: 'thumbs-up' },
   maybe: { label: 'Maybe', bg: '#FEF3C7', text: '#B45309', icon: 'help-circle' },
   no: { label: 'No', bg: '#FEE2E2', text: '#DC2626', icon: 'close-circle' },
-  strong_no: { label: 'Strong No', bg: '#7F1D1D', text: '#FFFFFF', icon: 'hand-left' },
 };
 
 const CHART_COLORS = ['#2563EB', '#16A34A', '#D97706', '#7C3AED', '#DC2626'];

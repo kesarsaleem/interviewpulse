@@ -15,9 +15,10 @@ import { router } from 'expo-router';
 import { supabase } from '../lib/supabase/client';
 import { useTheme } from '../context/ThemeContext';
 
-function readHashParams(url: string) {
-  const hash = url.split('#')[1] || '';
-  return new URLSearchParams(hash);
+function readAuthParams(url: string) {
+  const [, hash = ''] = url.split('#');
+  const query = url.split('?')[1]?.split('#')[0] || '';
+  return new URLSearchParams(`${query}&${hash}`);
 }
 
 export default function AcceptInviteScreen() {
@@ -33,11 +34,20 @@ export default function AcceptInviteScreen() {
 
     const handleUrl = async (url: string | null) => {
       if (!url) return;
-      const params = readHashParams(url);
+      const params = readAuthParams(url);
       const accessToken = params.get('access_token');
       const refreshToken = params.get('refresh_token');
+      const code = params.get('code');
 
       if (!accessToken || !refreshToken) {
+        if (code) {
+          const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+          if (mounted) {
+            setError(exchangeError?.message || '');
+            setReady(!exchangeError);
+          }
+          return;
+        }
         if (mounted) setError('This invitation link is invalid or has expired.');
         return;
       }
