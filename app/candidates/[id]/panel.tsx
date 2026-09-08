@@ -589,8 +589,8 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     alignSelf: 'flex-start',
   },
   greenBadge: {
-    backgroundColor: '#F0FDF4',
-    color: '#16A34A',
+    backgroundColor: colors.successLight,
+    color: colors.success,
   },
   yellowBadge: {
     backgroundColor: colors.warningLight,
@@ -598,7 +598,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   redBadge: {
     backgroundColor: colors.dangerLight,
-    color: '#DC2626',
+    color: colors.danger,
   },
   card: {
     backgroundColor: colors.card,
@@ -684,7 +684,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderRadius: 10,
   },
   verdictPillGreen: {
-    backgroundColor: '#F0FDF4',
+    backgroundColor: colors.successLight,
   },
   verdictPillYellow: {
     backgroundColor: colors.warningLight,
@@ -697,13 +697,13 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     fontWeight: '800',
   },
   greenText: {
-    color: '#16A34A',
+    color: colors.success,
   },
   yellowText: {
     color: '#D97706',
   },
   redText: {
-    color: '#DC2626',
+    color: colors.danger,
   },
   reviewScoresSection: {
     borderTopWidth: 1,

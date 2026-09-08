@@ -307,7 +307,7 @@ fontSize:32,
 
 fontWeight:"900",
 
-color:"#1E3A8A",
+color: colors.primaryDark,
 
 marginTop:10,
 

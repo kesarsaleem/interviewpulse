@@ -274,11 +274,11 @@ export default function AdminDashboard() {
       case 'stage_moved':
         return { icon: 'arrow-forward-circle-outline', color: '#0D9488', bg: '#F0FDFA' };
       case 'feedback_submitted':
-        return { icon: 'chatbox-ellipses-outline', color: '#7C3AED', bg: '#F5F3FF' };
+        return { icon: 'chatbox-ellipses-outline', color: '#7C3AED', bg: colors.primaryLight };
       case 'marked_hire':
-        return { icon: 'checkmark-circle-outline', color: '#16A34A', bg: '#DCFCE7' };
+        return { icon: 'checkmark-circle-outline', color: colors.success, bg: colors.successLight };
       case 'marked_reject':
-        return { icon: 'close-circle-outline', color: '#DC2626', bg: '#FEE2E2' };
+        return { icon: 'close-circle-outline', color: colors.danger, bg: colors.dangerLight };
       default:
         return { icon: 'flash-outline', color: colors.secondaryText, bg: colors.divider };
     }
@@ -392,7 +392,7 @@ export default function AdminDashboard() {
           style={[styles.statCard, { borderLeftColor: '#7C3AED' }]}
           onPress={() => router.push('/admin/interviews')}
         >
-          <View style={[styles.statIconWrap, { backgroundColor: '#F5F3FF' }]}>
+          <View style={[styles.statIconWrap, { backgroundColor: colors.primaryLight }]}>
             <Ionicons name="chatbubbles-outline" size={20} color="#7C3AED" />
           </View>
           <Text style={styles.statNumber}>{stats.interviews}</Text>
@@ -661,7 +661,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   sectionTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#1E293B',
+    color: colors.text,
     marginBottom: 12,
   },
   sectionHeaderRow: {
@@ -691,7 +691,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.cardBorder,
     borderLeftWidth: 4,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.04,
     shadowRadius: 2,
@@ -731,7 +731,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: colors.cardBorder,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.04,
     shadowRadius: 2,
@@ -785,7 +785,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderRadius: 12,
   },
   statusOpen: {
-    backgroundColor: '#DCFCE7',
+    backgroundColor: colors.successLight,
   },
   statusClosed: {
     backgroundColor: colors.divider,
@@ -796,7 +796,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     textTransform: 'uppercase',
   },
   statusOpenText: {
-    color: '#16A34A',
+    color: colors.success,
   },
   statusClosedText: {
     color: colors.secondaryText,

@@ -13,7 +13,6 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { supabase } from "../../lib/supabase/client";
 import { useAuth } from "../../hooks/useAuth";
-import { ROUTES } from "../../constants/routes";
 import { useTheme } from '../../context/ThemeContext';
 import { ThemeColors } from '../../theme/colors';
 
@@ -65,7 +64,6 @@ export default function AdminSettingsScreen() {
             try {
               await supabase.auth.signOut({ scope: "global" });
               await signOut();
-              router.replace(ROUTES.login);
             } catch (err: any) {
               Alert.alert("Error", err.message || "Failed to sign out.");
             }
@@ -178,7 +176,7 @@ export default function AdminSettingsScreen() {
             <Switch
               value={offlineSyncEnabled}
               onValueChange={setOfflineSyncEnabled}
-              trackColor={{ false: colors.inputBorder, true: "#93C5FD" }}
+              trackColor={{ false: colors.inputBorder, true: colors.primary }}
               thumbColor={offlineSyncEnabled ? "#2563EB" : "#F8FAFC"}
             />
           </View>
@@ -195,7 +193,7 @@ export default function AdminSettingsScreen() {
             <Switch
               value={autoAdvanceEnabled}
               onValueChange={setAutoAdvanceEnabled}
-              trackColor={{ false: colors.inputBorder, true: "#93C5FD" }}
+              trackColor={{ false: colors.inputBorder, true: colors.primary }}
               thumbColor={autoAdvanceEnabled ? "#2563EB" : "#F8FAFC"}
             />
           </View>
@@ -212,7 +210,7 @@ export default function AdminSettingsScreen() {
             <Switch
               value={requireFullConsensus}
               onValueChange={setRequireFullConsensus}
-              trackColor={{ false: colors.inputBorder, true: "#93C5FD" }}
+              trackColor={{ false: colors.inputBorder, true: colors.primary }}
               thumbColor={requireFullConsensus ? "#2563EB" : "#F8FAFC"}
             />
           </View>
@@ -261,7 +259,7 @@ export default function AdminSettingsScreen() {
             <Switch
               value={emailAlertsEnabled}
               onValueChange={setEmailAlertsEnabled}
-              trackColor={{ false: colors.inputBorder, true: "#93C5FD" }}
+              trackColor={{ false: colors.inputBorder, true: colors.primary }}
               thumbColor={emailAlertsEnabled ? "#2563EB" : "#F8FAFC"}
             />
           </View>
@@ -368,7 +366,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.cardBorder,
     marginBottom: 24,
-    shadowColor: "#000",
+    shadowColor: colors.text,
     shadowOpacity: 0.04,
     shadowRadius: 8,
     elevation: 2,
@@ -432,7 +430,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   settingTitle: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#1E293B",
+    color: colors.text,
   },
   settingDesc: {
     fontSize: 12,

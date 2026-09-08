@@ -634,7 +634,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderStyle: 'dashed',
-    borderColor: '#93C5FD',
+    borderColor: colors.primary,
     backgroundColor: colors.primaryLight,
   },
   uploadBtnText: {
@@ -734,7 +734,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     marginBottom: 6,
   },
   required: {
-    color: '#DC2626',
+    color: colors.danger,
   },
   input: {
     backgroundColor: colors.background,

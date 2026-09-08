@@ -10,10 +10,12 @@ import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { SyncIndicator } from '../../components/sync/SyncIndicator';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function HomeScreen() {
   const { user } = useAuth();
   const { data: jobs = [], isLoading } = useJobs();
+  const { colors } = useTheme();
 
   return (
     <SafeAreaView className="flex-1 bg-background">
@@ -54,7 +56,7 @@ export default function HomeScreen() {
                 />
               </View>
               <View className="flex-row items-center mt-3">
-                <Users size={14} color="#9CA3AF" />
+                <Users size={14} color={colors.mutedText} />
                 <Text className="text-text-muted text-xs ml-1">{item.candidate_count ?? 0} candidates</Text>
               </View>
             </Card>

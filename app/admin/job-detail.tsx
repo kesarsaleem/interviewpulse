@@ -826,7 +826,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderRadius: 8,
     backgroundColor: colors.dangerLight,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: colors.danger,
   },
   headerCard: {
     backgroundColor: colors.card,
@@ -835,7 +835,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     marginBottom: 16,
     borderWidth: 1,
     borderColor: colors.cardBorder,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
@@ -872,26 +872,26 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderRadius: 12,
   },
   statusOpen: {
-    backgroundColor: '#DCFCE7',
+    backgroundColor: colors.successLight,
   },
   statusClosed: {
     backgroundColor: colors.divider,
   },
   statusArchived: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: colors.dangerLight,
   },
   statusPillText: {
     fontSize: 11,
     fontWeight: '700',
   },
   statusOpenText: {
-    color: '#16A34A',
+    color: colors.success,
   },
   statusClosedText: {
     color: colors.secondaryText,
   },
   statusArchivedText: {
-    color: '#DC2626',
+    color: colors.danger,
   },
   description: {
     fontSize: 13,
@@ -1011,7 +1011,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   tabItemActive: {
     backgroundColor: colors.card,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.08,
     shadowRadius: 2,
@@ -1079,7 +1079,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   candidateAvatarText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#1E40AF',
+    color: colors.primaryDark,
   },
   candidateInfo: {
     flex: 1,
@@ -1187,7 +1187,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#EDE9FE',
+    backgroundColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,

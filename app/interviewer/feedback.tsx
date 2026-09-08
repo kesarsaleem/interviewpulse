@@ -619,26 +619,26 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderRadius: 20,
   },
   verdictStrongYes: {
-    backgroundColor: '#DCFCE7',
+    backgroundColor: colors.successLight,
   },
   verdictMaybe: {
-    backgroundColor: '#FEF3C7',
+    backgroundColor: colors.warningLight,
   },
   verdictNo: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: colors.dangerLight,
   },
   verdictText: {
     fontSize: 12.5,
     fontWeight: '800',
   },
   greenText: {
-    color: '#16A34A',
+    color: colors.success,
   },
   yellowText: {
     color: '#D97706',
   },
   redText: {
-    color: '#DC2626',
+    color: colors.danger,
   },
   scoreRow: {
     flexDirection: 'row',

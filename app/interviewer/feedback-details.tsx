@@ -733,26 +733,26 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderRadius: 10,
   },
   badgeGreen: {
-    backgroundColor: '#DCFCE7',
+    backgroundColor: colors.successLight,
   },
   badgeYellow: {
-    backgroundColor: '#FEF3C7',
+    backgroundColor: colors.warningLight,
   },
   badgeRed: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: colors.dangerLight,
   },
   badgeText: {
     fontSize: 11,
     fontWeight: '800',
   },
   greenText: {
-    color: '#15803D',
+    color: colors.success,
   },
   yellowText: {
-    color: '#B45309',
+    color: colors.warning,
   },
   redText: {
-    color: '#DC2626',
+    color: colors.danger,
   },
   editWindowBanner: {
     marginHorizontal: 14,
@@ -769,7 +769,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   editWindowText: {
     flex: 1,
     fontSize: 11.5,
-    color: '#1E40AF',
+    color: colors.primaryDark,
     fontWeight: '600',
   },
   bannerEditBtn: {

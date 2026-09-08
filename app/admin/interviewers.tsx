@@ -381,7 +381,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     marginBottom: 12,
     borderWidth: 1,
     borderColor: colors.cardBorder,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
@@ -395,7 +395,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#EDE9FE',
+    backgroundColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -488,7 +488,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   jobChipText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#1E40AF',
+    color: colors.primaryDark,
     flexShrink: 1,
   },
   chipRemoveBtn: {

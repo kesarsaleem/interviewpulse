@@ -178,7 +178,7 @@ export default function AdminReportsScreen() {
         <View style={styles.funnelDivider} />
 
         <View style={styles.funnelStep}>
-          <View style={[styles.funnelIconCircle, { backgroundColor: '#F5F3FF' }]}>
+          <View style={[styles.funnelIconCircle, { backgroundColor: colors.primaryLight }]}>
             <Ionicons name="chatbubbles" size={20} color="#7C3AED" />
           </View>
           <View style={styles.funnelInfo}>
@@ -191,7 +191,7 @@ export default function AdminReportsScreen() {
         <View style={styles.funnelDivider} />
 
         <View style={styles.funnelStep}>
-          <View style={[styles.funnelIconCircle, { backgroundColor: '#DCFCE7' }]}>
+          <View style={[styles.funnelIconCircle, { backgroundColor: colors.successLight }]}>
             <Ionicons name="trophy" size={20} color="#16A34A" />
           </View>
           <View style={styles.funnelInfo}>
@@ -204,7 +204,7 @@ export default function AdminReportsScreen() {
         <View style={styles.funnelDivider} />
 
         <View style={styles.funnelStep}>
-          <View style={[styles.funnelIconCircle, { backgroundColor: '#FEE2E2' }]}>
+          <View style={[styles.funnelIconCircle, { backgroundColor: colors.dangerLight }]}>
             <Ionicons name="close-circle" size={20} color="#DC2626" />
           </View>
           <View style={styles.funnelInfo}>
@@ -339,8 +339,8 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   overallRatingRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: colors.divider },
   overallRatingLabel: { fontSize: 14, fontWeight: '700', color: colors.text },
   overallRatingSub: { fontSize: 11, color: colors.secondaryText, marginTop: 1 },
-  ratingBadge: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#FEF3C7', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 10 },
-  ratingBadgeText: { fontSize: 14, fontWeight: '800', color: '#B45309' },
+  ratingBadge: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: colors.warningLight, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 10 },
+  ratingBadgeText: { fontSize: 14, fontWeight: '800', color: colors.warning },
   verdictBarSection: { marginTop: 14, gap: 10 },
   verdictRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   verdictLabel: { width: 75, fontSize: 12, fontWeight: '600', color: colors.secondaryText },
@@ -354,7 +354,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   jobCountText: { fontSize: 11, fontWeight: '700', color: colors.primary },
   conversionMetricsRow: { flexDirection: 'row', gap: 10, marginTop: 4 },
   conversionBox: { flex: 1, backgroundColor: colors.background, borderRadius: 8, padding: 10, alignItems: 'center', borderWidth: 1, borderColor: colors.divider },
-  conversionNum: { fontSize: 18, fontWeight: '800', color: '#16A34A' },
+  conversionNum: { fontSize: 18, fontWeight: '800', color: colors.success },
   conversionLabel: { fontSize: 11, color: colors.secondaryText, marginTop: 2, textAlign: 'center' },
   statusGrid: { flexDirection: 'row', gap: 10 },
   statusCard: { flex: 1, backgroundColor: colors.background, borderRadius: 10, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: colors.divider },

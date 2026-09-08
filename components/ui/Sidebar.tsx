@@ -20,8 +20,6 @@ supabase
 import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../context/ThemeContext";
 import { ThemeColors } from "../../theme/colors";
-import { ROUTES } from "../../constants/routes";
-
 
 export default function Sidebar({
 closeDrawer
@@ -168,7 +166,6 @@ const logout = () => {
             closeDrawer();
           }
 
-          router.replace(ROUTES.login);
         },
       },
     ]

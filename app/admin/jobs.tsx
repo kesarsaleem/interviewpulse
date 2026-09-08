@@ -104,11 +104,11 @@ export default function JobsScreen() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'open':
-        return { bg: '#DCFCE7', text: '#16A34A', label: 'Open' };
+        return { bg: colors.successLight, text: colors.success, label: 'Open' };
       case 'closed':
         return { bg: colors.divider, text: colors.secondaryText, label: 'Closed' };
       case 'archived':
-        return { bg: '#FEE2E2', text: '#DC2626', label: 'Archived' };
+        return { bg: colors.dangerLight, text: colors.danger, label: 'Archived' };
       default:
         return { bg: colors.divider, text: colors.secondaryText, label: status || 'Unknown' };
     }
@@ -439,7 +439,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     marginBottom: 14,
     borderWidth: 1,
     borderColor: colors.cardBorder,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 3,

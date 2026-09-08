@@ -684,14 +684,14 @@ export default function CandidateDetail() {
             </Text>
           </View>
           {decisionState === 'hired' ? (
-            <View style={[styles.decisionBadge, { backgroundColor: '#DCFCE7' }]}>
-              <Ionicons name="checkmark-circle" size={14} color="#16A34A" />
-              <Text style={[styles.decisionBadgeText, { color: '#16A34A' }]}>HIRED</Text>
+            <View style={[styles.decisionBadge, { backgroundColor: colors.successLight }]}>
+              <Ionicons name="checkmark-circle" size={14} color={colors.success} />
+              <Text style={[styles.decisionBadgeText, { color: colors.success }]}>HIRED</Text>
             </View>
           ) : decisionState === 'rejected' ? (
-            <View style={[styles.decisionBadge, { backgroundColor: '#FEE2E2' }]}>
-              <Ionicons name="close-circle" size={14} color="#DC2626" />
-              <Text style={[styles.decisionBadgeText, { color: '#DC2626' }]}>REJECTED</Text>
+            <View style={[styles.decisionBadge, { backgroundColor: colors.dangerLight }]}>
+              <Ionicons name="close-circle" size={14} color={colors.danger} />
+              <Text style={[styles.decisionBadgeText, { color: colors.danger }]}>REJECTED</Text>
             </View>
           ) : (
             <View style={[styles.decisionBadge, { backgroundColor: colors.primaryLight }]}>
@@ -1020,14 +1020,14 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   navActionsRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   navEditBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.primaryLight, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 8, borderWidth: 1, borderColor: colors.inputBorder },
   navEditText: { fontSize: 13, fontWeight: '700', color: colors.primary },
-  navDeleteBtn: { width: 34, height: 34, borderRadius: 8, backgroundColor: '#FEE2E2', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#FECACA' },
+  navDeleteBtn: { width: 34, height: 34, borderRadius: 8, backgroundColor: colors.dangerLight, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.danger },
   fbHeaderRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  fbAvgBadge: { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: '#FEF3C7', paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6 },
-  fbAvgText: { fontSize: 11, fontWeight: '800', color: '#B45309' },
-  heroCard: { backgroundColor: colors.card, borderRadius: 16, padding: 18, marginBottom: 16, borderWidth: 1, borderColor: colors.cardBorder, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 3, elevation: 2 },
+  fbAvgBadge: { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: colors.warningLight, paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6 },
+  fbAvgText: { fontSize: 11, fontWeight: '800', color: colors.warning },
+  heroCard: { backgroundColor: colors.card, borderRadius: 16, padding: 18, marginBottom: 16, borderWidth: 1, borderColor: colors.cardBorder, shadowColor: colors.text, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 3, elevation: 2 },
   heroTop: { flexDirection: 'row', alignItems: 'center' },
   avatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: colors.primaryLight, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
-  avatarText: { fontSize: 20, fontWeight: '800', color: '#1E40AF' },
+  avatarText: { fontSize: 20, fontWeight: '800', color: colors.primaryDark },
   heroInfo: { flex: 1, marginRight: 8 },
   candidateName: { fontSize: 18, fontWeight: '800', color: colors.text },
   candidateRole: { fontSize: 13, color: colors.secondaryText, marginTop: 1 },
@@ -1051,14 +1051,14 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   advanceBtn: { backgroundColor: colors.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 8 },
   advanceBtnText: { fontSize: 14, fontWeight: '700', color: '#FFFFFF' },
   finalDecisionRow: { flexDirection: 'row', gap: 10 },
-  hireBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, backgroundColor: '#DCFCE7', paddingVertical: 10, borderRadius: 8, borderWidth: 1, borderColor: '#BBF7D0' },
-  hireBtnText: { fontSize: 13, fontWeight: '700', color: '#15803D' },
-  rejectBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, backgroundColor: '#FEE2E2', paddingVertical: 10, borderRadius: 8, borderWidth: 1, borderColor: '#FECACA' },
-  rejectBtnText: { fontSize: 13, fontWeight: '700', color: '#DC2626' },
+  hireBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, backgroundColor: colors.successLight, paddingVertical: 10, borderRadius: 8, borderWidth: 1, borderColor: colors.success },
+  hireBtnText: { fontSize: 13, fontWeight: '700', color: colors.success },
+  rejectBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, backgroundColor: colors.dangerLight, paddingVertical: 10, borderRadius: 8, borderWidth: 1, borderColor: colors.danger },
+  rejectBtnText: { fontSize: 13, fontWeight: '700', color: colors.danger },
   actionBtnActive: { opacity: 0.6 },
   tabsRow: { flexDirection: 'row', backgroundColor: colors.cardBorder, borderRadius: 10, padding: 3, marginBottom: 14 },
   tabItem: { flex: 1, paddingVertical: 8, alignItems: 'center', borderRadius: 8 },
-  tabItemActive: { backgroundColor: colors.card, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 2, elevation: 2 },
+  tabItemActive: { backgroundColor: colors.card, shadowColor: colors.text, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 2, elevation: 2 },
   tabItemText: { fontSize: 11, fontWeight: '600', color: colors.secondaryText },
   tabItemTextActive: { color: colors.primary, fontWeight: '700' },
   tabContent: { gap: 12 },

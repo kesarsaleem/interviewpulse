@@ -256,7 +256,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     marginBottom: 6,
   },
   required: {
-    color: '#DC2626',
+    color: colors.danger,
   },
   input: {
     backgroundColor: colors.background,
@@ -281,7 +281,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   infoBannerText: {
     flex: 1,
     fontSize: 12,
-    color: '#1E40AF',
+    color: colors.primaryDark,
     lineHeight: 17,
   },
   submitBtn: {

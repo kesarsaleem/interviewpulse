@@ -169,7 +169,6 @@ export default function InterviewerProfileScreen() {
           onPress: async () => {
             try {
               await supabase.auth.signOut();
-              router.replace('/(auth)/login');
             } catch (err: any) {
               Alert.alert('Sign Out Error', err.message || 'Failed to sign out.');
             }
@@ -253,8 +252,8 @@ export default function InterviewerProfileScreen() {
           </View>
 
           <View style={styles.statBox}>
-            <View style={[styles.statIconWrap, { backgroundColor: '#DCFCE7' }]}>
-              <Ionicons name="checkmark-done-outline" size={20} color="#16A34A" />
+            <View style={[styles.statIconWrap, { backgroundColor: colors.successLight }]}>
+              <Ionicons name="checkmark-done-outline" size={20} color={colors.success} />
             </View>
             <Text style={styles.statValue}>{feedbackSubmitted}</Text>
             <Text style={styles.statLabel}>Submitted</Text>
@@ -472,7 +471,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     marginBottom: 20,
     borderWidth: 1,
     borderColor: colors.cardBorder,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
@@ -669,7 +668,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   resolveBtn: {
     alignSelf: 'flex-start',
-    backgroundColor: '#FEF3C7',
+    backgroundColor: colors.warningLight,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -684,17 +683,17 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    backgroundColor: '#FEE2E2',
+    backgroundColor: colors.dangerLight,
     paddingVertical: 10,
     paddingHorizontal: 14,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: colors.danger,
   },
   retryBtnText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#DC2626',
+    color: colors.danger,
   },
   rulesCard: {
     backgroundColor: colors.card,
@@ -766,13 +765,13 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     gap: 8,
     backgroundColor: colors.dangerLight,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: colors.danger,
     paddingVertical: 12,
     borderRadius: 10,
   },
   logoutButtonText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#DC2626',
+    color: colors.danger,
   },
 });

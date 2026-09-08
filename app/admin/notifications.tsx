@@ -185,14 +185,14 @@ export default function AdminNotificationsScreen() {
         return {
           icon: "checkmark-circle",
           color: "#10B981",
-          bgColor: "#ECFDF5",
+          bgColor: colors.successLight,
           label: "Candidate Hired",
         };
       case "marked_reject":
         return {
           icon: "close-circle",
           color: "#EF4444",
-          bgColor: "#FEF2F2",
+          bgColor: colors.dangerLight,
           label: "Candidate Rejected",
         };
       case "stage_moved":
@@ -207,7 +207,7 @@ export default function AdminNotificationsScreen() {
         return {
           icon: "person-add",
           color: "#8B5CF6",
-          bgColor: "#F5F3FF",
+          bgColor: colors.primaryLight,
           label: "Candidate Added",
         };
       default:
@@ -361,7 +361,7 @@ export default function AdminNotificationsScreen() {
                   {item.metadata?.to_stage && (
                     <Text style={styles.stageMoveNote}>
                       Advanced to:{" "}
-                      <Text style={{ fontWeight: "700", color: "#1E293B" }}>
+                      <Text style={{ fontWeight: "700", color: colors.text }}>
                         {item.metadata.to_stage}
                       </Text>
                     </Text>
@@ -464,7 +464,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     marginBottom: 10,
     borderWidth: 1,
     borderColor: colors.cardBorder,
-    shadowColor: "#000",
+    shadowColor: colors.text,
     shadowOpacity: 0.03,
     shadowRadius: 6,
     elevation: 1,

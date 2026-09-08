@@ -562,7 +562,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderRadius: 22,
     backgroundColor: colors.card,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.06,
     shadowRadius: 10,
@@ -585,7 +585,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     paddingHorizontal: 18,
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
@@ -650,7 +650,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 14,
     gap: 8,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 6,
@@ -907,7 +907,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   submittedPillText: {
     fontSize: 11,
-    color: '#15803D',
+    color: colors.success,
     fontWeight: '700',
   },
   pendingPill: {
@@ -915,7 +915,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   pendingPillText: {
     fontSize: 11,
-    color: '#B45309',
+    color: colors.warning,
     fontWeight: '700',
   },
   cardActionsRow: {
@@ -948,7 +948,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   viewFeedbackBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1E293B',
+    backgroundColor: colors.card,
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 12,
@@ -991,7 +991,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderTopRightRadius: 28,
     padding: 22,
     paddingBottom: 40,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.1,
     shadowRadius: 12,

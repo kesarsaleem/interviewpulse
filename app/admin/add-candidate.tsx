@@ -670,7 +670,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderStyle: 'dashed',
-    borderColor: '#93C5FD',
+    borderColor: colors.primary,
     backgroundColor: colors.primaryLight,
   },
   uploadBtnText: {
@@ -754,7 +754,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     marginBottom: 6,
   },
   required: {
-    color: '#DC2626',
+    color: colors.danger,
   },
   input: {
     backgroundColor: colors.background,
@@ -806,7 +806,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderColor: colors.cardBorder,
   },
   stageChipActive: {
-    backgroundColor: '#F0FDF4',
+    backgroundColor: colors.successLight,
     borderColor: '#16A34A',
   },
   stageChipText: {
@@ -815,7 +815,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     fontWeight: '600',
   },
   stageChipTextActive: {
-    color: '#16A34A',
+    color: colors.success,
   },
   noStagesNote: {
     fontSize: 13,
@@ -870,7 +870,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   clearScheduleText: {
     fontSize: 12,
-    color: '#DC2626',
+    color: colors.danger,
     fontWeight: '600',
   },
   submitBtn: {

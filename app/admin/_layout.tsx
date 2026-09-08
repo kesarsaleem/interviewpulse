@@ -360,7 +360,7 @@ backgroundColor:colors.card,
 zIndex:20,
 
 
-shadowColor:"#000",
+shadowColor: colors.text,
 
 shadowOpacity:0.15,
 
@@ -392,7 +392,7 @@ right:0,
 
 bottom:0,
 
-backgroundColor:"rgba(15,23,42,0.45)",
+backgroundColor: colors.overlay,
 
 zIndex:10,
 

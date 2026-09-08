@@ -427,9 +427,9 @@ export default function FeedbackFormScreen() {
 
           <View style={styles.verdictRow}>
             {[
-              { label: 'Strong Yes', value: 'strong_yes', emoji: '😊', color: '#16A34A', bg: '#F0FDF4' },
-              { label: 'Maybe', value: 'maybe', emoji: '😐', color: '#D97706', bg: '#FFFBEB' },
-              { label: 'No', value: 'no', emoji: '☹️', color: '#DC2626', bg: '#FEF2F2' },
+              { label: 'Strong Yes', value: 'strong_yes', emoji: '😊', color: '#16A34A', bg: colors.successLight },
+              { label: 'Maybe', value: 'maybe', emoji: '😐', color: '#D97706', bg: colors.warningLight },
+              { label: 'No', value: 'no', emoji: '☹️', color: '#DC2626', bg: colors.dangerLight },
             ].map((item) => {
               const selected = verdict === item.value;
               return (
@@ -794,14 +794,14 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: colors.dangerLight,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: colors.danger,
     borderRadius: 12,
     padding: 12,
     marginBottom: 14,
     alignItems: 'center',
   },
   lockNoticeTitle: {
-    color: '#DC2626',
+    color: colors.danger,
     fontWeight: '800',
     fontSize: 13,
   },
@@ -827,7 +827,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     fontSize: 13,
   },
   editWindowText: {
-    color: '#1E40AF',
+    color: colors.primaryDark,
     fontSize: 12,
     marginTop: 2,
     lineHeight: 16,
@@ -1039,12 +1039,12 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     fontWeight: '800',
   },
   activeYesBtn: {
-    backgroundColor: '#F0FDF4',
+    backgroundColor: colors.successLight,
     borderColor: '#16A34A',
     borderWidth: 2,
   },
   activeYesBtnText: {
-    color: '#16A34A',
+    color: colors.success,
     fontWeight: '800',
   },
   activeNoBtn: {
@@ -1053,7 +1053,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderWidth: 2,
   },
   activeNoBtnText: {
-    color: '#DC2626',
+    color: colors.danger,
     fontWeight: '800',
   },
   submitBtn: {

@@ -289,7 +289,7 @@ export default function FeedbackGiven() {
           </View>
 
           <View style={styles.metricCard}>
-            <View style={[styles.metricIconWrap, { backgroundColor: '#ECFDF5' }]}>
+            <View style={[styles.metricIconWrap, { backgroundColor: colors.successLight }]}>
               <Ionicons name="checkmark-circle-outline" size={18} color="#10B981" />
             </View>
             <Text style={[styles.metricNumber, { color: '#059669' }]}>{strongYesCount}</Text>
@@ -297,7 +297,7 @@ export default function FeedbackGiven() {
           </View>
 
           <View style={styles.metricCard}>
-            <View style={[styles.metricIconWrap, { backgroundColor: '#FFFBEB' }]}>
+            <View style={[styles.metricIconWrap, { backgroundColor: colors.warningLight }]}>
               <Ionicons name="help-circle-outline" size={18} color="#F59E0B" />
             </View>
             <Text style={[styles.metricNumber, { color: '#D97706' }]}>{maybeCount}</Text>
@@ -305,7 +305,7 @@ export default function FeedbackGiven() {
           </View>
 
           <View style={styles.metricCard}>
-            <View style={[styles.metricIconWrap, { backgroundColor: '#F5F3FF' }]}>
+            <View style={[styles.metricIconWrap, { backgroundColor: colors.primaryLight }]}>
               <Ionicons name="star-outline" size={18} color="#8B5CF6" />
             </View>
             <Text style={[styles.metricNumber, { color: '#7C3AED' }]}>{avgOverallScore}</Text>
@@ -407,6 +407,9 @@ export default function FeedbackGiven() {
                 style={({ pressed }) => [styles.feedbackCard, pressed && styles.cardPressed]}
                 onPress={() => openFeedbackDetails(item)}
               >
+                <View style={[styles.feedbackAccent, {
+                  backgroundColor: isStrong ? colors.success : isMaybe ? colors.warning : colors.danger,
+                }]} />
                 {/* HORIZONTAL THREE-COLUMN LAYOUT */}
                 <View style={styles.horizontalRow}>
                   {/* LEFT: CANDIDATE AVATAR */}
@@ -498,7 +501,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderRadius: 22,
     backgroundColor: colors.card,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.06,
     shadowRadius: 10,
@@ -521,7 +524,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     paddingHorizontal: 18,
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
@@ -580,7 +583,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 14,
     gap: 8,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 6,
@@ -743,7 +746,8 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   feedbackCard: {
     backgroundColor: colors.card,
     borderRadius: 22,
-    padding: 16,
+    padding: 14,
+    paddingLeft: 16,
     marginBottom: 12,
     borderWidth: 1,
     borderColor: colors.divider,
@@ -752,6 +756,14 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
+    overflow: 'hidden',
+  },
+  feedbackAccent: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 4,
   },
   cardPressed: {
     backgroundColor: colors.background,
@@ -832,6 +844,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   rightVerdictCol: {
     alignItems: 'flex-end',
     justifyContent: 'center',
+    minWidth: 84,
     gap: 8,
   },
   verdictBadge: {
@@ -842,23 +855,23 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderRadius: 10,
   },
   verdictStrongYes: {
-    backgroundColor: '#DCFCE7',
+    backgroundColor: colors.successLight,
   },
   verdictMaybe: {
-    backgroundColor: '#FEF3C7',
+    backgroundColor: colors.warningLight,
   },
   verdictNo: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: colors.dangerLight,
   },
   verdictText: {
     fontSize: 11,
     fontWeight: '800',
   },
   textStrongYes: {
-    color: '#15803D',
+    color: colors.success,
   },
   textMaybe: {
-    color: '#B45309',
+    color: colors.warning,
   },
   textNo: {
     color: '#B91C1C',

@@ -231,7 +231,7 @@ export default function InterviewerHome() {
           </View>
 
           <View style={styles.statCard}>
-            <View style={[styles.statIconBadge, { backgroundColor: '#ECFDF5' }]}>
+            <View style={[styles.statIconBadge, { backgroundColor: colors.successLight }]}>
               <Ionicons name="checkmark-circle" size={20} color="#10B981" />
             </View>
             <Text style={[styles.statNumber, { color: '#059669' }]}>{completed}</Text>
@@ -240,7 +240,7 @@ export default function InterviewerHome() {
           </View>
 
           <View style={styles.statCard}>
-            <View style={[styles.statIconBadge, { backgroundColor: '#FFFBEB' }]}>
+            <View style={[styles.statIconBadge, { backgroundColor: colors.warningLight }]}>
               <Ionicons name="hourglass" size={20} color="#F59E0B" />
             </View>
             <Text style={[styles.statNumber, { color: '#D97706' }]}>{pending}</Text>
@@ -249,7 +249,7 @@ export default function InterviewerHome() {
           </View>
 
           <View style={styles.statCard}>
-            <View style={[styles.statIconBadge, { backgroundColor: '#F5F3FF' }]}>
+            <View style={[styles.statIconBadge, { backgroundColor: colors.primaryLight }]}>
               <Ionicons name="star" size={20} color="#8B5CF6" />
             </View>
             <Text style={[styles.statNumber, { color: '#7C3AED' }]}>{avgScore}</Text>
@@ -276,8 +276,8 @@ export default function InterviewerHome() {
               style={styles.quickActionBtn}
               onPress={() => router.push('/interviewer/candidates')}
             >
-              <View style={[styles.quickActionIcon, { backgroundColor: '#DCFCE7' }]}>
-                <Ionicons name="people" size={20} color="#16A34A" />
+              <View style={[styles.quickActionIcon, { backgroundColor: colors.successLight }]}>
+                <Ionicons name="people" size={20} color={colors.success} />
               </View>
               <Text style={styles.quickActionLabel}>Candidates</Text>
             </Pressable>
@@ -286,8 +286,8 @@ export default function InterviewerHome() {
               style={styles.quickActionBtn}
               onPress={() => router.push('/interviewer/FeedbackGiven')}
             >
-              <View style={[styles.quickActionIcon, { backgroundColor: '#FEE2E2' }]}>
-                <Ionicons name="newspaper" size={20} color="#DC2626" />
+              <View style={[styles.quickActionIcon, { backgroundColor: colors.dangerLight }]}>
+                <Ionicons name="newspaper" size={20} color={colors.danger} />
               </View>
               <Text style={styles.quickActionLabel}>Feedback</Text>
             </Pressable>
@@ -296,7 +296,7 @@ export default function InterviewerHome() {
               style={styles.quickActionBtn}
               onPress={() => router.push('/interviewer/settings')}
             >
-              <View style={[styles.quickActionIcon, { backgroundColor: '#F3E8FF' }]}>
+              <View style={[styles.quickActionIcon, { backgroundColor: colors.primaryLight }]}>
                 <Ionicons name="settings" size={20} color="#9333EA" />
               </View>
               <Text style={styles.quickActionLabel}>Settings</Text>
@@ -339,6 +339,7 @@ export default function InterviewerHome() {
                 style={({ pressed }) => [styles.interviewCard, pressed && styles.cardPressed]}
                 onPress={() => router.push('/interviewer/interviews')}
               >
+                <View style={styles.cardAccent} />
                 {/* CANDIDATE AVATAR */}
                 <View style={styles.cardAvatar}>
                   <Text style={styles.cardAvatarText}>{candidateInitial}</Text>
@@ -350,7 +351,7 @@ export default function InterviewerHome() {
                     {item.full_name}
                   </Text>
                   
-                  <Text style={styles.candidateRole}>
+                  <Text style={styles.candidateRole} numberOfLines={1}>
                     {item.current_role || 'Candidate'}
                     {item.current_company && ` • ${item.current_company}`}
                     </Text>
@@ -374,6 +375,7 @@ export default function InterviewerHome() {
 
                 {/* SCHEDULE & ACTION */}
                 <View style={styles.cardRightCol}>
+                  <Text style={styles.dateLabel}>INTERVIEW</Text>
                   <View style={styles.timeBadge}>
                     <Ionicons name="time-outline" size={12} color={colors.primary} />
                     <Text style={styles.timeText}>{item.interview_time || '10:00 AM'}</Text>
@@ -390,7 +392,7 @@ export default function InterviewerHome() {
         <View style={styles.bottomRow}>
           <View style={styles.bottomCard}>
             <View style={styles.bottomCardHeader}>
-              <View style={[styles.bottomIconWrap, { backgroundColor: '#ECFDF5' }]}>
+              <View style={[styles.bottomIconWrap, { backgroundColor: colors.successLight }]}>
                 <Ionicons name="shield-checkmark" size={18} color="#10B981" />
               </View>
               <Text style={styles.bottomCardTitle}>Recent Feedback</Text>
@@ -496,7 +498,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderRadius: 20,
     backgroundColor: colors.card,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 10,
@@ -519,7 +521,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     paddingHorizontal: 20,
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
@@ -560,7 +562,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#93C5FD',
+    borderColor: colors.primary,
   },
   avatarText: {
     color: '#FFFFFF',
@@ -764,7 +766,8 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   interviewCard: {
     backgroundColor: colors.card,
     borderRadius: 22,
-    padding: 16,
+    padding: 14,
+    paddingLeft: 16,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12,
@@ -775,6 +778,15 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
+    overflow: 'hidden',
+  },
+  cardAccent: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 4,
+    backgroundColor: colors.primary,
   },
   cardPressed: {
     opacity: 0.92,
@@ -850,13 +862,21 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   cardRightCol: {
     alignItems: 'flex-end',
     justifyContent: 'center',
+    minWidth: 78,
+  },
+  dateLabel: {
+    fontSize: 9,
+    fontWeight: '800',
+    letterSpacing: 0.8,
+    color: colors.mutedText,
+    marginBottom: 4,
   },
   timeBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.primaryLight,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 9,
+    paddingVertical: 5,
     borderRadius: 8,
     gap: 4,
     marginBottom: 3,
@@ -870,6 +890,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     fontSize: 11,
     color: colors.mutedText,
     fontWeight: '500',
+    textAlign: 'right',
   },
   bottomRow: {
     flexDirection: 'row',
@@ -990,7 +1011,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   syncCardTitle: {
     fontSize: 14,
     fontWeight: '800',
-    color: '#1E3A8A',
+    color: colors.primaryDark,
     marginBottom: 2,
   },
   syncCardDesc: {

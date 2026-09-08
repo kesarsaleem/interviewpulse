@@ -467,14 +467,14 @@ export default function AdminCandidatesScreen() {
                   </View>
 
                   {decision === 'hired' ? (
-                    <View style={[styles.stageBadge, { backgroundColor: '#DCFCE7', borderColor: '#BBF7D0' }]}>
-                      <Ionicons name="checkmark-circle" size={11} color="#16A34A" />
-                      <Text style={[styles.stageBadgeText, { color: '#16A34A' }]}>HIRED</Text>
+                    <View style={[styles.stageBadge, { backgroundColor: colors.successLight, borderColor: colors.success }]}>
+                      <Ionicons name="checkmark-circle" size={11} color={colors.success} />
+                      <Text style={[styles.stageBadgeText, { color: colors.success }]}>HIRED</Text>
                     </View>
                   ) : decision === 'rejected' ? (
-                    <View style={[styles.stageBadge, { backgroundColor: '#FEE2E2', borderColor: '#FECACA' }]}>
-                      <Ionicons name="close-circle" size={11} color="#DC2626" />
-                      <Text style={[styles.stageBadgeText, { color: '#DC2626' }]}>REJECTED</Text>
+                    <View style={[styles.stageBadge, { backgroundColor: colors.dangerLight, borderColor: colors.danger }]}>
+                      <Ionicons name="close-circle" size={11} color={colors.danger} />
+                      <Text style={[styles.stageBadgeText, { color: colors.danger }]}>REJECTED</Text>
                     </View>
                   ) : (
                     <View style={styles.stageBadge}>
@@ -683,7 +683,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   stagePillActive: {
     backgroundColor: colors.primaryLight,
-    borderColor: '#93C5FD',
+    borderColor: colors.primary,
   },
   stagePillText: {
     fontSize: 11,
@@ -724,7 +724,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     marginBottom: 12,
     borderWidth: 1,
     borderColor: colors.cardBorder,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
@@ -746,7 +746,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   avatarText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#1E40AF',
+    color: colors.primaryDark,
   },
   cardInfo: {
     flex: 1,
@@ -819,7 +819,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 6,
-    backgroundColor: '#FEE2E2',
+    backgroundColor: colors.dangerLight,
     alignItems: 'center',
     justifyContent: 'center',
   },

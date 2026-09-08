@@ -11,13 +11,11 @@ import {
   TextInput,
   RefreshControl,
 } from 'react-native';
-import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { supabase } from '../../lib/supabase/client';
 import { useAuth } from '../../hooks/useAuth';
-import { ROUTES } from '../../constants/routes';
 import { useTheme } from '../../context/ThemeContext';
 import { ThemeColors } from '../../theme/colors';
 import { getDb } from '../../lib/sqlite/schema';
@@ -188,7 +186,6 @@ export default function InterviewerSettingsScreen() {
         style: 'destructive',
         onPress: async () => {
           await signOut();
-          router.replace(ROUTES.login);
         },
       },
     ]);
@@ -363,7 +360,7 @@ export default function InterviewerSettingsScreen() {
             style={({ pressed }) => [styles.actionRow, pressed && { backgroundColor: colors.divider }]}
             onPress={() => setPasswordModal(true)}
           >
-            <View style={[styles.actionIconWrap, { backgroundColor: isDark ? 'rgba(16, 185, 129, 0.15)' : '#ECFDF5' }]}>
+            <View style={[styles.actionIconWrap, { backgroundColor: colors.successLight }]}>
               <Ionicons name="key-outline" size={18} color="#10B981" />
             </View>
             <View style={styles.actionTextWrap}>
@@ -377,10 +374,10 @@ export default function InterviewerSettingsScreen() {
 
           {/* Action: Sign Out */}
           <Pressable
-            style={({ pressed }) => [styles.actionRow, pressed && { backgroundColor: isDark ? 'rgba(239, 68, 68, 0.15)' : '#FEF2F2' }]}
+            style={({ pressed }) => [styles.actionRow, pressed && { backgroundColor: colors.dangerLight }]}
             onPress={handleSignOut}
           >
-            <View style={[styles.actionIconWrap, { backgroundColor: isDark ? 'rgba(239, 68, 68, 0.15)' : '#FEF2F2' }]}>
+            <View style={[styles.actionIconWrap, { backgroundColor: colors.dangerLight }]}>
               <Ionicons name="log-out-outline" size={18} color="#EF4444" />
             </View>
             <View style={styles.actionTextWrap}>
@@ -842,7 +839,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderRadius: 14,
     padding: 16,
     borderWidth: 1,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.04,
     shadowRadius: 3,
@@ -1152,7 +1149,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     borderWidth: 1,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 10,

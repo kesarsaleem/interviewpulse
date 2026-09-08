@@ -16,7 +16,6 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { supabase } from "../../lib/supabase/client";
 import { useAuth } from "../../hooks/useAuth";
-import { ROUTES } from "../../constants/routes";
 
 export default function AdminProfileScreen() {
   const { colors } = useTheme();
@@ -141,7 +140,6 @@ export default function AdminProfileScreen() {
         style: "destructive",
         onPress: async () => {
           await signOut();
-          router.replace(ROUTES.login);
         },
       },
     ]);
@@ -326,7 +324,7 @@ export default function AdminProfileScreen() {
             onPress={() => router.push("/admin/notifications")}
           >
             <View style={styles.navRowLeft}>
-              <View style={[styles.navIconBox, { backgroundColor: "#F5F3FF" }]}>
+              <View style={[styles.navIconBox, { backgroundColor: colors.primaryLight }]}>
                 <Ionicons name="notifications" size={18} color="#8B5CF6" />
               </View>
               <Text style={styles.navRowText}>Activity & Notifications</Text>
@@ -395,7 +393,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.cardBorder,
     marginBottom: 24,
-    shadowColor: "#000",
+    shadowColor: colors.text,
     shadowOpacity: 0.04,
     shadowRadius: 8,
     elevation: 2,
@@ -586,7 +584,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   navRowText: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#1E293B",
+    color: colors.text,
   },
   separator: {
     height: 1,
@@ -599,7 +597,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     justifyContent: "center",
     backgroundColor: colors.dangerLight,
     borderWidth: 1,
-    borderColor: "#FECACA",
+    borderColor: colors.danger,
     height: 50,
     borderRadius: 12,
     marginTop: 4,

@@ -29,8 +29,6 @@ import {
 } from "../../hooks/useAuth";
 import { useTheme } from "../../context/ThemeContext";
 
-import { ROUTES } from "../../constants/routes";
-
 import {
   supabase
 } from "../../lib/supabase/client";
@@ -49,6 +47,7 @@ export default function InterviewerDrawer({
 
   const { user } = useAuth();
   const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   const segments = useSegments();
 
@@ -115,8 +114,6 @@ export default function InterviewerDrawer({
             await supabase.auth.signOut();
 
             onClose();
-
-            router.replace(ROUTES.login);
 
           }
         }
@@ -263,6 +260,7 @@ export default function InterviewerDrawer({
 
 
           {/* DASHBOARD */}
+          <Text style={styles.sectionLabel}>WORKSPACE</Text>
 
           <Menu
             icon="home-outline"
@@ -429,7 +427,7 @@ export default function InterviewerDrawer({
           {/* DIVIDER */}
 
           <View style={styles.line} />
-
+          <Text style={styles.sectionLabel}>ACCOUNT</Text>
 
           {/* LOGOUT */}
 
@@ -441,7 +439,7 @@ export default function InterviewerDrawer({
             <Ionicons
               name="log-out-outline"
               size={22}
-              color="#EF4444"
+              color={colors.danger}
             />
 
             <Text style={styles.logoutText}>
@@ -474,6 +472,7 @@ function Menu({
   onPress
 }: any) {
   const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   return (
 
@@ -500,9 +499,7 @@ function Menu({
           size={21}
 
           color={
-            active
-              ? "#FFFFFF"
-              : colors.secondaryText
+            active ? colors.primary : colors.secondaryText
           }
 
         />
@@ -553,7 +550,7 @@ function Menu({
    STYLES
 ========================= */
 
-const styles =
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
   StyleSheet.create({
 
     /* OVERLAY */
@@ -562,8 +559,7 @@ const styles =
 
       flex: 1,
 
-      backgroundColor:
-        "rgba(0,0,0,0.3)",
+      backgroundColor: colors.overlay,
 
     },
 
@@ -572,15 +568,23 @@ const styles =
 
     drawer: {
 
-      width: "75%",
+      width: "80%",
 
       height: "100%",
 
-      backgroundColor: "#05245C",
+      backgroundColor: colors.card,
 
-      paddingTop: 35,
+      paddingTop: 52,
 
-      paddingHorizontal: 15,
+      paddingHorizontal: 18,
+
+      borderTopRightRadius: 28,
+      borderBottomRightRadius: 28,
+      shadowColor: colors.text,
+      shadowOffset: { width: 8, height: 0 },
+      shadowOpacity: 0.12,
+      shadowRadius: 18,
+      elevation: 12,
 
     },
 
@@ -593,7 +597,11 @@ const styles =
 
       alignItems: "center",
 
-      marginBottom: 25,
+      marginBottom: 22,
+      paddingHorizontal: 10,
+      paddingVertical: 10,
+      borderRadius: 18,
+      backgroundColor: colors.primaryLight,
 
     },
 
@@ -611,13 +619,14 @@ const styles =
 
     logoText: {
 
-      color: "#FFFFFF",
+      color: colors.text,
 
       fontSize: 20,
 
       fontWeight: "900",
 
       marginLeft: 10,
+      letterSpacing: -0.4,
 
     },
 
@@ -631,12 +640,16 @@ const styles =
       alignItems: "center",
 
       paddingBottom: 20,
+      paddingTop: 16,
+      paddingHorizontal: 12,
+      borderRadius: 18,
+      backgroundColor: colors.surface,
 
       borderBottomWidth: 1,
 
-      borderColor: "#16366F",
+      borderColor: colors.border,
 
-      marginBottom: 15,
+      marginBottom: 20,
 
     },
 
@@ -649,7 +662,9 @@ const styles =
 
       borderRadius: 23,
 
-      backgroundColor: "#2563EB",
+      backgroundColor: colors.primary,
+      borderWidth: 3,
+      borderColor: colors.primaryLight,
 
       justifyContent: "center",
 
@@ -662,7 +677,7 @@ const styles =
 
     avatarText: {
 
-      color: "#FFFFFF",
+      color: colors.surface,
 
       fontWeight: "900",
 
@@ -673,7 +688,7 @@ const styles =
 
     name: {
 
-      color: "#FFFFFF",
+      color: colors.text,
 
       fontSize: 15,
 
@@ -684,7 +699,7 @@ const styles =
 
     email: {
 
-      color: "#CBD5E1",
+      color: colors.secondaryText,
 
       fontSize: 11,
 
@@ -695,7 +710,7 @@ const styles =
 
     roleBadge: {
 
-      backgroundColor: "#2563EB",
+      backgroundColor: colors.primaryLight,
 
       paddingHorizontal: 8,
 
@@ -712,7 +727,7 @@ const styles =
 
     roleText: {
 
-      color: "#FFFFFF",
+      color: colors.primary,
 
       fontSize: 10,
 
@@ -725,11 +740,11 @@ const styles =
 
     menu: {
 
-      height: 45,
+      minHeight: 48,
 
-      borderRadius: 12,
+      borderRadius: 15,
 
-      paddingHorizontal: 12,
+      paddingHorizontal: 14,
 
       flexDirection: "row",
 
@@ -738,7 +753,7 @@ const styles =
       justifyContent:
         "space-between",
 
-      marginBottom: 5,
+      marginBottom: 7,
 
     },
 
@@ -747,7 +762,9 @@ const styles =
 
     activeMenu: {
 
-      backgroundColor: "#2563EB",
+      backgroundColor: colors.primaryLight,
+      borderWidth: 1,
+      borderColor: colors.primaryLight,
 
     },
 
@@ -763,7 +780,7 @@ const styles =
 
     menuText: {
 
-      color: "#CBD5E1",
+      color: colors.secondaryText,
 
       fontSize: 14,
 
@@ -776,7 +793,8 @@ const styles =
 
     activeText: {
 
-      color: "#FFFFFF",
+      color: colors.primaryDark,
+      fontWeight: "900",
 
     },
 
@@ -785,7 +803,7 @@ const styles =
 
     badge: {
 
-      backgroundColor: "#2563EB",
+      backgroundColor: colors.primary,
 
       height: 18,
 
@@ -802,7 +820,7 @@ const styles =
 
     badgeText: {
 
-      color: "#FFFFFF",
+      color: colors.surface,
 
       fontSize: 10,
 
@@ -817,10 +835,19 @@ const styles =
 
       height: 1,
 
-      backgroundColor: "#16366F",
+      backgroundColor: colors.divider,
 
-      marginVertical: 20,
+      marginTop: 18,
+      marginBottom: 12,
+    },
 
+    sectionLabel: {
+      color: colors.mutedText,
+      fontSize: 10,
+      fontWeight: "900",
+      letterSpacing: 1.2,
+      marginLeft: 14,
+      marginBottom: 8,
     },
 
 
@@ -841,7 +868,7 @@ const styles =
 
     logoutText: {
 
-      color: "#EF4444",
+      color: colors.danger,
 
       fontSize: 16,
 
