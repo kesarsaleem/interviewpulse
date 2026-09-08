@@ -25,7 +25,7 @@ export function initDatabase(): void {
       email TEXT NOT NULL,
       role TEXT NOT NULL,
       avatar_url TEXT,
-      theme_mode TEXT DEFAULT 'system',
+      theme_mode TEXT DEFAULT 'light',
       default_interview_mode TEXT DEFAULT 'video',
       default_duration INTEGER DEFAULT 45,
       created_at TEXT,
@@ -126,6 +126,14 @@ export function initDatabase(): void {
       attempts INTEGER NOT NULL DEFAULT 0,
       last_error TEXT
     );
+
+    CREATE TABLE IF NOT EXISTS sync_conflicts (
+      feedback_id TEXT PRIMARY KEY,
+      candidate_id TEXT NOT NULL,
+      local_payload TEXT NOT NULL,
+      server_payload TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    );
   `);
 
   try {
@@ -135,7 +143,7 @@ export function initDatabase(): void {
   }
 
   try {
-    db.execSync(`ALTER TABLE profiles ADD COLUMN theme_mode TEXT DEFAULT 'system';`);
+    db.execSync(`ALTER TABLE profiles ADD COLUMN theme_mode TEXT DEFAULT 'light';`);
   } catch {
     // column already exists
   }

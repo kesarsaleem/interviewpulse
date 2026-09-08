@@ -9,7 +9,7 @@ export type OverallVerdict = 'strong_yes' | 'maybe' | 'no';
 export type InterviewMode = 'onsite' | 'video' | 'phone';
 export type SyncStatus = 'synced' | 'pending' | 'conflict' | 'failed';
 export type PanelStatus = 'invited' | 'active' | 'removed';
-export type ThemeMode = 'light' | 'dark' | 'system';
+export type ThemeMode = 'light' | 'dark';
 
 export interface Profile {
   id: string;

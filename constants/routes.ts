@@ -8,8 +8,6 @@
 export const ROUTES = {
   login: '/login',
   forgotPassword: '/forgot-password',
-  resetPassword: '/reset-password',
-
   adminDashboard: '/admin/dashboard',
   adminProfile: '/admin/profile',
 

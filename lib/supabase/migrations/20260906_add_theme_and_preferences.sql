@@ -3,9 +3,9 @@
 -- Date: 2026-09-06
 -- =========================================================================
 
--- 1. Add theme_mode column ('light' | 'dark' | 'system')
+-- 1. Add theme_mode column ('light' | 'dark')
 ALTER TABLE public.profiles
-ADD COLUMN IF NOT EXISTS theme_mode text DEFAULT 'system';
+ADD COLUMN IF NOT EXISTS theme_mode text DEFAULT 'light';
 
 -- 2. Add default_interview_mode column ('video' | 'phone' | 'onsite')
 ALTER TABLE public.profiles

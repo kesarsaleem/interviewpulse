@@ -25,6 +25,7 @@ create table profiles (
   email text not null unique,
   role user_role not null default 'interviewer',
   avatar_url text,
+  theme_mode text not null default 'light' check (theme_mode in ('light', 'dark')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

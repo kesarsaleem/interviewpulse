@@ -18,6 +18,7 @@ supabase
 } from "../../lib/supabase/client";
 
 import { useAuth } from "../../hooks/useAuth";
+import { useTheme } from "../../context/ThemeContext";
 import { ROUTES } from "../../constants/routes";
 
 
@@ -28,6 +29,7 @@ closeDrawer?:()=>void
 }){
 
 const { user } = useAuth();
+const { colors } = useTheme();
 const pathname = usePathname();
 
 
@@ -273,7 +275,7 @@ item.badge &&
 return(
 
 
-<View style={styles.container}>
+<View style={[styles.container, { backgroundColor: colors.card }]}>
 
 
 
@@ -291,7 +293,7 @@ return(
     <Text style={styles.closeText}>×</Text>
   </Pressable>
 
-  <View style={styles.avatar}>
+  <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
     <Text style={styles.avatarText}>
       {user?.name?.charAt(0).toUpperCase() || 'A'}
     </Text>
@@ -329,7 +331,7 @@ contentContainerStyle={styles.menuContainer}
 
 
 
-<Text style={styles.section}>
+<Text style={[styles.section, { color: colors.mutedText }]}>
 MAIN
 </Text>
 
@@ -355,7 +357,7 @@ item={item}
 
 
 
-<Text style={styles.section}>
+<Text style={[styles.section, { color: colors.mutedText }]}>
 SETTINGS
 </Text>
 

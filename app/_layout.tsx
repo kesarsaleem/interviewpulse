@@ -23,6 +23,7 @@ import {
 import {
   ThemeProvider
 } from '../context/ThemeContext';
+import { useTheme } from '../context/ThemeContext';
 
 import {
   initDatabase
@@ -99,6 +100,7 @@ function RouteGuard({
 
 
       }
+
       else{
 
 
@@ -181,7 +183,18 @@ function RouteGuard({
 
 
   return <>{children}</>;
+}
 
+function AppNavigator() {
+  const { colors } = useTheme();
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: colors.background },
+      }}
+    />
+  );
 }
 
 
@@ -234,11 +247,7 @@ export default function RootLayout(){
       <AuthProvider>
         <ThemeProvider>
           <RouteGuard>
-            <Stack
-              screenOptions={{
-                headerShown: false,
-              }}
-            />
+            <AppNavigator />
           </RouteGuard>
         </ThemeProvider>
       </AuthProvider>

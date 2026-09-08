@@ -10,6 +10,7 @@ StyleSheet
 
 import { router } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
+import { useTheme } from "../../context/ThemeContext";
 
 type Props = {
 onMenuPress:()=>void;
@@ -18,10 +19,11 @@ onMenuPress:()=>void;
 
 export default function Header({onMenuPress}:Props){
 const { user } = useAuth();
+const { colors } = useTheme();
 
 return(
 
-<View style={styles.container}>
+<View style={[styles.container, { backgroundColor: colors.headerBackground, borderColor: colors.headerBorder }]}>
 
 
 <Pressable
@@ -29,7 +31,7 @@ onPress={onMenuPress}
 style={styles.menuButton}
 >
 
-<Text style={styles.menuIcon}>
+<Text style={[styles.menuIcon, { color: colors.primary }]}>
 ☰
 </Text>
 
@@ -39,12 +41,12 @@ style={styles.menuButton}
 
 <View style={{ flex: 1 }}>
 
-<Text style={styles.title}>
+<Text style={[styles.title, { color: colors.text }]}>
 InterviewPulse
 </Text>
 
 
-<Text style={styles.subtitle}>
+<Text style={[styles.subtitle, { color: colors.secondaryText }]}>
 Admin Panel
 </Text>
 

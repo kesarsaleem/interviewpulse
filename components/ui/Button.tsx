@@ -1,6 +1,7 @@
 import React from 'react';
 import { Pressable, Text, ActivityIndicator, PressableProps } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { useTheme } from '../../context/ThemeContext';
 
 type Variant = 'primary' | 'secondary' | 'outline' | 'danger' | 'ghost';
 type Size = 'sm' | 'md' | 'lg';
@@ -52,6 +53,15 @@ export function Button({
   onPress,
   ...rest
 }: ButtonProps) {
+  const { colors } = useTheme();
+  const activityColor = variant === 'outline' || variant === 'ghost' ? colors.primary : '#FFFFFF';
+  const variantStyle = {
+    primary: { backgroundColor: colors.primary },
+    secondary: { backgroundColor: colors.accent },
+    outline: { backgroundColor: 'transparent', borderColor: colors.border, borderWidth: 1 },
+    danger: { backgroundColor: colors.danger },
+    ghost: { backgroundColor: 'transparent' },
+  }[variant];
   return (
     <Pressable
       accessibilityRole="button"
@@ -69,10 +79,11 @@ export function Button({
         fullWidth ? 'w-full' : '',
         disabled || loading ? 'opacity-50' : '',
       ].join(' ')}
+      style={variantStyle}
       {...rest}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'outline' || variant === 'ghost' ? '#4F46E5' : '#FFFFFF'} />
+        <ActivityIndicator color={activityColor} />
       ) : (
         <>
           {icon}

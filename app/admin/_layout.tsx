@@ -20,12 +20,14 @@ Slot
 
 import Sidebar from "../../components/ui/Sidebar";
 import Header from "../../components/ui/Header";
+import { useTheme } from "../../context/ThemeContext";
 
 
 
 
 
 export default function AdminLayout(){
+const { colors } = useTheme();
 
 
 
@@ -216,7 +218,7 @@ setOpen(false);
 return(
 
 
-<View style={styles.container}>
+<View style={[styles.container, { backgroundColor: colors.background }]}>
 
 
 {
@@ -224,7 +226,7 @@ open && !isDesktop &&
 
 <Pressable
 
-style={styles.overlay}
+style={[styles.overlay, { backgroundColor: colors.overlay }]}
 
 onPress={closeDrawer}
 
@@ -245,6 +247,7 @@ onPress={closeDrawer}
 style={[
 
 styles.drawer,
+{ backgroundColor: colors.card },
 
 {
 

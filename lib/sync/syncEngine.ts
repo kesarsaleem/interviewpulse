@@ -100,6 +100,7 @@ export async function pushPendingChanges(userId: string): Promise<void> {
           .maybeSingle();
 
         if (serverRow && serverRow.version > payload.version) {
+          recordConflictSnapshot(payload, serverRow);
           await recordConflict(payload.candidate_id, op.entity_id, userId);
           applyServerFeedback(serverRow, 'conflict');
         } else {
@@ -172,6 +173,67 @@ async function recordConflict(candidateId: string, feedbackId: string, userId: s
     action: 'conflict_detected',
     metadata: { feedback_id: feedbackId, resolution: 'last_write_wins_server' },
   });
+}
+
+function recordConflictSnapshot(localPayload: Record<string, any>, serverPayload: Record<string, any>) {
+  getDb().runSync(
+    `INSERT OR REPLACE INTO sync_conflicts
+     (feedback_id, candidate_id, local_payload, server_payload, created_at)
+     VALUES (?, ?, ?, ?, ?)`,
+    [
+      localPayload.id,
+      localPayload.candidate_id,
+      JSON.stringify(localPayload),
+      JSON.stringify(serverPayload),
+      new Date().toISOString(),
+    ]
+  );
+}
+
+export interface FeedbackConflict {
+  feedback_id: string;
+  candidate_id: string;
+  local_payload: string;
+  server_payload: string;
+  created_at: string;
+}
+
+export function getFeedbackConflicts(): FeedbackConflict[] {
+  return getDb().getAllSync<FeedbackConflict>(
+    `SELECT * FROM sync_conflicts ORDER BY created_at DESC`
+  );
+}
+
+export function resolveFeedbackConflict(feedbackId: string, choice: 'local' | 'server'): void {
+  const db = getDb();
+  const conflict = db.getFirstSync<FeedbackConflict>(
+    `SELECT * FROM sync_conflicts WHERE feedback_id = ?`,
+    [feedbackId]
+  );
+  if (!conflict) throw new Error('Conflict no longer exists');
+
+  if (choice === 'server') {
+    db.runSync(`DELETE FROM sync_queue WHERE entity = 'feedback' AND entity_id = ?`, [feedbackId]);
+    db.runSync(`UPDATE feedback SET sync_status = 'synced' WHERE id = ?`, [feedbackId]);
+  } else {
+    const local = JSON.parse(conflict.local_payload);
+    db.runSync(
+      `UPDATE feedback SET overall_verdict = ?, positives = ?, concerns = ?,
+       questions = ?, duration_minutes = ?, interview_mode = ?,
+       would_hire_solo = ?, updated_at = ?, sync_status = 'pending', version = ?
+       WHERE id = ?`,
+      [
+        local.overall_verdict, local.positives, local.concerns, local.questions,
+        local.duration_minutes, local.interview_mode, local.would_hire_solo ? 1 : 0,
+        local.updated_at, local.version, feedbackId,
+      ]
+    );
+    db.runSync(`DELETE FROM sync_queue WHERE entity = 'feedback' AND entity_id = ?`, [feedbackId]);
+    const { sync_status: _syncStatus, ...payload } = local;
+    enqueueMutation('feedback', feedbackId, 'update', payload);
+  }
+
+  db.runSync(`DELETE FROM sync_conflicts WHERE feedback_id = ?`, [feedbackId]);
 }
 
 export async function pullServerState(jobId?: string): Promise<void> {

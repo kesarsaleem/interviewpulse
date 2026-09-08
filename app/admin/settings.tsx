@@ -15,11 +15,10 @@ import { supabase } from "../../lib/supabase/client";
 import { useAuth } from "../../hooks/useAuth";
 import { ROUTES } from "../../constants/routes";
 import { useTheme } from "../../context/ThemeContext";
-import { ThemeMode } from "../../types";
 
 export default function AdminSettingsScreen() {
   const { user, signOut } = useAuth();
-  const { themeMode, setThemeMode, colors, isDark } = useTheme();
+  const { themeMode, setThemeMode, colors } = useTheme();
 
   // Settings Toggles (State)
   const [offlineSyncEnabled, setOfflineSyncEnabled] = useState(true);
@@ -123,8 +122,8 @@ export default function AdminSettingsScreen() {
             <Pressable
               style={[
                 styles.themeOption,
-                { borderColor: themeMode === "light" ? colors.primary : colors.cardBorder, backgroundColor: isDark ? "#1E2D4F" : "#F8FAFC" },
-                themeMode === "light" && { borderWidth: 2, backgroundColor: isDark ? "rgba(59, 130, 246, 0.12)" : "#EFF6FF" },
+                { borderColor: themeMode === "light" ? colors.primary : colors.cardBorder, backgroundColor: colors.inputBackground },
+                themeMode === "light" && { borderWidth: 2, backgroundColor: colors.primaryLight },
               ]}
               onPress={() => setThemeMode("light")}
             >
@@ -144,8 +143,8 @@ export default function AdminSettingsScreen() {
             <Pressable
               style={[
                 styles.themeOption,
-                { borderColor: themeMode === "dark" ? colors.primary : colors.cardBorder, backgroundColor: isDark ? "#1E2D4F" : "#F8FAFC" },
-                themeMode === "dark" && { borderWidth: 2, backgroundColor: isDark ? "rgba(59, 130, 246, 0.12)" : "#EFF6FF" },
+                { borderColor: themeMode === "dark" ? colors.primary : colors.cardBorder, backgroundColor: colors.inputBackground },
+                themeMode === "dark" && { borderWidth: 2, backgroundColor: colors.primaryLight },
               ]}
               onPress={() => setThemeMode("dark")}
             >
@@ -161,26 +160,6 @@ export default function AdminSettingsScreen() {
               )}
             </Pressable>
 
-            {/* System Default */}
-            <Pressable
-              style={[
-                styles.themeOption,
-                { borderColor: themeMode === "system" ? colors.primary : colors.cardBorder, backgroundColor: isDark ? "#1E2D4F" : "#F8FAFC" },
-                themeMode === "system" && { borderWidth: 2, backgroundColor: isDark ? "rgba(59, 130, 246, 0.12)" : "#EFF6FF" },
-              ]}
-              onPress={() => setThemeMode("system")}
-            >
-              <View style={[styles.themeIconCircle, { backgroundColor: "#94A3B8" }]}>
-                <Ionicons name="phone-portrait-outline" size={20} color="#FFFFFF" />
-              </View>
-              <Text style={[styles.themeOptionTitle, { color: colors.text }]}>System</Text>
-              <Text style={[styles.themeOptionSubtitle, { color: colors.mutedText }]}>Match OS</Text>
-              {themeMode === "system" && (
-                <View style={styles.checkPill}>
-                  <Ionicons name="checkmark" size={13} color="#2563EB" />
-                </View>
-              )}
-            </Pressable>
           </View>
         </View>
 

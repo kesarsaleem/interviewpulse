@@ -27,6 +27,7 @@ import {
 import {
   useAuth
 } from "../../hooks/useAuth";
+import { useTheme } from "../../context/ThemeContext";
 
 import { ROUTES } from "../../constants/routes";
 
@@ -47,6 +48,7 @@ export default function InterviewerDrawer({
 }: Props) {
 
   const { user } = useAuth();
+  const { colors } = useTheme();
 
   const segments = useSegments();
 
@@ -160,7 +162,7 @@ export default function InterviewerDrawer({
       onRequestClose={onClose}
     >
 
-      <View style={styles.overlay}>
+      <View style={[styles.overlay, { backgroundColor: colors.overlay }]}>
 
         {/* 
           Background area
@@ -177,6 +179,7 @@ export default function InterviewerDrawer({
         <Animated.View
           style={[
             styles.drawer,
+            { backgroundColor: colors.card },
             {
               transform: [
                 {
@@ -199,7 +202,7 @@ export default function InterviewerDrawer({
               style={styles.logo}
             />
 
-            <Text style={styles.logoText}>
+            <Text style={[styles.logoText, { color: colors.text }]}>
               InterviewPulse
             </Text>
 
@@ -226,7 +229,7 @@ export default function InterviewerDrawer({
 
             <View>
 
-              <Text style={styles.name}>
+              <Text style={[styles.name, { color: colors.text }]}>
 
                 {
                   user?.name ||
@@ -236,7 +239,7 @@ export default function InterviewerDrawer({
               </Text>
 
 
-              <Text style={styles.email}>
+              <Text style={[styles.email, { color: colors.secondaryText }]}>
 
                 {
                   user?.email ||
@@ -470,6 +473,7 @@ function Menu({
   badge,
   onPress
 }: any) {
+  const { colors } = useTheme();
 
   return (
 
@@ -498,7 +502,7 @@ function Menu({
           color={
             active
               ? "#FFFFFF"
-              : "#CBD5E1"
+              : colors.secondaryText
           }
 
         />
@@ -508,6 +512,7 @@ function Menu({
 
           style={[
             styles.menuText,
+            { color: colors.secondaryText },
             active &&
             styles.activeText
           ]}

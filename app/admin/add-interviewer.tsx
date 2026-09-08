@@ -41,8 +41,12 @@ export default function AddInterviewer() {
       return;
     }
 
+    const normalizedEmail = email
+      .replace(/[\u200B-\u200D\uFEFF]/g, '')
+      .trim()
+      .toLowerCase();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
+    if (!emailRegex.test(normalizedEmail)) {
       Alert.alert('Invalid Email', 'Please enter a valid email address');
       return;
     }
@@ -55,7 +59,7 @@ export default function AddInterviewer() {
         {
           body: {
             name: name.trim(),
-            email: email.trim().toLowerCase(),
+            email: normalizedEmail,
             department: department.trim() || undefined,
           },
         }
@@ -75,9 +79,25 @@ export default function AddInterviewer() {
         ]
       );
     } catch (err: any) {
+      let message = err?.message || 'Failed to send invitation. Please try again.';
+
+      // Supabase FunctionsHttpError keeps the function response on `context`.
+      // Read it so the server's validation/Auth error is not hidden behind
+      // the generic "non-2xx status code" message.
+      if (err?.context?.json) {
+        try {
+          const responseBody = await err.context.json();
+          if (responseBody?.error) {
+            message = responseBody.error;
+          }
+        } catch {
+          // Keep the original error when the response is not JSON.
+        }
+      }
+
       Alert.alert(
         'Error',
-        err.message || 'Failed to send invitation. Please try again.'
+        message
       );
     } finally {
       setLoading(false);

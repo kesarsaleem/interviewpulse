@@ -19,6 +19,9 @@ import {
   runSync,
   getSyncStats,
   retryFailedSync,
+  getFeedbackConflicts,
+  resolveFeedbackConflict,
+  type FeedbackConflict,
 } from '../../lib/sync/syncEngine';
 import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
 
@@ -35,6 +38,7 @@ export default function InterviewerProfileScreen() {
   const [totalAssigned, setTotalAssigned] = useState(0);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(0);
   const [syncStats, setSyncStats] = useState({ pending: 0, failed: 0, synced: 0 });
+  const [conflicts, setConflicts] = useState<FeedbackConflict[]>([]);
 
   const loadProfileData = useCallback(async () => {
     try {
@@ -43,6 +47,7 @@ export default function InterviewerProfileScreen() {
       // 1. Read SQLite local stats
       const localStats = getSyncStats();
       setSyncStats(localStats);
+      setConflicts(getFeedbackConflicts());
 
       const db = getDb();
       const localFbCount = db.getFirstSync<{ count: number }>(
@@ -122,6 +127,30 @@ export default function InterviewerProfileScreen() {
     } finally {
       setRetrying(false);
     }
+  };
+
+  const handleResolveConflict = (conflict: FeedbackConflict) => {
+    Alert.alert(
+      'Resolve feedback conflict',
+      'Choose which version to keep.',
+      [
+        {
+          text: 'Keep server version',
+          onPress: () => {
+            resolveFeedbackConflict(conflict.feedback_id, 'server');
+            loadProfileData();
+          },
+        },
+        {
+          text: 'Keep my local version',
+          onPress: () => {
+            resolveFeedbackConflict(conflict.feedback_id, 'local');
+            loadProfileData();
+          },
+        },
+        { text: 'Cancel', style: 'cancel' },
+      ]
+    );
   };
 
   const handleSignOut = () => {
@@ -297,6 +326,35 @@ export default function InterviewerProfileScreen() {
             )}
           </View>
         </View>
+
+        {conflicts.length > 0 && (
+          <>
+            <Text style={styles.sectionTitle}>Conflicts Requiring Review</Text>
+            <View style={styles.card}>
+              <Text style={styles.conflictIntro}>
+                These evaluations changed on another device. Choose which version to keep.
+              </Text>
+              {conflicts.map((conflict) => {
+                const local = JSON.parse(conflict.local_payload);
+                const server = JSON.parse(conflict.server_payload);
+                return (
+                  <View key={conflict.feedback_id} style={styles.conflictItem}>
+                    <Text style={styles.conflictTitle}>Feedback conflict</Text>
+                    <Text style={styles.conflictDetail}>
+                      Local: {local.overall_verdict} (v{local.version}) · Server: {server.overall_verdict} (v{server.version})
+                    </Text>
+                    <Pressable
+                      style={styles.resolveBtn}
+                      onPress={() => handleResolveConflict(conflict)}
+                    >
+                      <Text style={styles.resolveBtnText}>Resolve Conflict</Text>
+                    </Pressable>
+                  </View>
+                );
+              })}
+            </View>
+          </>
+        )}
 
         {/* INTERVIEW RULES & POLICY */}
         <Text style={styles.sectionTitle}>Interviewer Rules & Policy</Text>
@@ -581,6 +639,41 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  conflictIntro: {
+    fontSize: 13,
+    color: '#64748B',
+    lineHeight: 19,
+    marginBottom: 12,
+  },
+  conflictItem: {
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+    paddingTop: 12,
+    marginTop: 4,
+  },
+  conflictTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  conflictDetail: {
+    fontSize: 12,
+    color: '#64748B',
+    marginTop: 4,
+    marginBottom: 10,
+  },
+  resolveBtn: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#FEF3C7',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  resolveBtnText: {
+    color: '#92400E',
+    fontSize: 13,
+    fontWeight: '700',
   },
   retryBtn: {
     flexDirection: 'row',

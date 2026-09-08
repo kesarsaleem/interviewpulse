@@ -3,6 +3,7 @@ import {
   View,
   StyleSheet,
 } from "react-native";
+import { useTheme } from '../../context/ThemeContext';
 
 
 export default function GradientBackground({
@@ -10,19 +11,20 @@ export default function GradientBackground({
 }: {
   children: React.ReactNode;
 }) {
+  const { colors } = useTheme();
 
   return (
 
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
 
       {/* Top dark blue circle */}
       <View style={styles.circleTop} />
 
       {/* Right light circle */}
-      <View style={styles.circleRight} />
+      <View style={[styles.circleRight, { backgroundColor: colors.primaryLight }]} />
 
       {/* Bottom blue circle */}
-      <View style={styles.circleBottom} />
+      <View style={[styles.circleBottom, { backgroundColor: colors.primary }]} />
 
 
       <View style={styles.content}>

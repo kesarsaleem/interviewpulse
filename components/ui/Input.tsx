@@ -5,19 +5,24 @@ import {
   StyleSheet,
   TextInputProps,
 } from "react-native";
+import { useTheme } from '../../context/ThemeContext';
 
 
 const Input = forwardRef<TextInput, TextInputProps>(
   (props, ref) => {
+    const { colors } = useTheme();
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.inputBackground, borderColor: colors.inputBorder }]}>
 
         <TextInput
           ref={ref}
-          style={styles.input}
-          placeholderTextColor="#94A3B8"
+          
+          placeholderTextColor={colors.mutedText}
+          selectionColor={colors.primary}
+          cursorColor={colors.primary}
           {...props}
+          style={[styles.input, { color: colors.text }, props.style]}
         />
 
       </View>
@@ -33,7 +38,7 @@ export default Input;
 const styles = StyleSheet.create({
 
   container: {
-    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
     borderRadius: 16,
     height: 55,
     justifyContent: "center",
@@ -49,7 +54,6 @@ const styles = StyleSheet.create({
 
   input: {
     fontSize: 16,
-    color: "#0F172A",
   },
 
 });
