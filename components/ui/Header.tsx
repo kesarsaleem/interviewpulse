@@ -11,6 +11,7 @@ StyleSheet
 import { router } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../context/ThemeContext";
+import { ThemeColors } from "../../theme/colors";
 
 type Props = {
 onMenuPress:()=>void;
@@ -20,6 +21,7 @@ onMenuPress:()=>void;
 export default function Header({onMenuPress}:Props){
 const { user } = useAuth();
 const { colors } = useTheme();
+const styles = createStyles(colors);
 
 return(
 
@@ -70,14 +72,14 @@ Admin Panel
 
 
 
-const styles=StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
 
 
 container:{
 
 height:100,
 
-backgroundColor:"#FFFFFF",
+backgroundColor:colors.headerBackground,
 
 flexDirection:"row",
 
@@ -87,7 +89,7 @@ paddingHorizontal:20,
 
 borderBottomWidth:1,
 
-borderColor:"#E2E8F0",
+borderColor:colors.cardBorder,
 
 },
 
@@ -101,7 +103,7 @@ width:42,
 
 borderRadius:12,
 
-backgroundColor:"#EFF6FF",
+backgroundColor: colors.primaryLight,
 
 alignItems:"center",
 
@@ -119,7 +121,7 @@ menuIcon:{
 
 fontSize:24,
 
-color:"#2563EB",
+color: colors.primary,
 
 fontWeight:"700",
 
@@ -133,7 +135,7 @@ fontSize:20,
 
 fontWeight:"800",
 
-color:"#0F172A",
+color:colors.text,
 
 marginTop:20
 
@@ -145,7 +147,7 @@ subtitle:{
 
 fontSize:13,
 
-color:"#64748B",
+color:colors.secondaryText,
 
 marginTop:2,
 
@@ -155,7 +157,7 @@ profileButton:{
   width: 38,
   height: 38,
   borderRadius: 19,
-  backgroundColor: "#2563EB",
+  backgroundColor: colors.primary,
   alignItems: "center",
   justifyContent: "center",
   marginTop: 20,
@@ -164,7 +166,7 @@ profileButton:{
 profileButtonText:{
   fontSize: 16,
   fontWeight: "800",
-  color: "#FFFFFF",
+  color: colors.text,
 },
 
 });

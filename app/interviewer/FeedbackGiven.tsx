@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   View,
@@ -20,6 +22,8 @@ import { getLocalInterviewerFeedback } from '../../services/feedbackService';
 import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
 
 export default function FeedbackGiven() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
@@ -206,7 +210,7 @@ export default function FeedbackGiven() {
     return (
       <View style={styles.center}>
         <View style={styles.loadingCard}>
-          <ActivityIndicator size="large" color="#2563EB" />
+          <ActivityIndicator size="large" color={colors.primary} />
           <Text style={styles.loadingText}>Loading submitted evaluations...</Text>
         </View>
       </View>
@@ -252,17 +256,17 @@ export default function FeedbackGiven() {
 
         {/* SEARCH BAR (INTEGRATED IN HEADER CARD) */}
         <View style={styles.searchBar}>
-          <Ionicons name="search-outline" size={18} color="#94A3B8" />
+          <Ionicons name="search-outline" size={18} color={colors.mutedText} />
           <TextInput
             placeholder="Search candidate, role, or stage..."
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.mutedText}
             value={search}
             onChangeText={setSearch}
             style={styles.searchInput}
           />
           {search ? (
             <Pressable onPress={() => setSearch('')} hitSlop={6}>
-              <Ionicons name="close-circle" size={18} color="#94A3B8" />
+              <Ionicons name="close-circle" size={18} color={colors.mutedText} />
             </Pressable>
           ) : null}
         </View>
@@ -272,13 +276,13 @@ export default function FeedbackGiven() {
         style={styles.scrollArea}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#2563EB" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
       >
         {/* SUMMARY METRICS CARDS */}
         <View style={styles.metricsGrid}>
           <View style={styles.metricCard}>
-            <View style={[styles.metricIconWrap, { backgroundColor: '#EFF6FF' }]}>
-              <Ionicons name="documents-outline" size={18} color="#2563EB" />
+            <View style={[styles.metricIconWrap, { backgroundColor: colors.primaryLight }]}>
+              <Ionicons name="documents-outline" size={18} color={colors.primary} />
             </View>
             <Text style={styles.metricNumber}>{totalCount}</Text>
             <Text style={styles.metricLabel}>Total Submitted</Text>
@@ -341,7 +345,7 @@ export default function FeedbackGiven() {
                     <Ionicons
                       name="briefcase-outline"
                       size={13}
-                      color={active ? '#FFFFFF' : '#64748B'}
+                      color={active ? '#FFFFFF' : colors.secondaryText}
                       style={{ marginRight: 4 }}
                     />
                     <Text style={[styles.filterPillText, active && styles.activeFilterPillText]}>
@@ -369,7 +373,7 @@ export default function FeedbackGiven() {
         {filtered.length === 0 ? (
           <View style={styles.emptyCard}>
             <View style={styles.emptyIconWrap}>
-              <Ionicons name="chatbox-ellipses-outline" size={36} color="#94A3B8" />
+              <Ionicons name="chatbox-ellipses-outline" size={36} color={colors.mutedText} />
             </View>
             <Text style={styles.emptyTitle}>No Feedback Records Found</Text>
             <Text style={styles.emptySubtitle}>
@@ -421,7 +425,7 @@ export default function FeedbackGiven() {
                     </Text>
 
                     <View style={styles.jobRow}>
-                      <Ionicons name="briefcase-outline" size={11} color="#64748B" />
+                      <Ionicons name="briefcase-outline" size={11} color={colors.secondaryText} />
                       <Text style={styles.jobText} numberOfLines={1}>
                         {item.jobs?.title || 'Job Opening'}
                       </Text>
@@ -429,7 +433,7 @@ export default function FeedbackGiven() {
 
                     <View style={styles.stageDateRow}>
                       <View style={styles.stageBadge}>
-                        <Ionicons name="layers-outline" size={10} color="#2563EB" />
+                        <Ionicons name="layers-outline" size={10} color={colors.primary} />
                         <Text style={styles.stageBadgeText} numberOfLines={1}>
                           {item.stages?.name || 'Round'}
                         </Text>
@@ -469,7 +473,7 @@ export default function FeedbackGiven() {
                       <Ionicons name="star" size={14} color="#F59E0B" />
                       <Text style={styles.scoreValue}>{avg}</Text>
                       <Text style={styles.scoreMax}>/5</Text>
-                      <Ionicons name="chevron-forward" size={16} color="#94A3B8" style={{ marginLeft: 2 }} />
+                      <Ionicons name="chevron-forward" size={16} color={colors.mutedText} style={{ marginLeft: 2 }} />
                     </View>
                   </View>
                 </View>
@@ -482,17 +486,17 @@ export default function FeedbackGiven() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   loadingCard: {
     padding: 24,
     borderRadius: 22,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -502,13 +506,13 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontSize: 14,
     fontWeight: '600',
   },
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   header: {
     backgroundColor: '#06235C',
@@ -555,13 +559,13 @@ const styles = StyleSheet.create({
   syncBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 12,
     gap: 5,
     borderWidth: 1,
-    borderColor: '#3B82F6',
+    borderColor: colors.accent,
   },
   syncText: {
     color: '#FFFFFF',
@@ -569,7 +573,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   searchBar: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     height: 46,
     borderRadius: 14,
     flexDirection: 'row',
@@ -585,7 +589,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 13,
-    color: '#0F172A',
+    color: colors.text,
   },
   scrollArea: {
     flex: 1,
@@ -603,14 +607,14 @@ const styles = StyleSheet.create({
   },
   metricCard: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 20,
     paddingVertical: 12,
     paddingHorizontal: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#F1F5F9',
-    shadowColor: '#0F172A',
+    borderColor: colors.divider,
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.04,
     shadowRadius: 6,
@@ -627,12 +631,12 @@ const styles = StyleSheet.create({
   metricNumber: {
     fontSize: 17,
     fontWeight: '900',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 1,
   },
   metricLabel: {
     fontSize: 10,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontWeight: '600',
     textAlign: 'center',
   },
@@ -645,20 +649,20 @@ const styles = StyleSheet.create({
   filterPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   activeFilterPill: {
-    backgroundColor: '#2563EB',
-    borderColor: '#2563EB',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   filterPillText: {
     fontSize: 12,
-    color: '#475569',
+    color: colors.secondaryText,
     fontWeight: '700',
   },
   activeFilterPillText: {
@@ -673,40 +677,40 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 17,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
   },
   sectionSubtitle: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 1,
   },
   countBadgeWrap: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#DBEAFE',
+    borderColor: colors.primaryLight,
   },
   countBadgeText: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '800',
     fontSize: 12,
   },
   emptyCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 22,
     padding: 28,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     marginTop: 8,
   },
   emptyIconWrap: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
@@ -714,12 +718,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 4,
   },
   emptySubtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     textAlign: 'center',
     lineHeight: 18,
     maxWidth: 260,
@@ -728,29 +732,29 @@ const styles = StyleSheet.create({
     marginTop: 14,
     paddingHorizontal: 16,
     paddingVertical: 8,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderRadius: 10,
   },
   resetFilterText: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '700',
     fontSize: 12,
   },
   feedbackCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 22,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
-    shadowColor: '#0F172A',
+    borderColor: colors.divider,
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
   },
   cardPressed: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     transform: [{ scale: 0.99 }],
   },
   horizontalRow: {
@@ -761,15 +765,15 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 16,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderWidth: 1,
-    borderColor: '#DBEAFE',
+    borderColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
   },
   avatarText: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '900',
     fontSize: 18,
   },
@@ -781,12 +785,12 @@ const styles = StyleSheet.create({
   candidateName: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 2,
   },
   candidateRole: {
     fontSize: 12,
-    color: '#475569',
+    color: colors.secondaryText,
     fontWeight: '500',
     marginBottom: 3,
   },
@@ -798,7 +802,7 @@ const styles = StyleSheet.create({
   },
   jobText: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
     flex: 1,
   },
   stageDateRow: {
@@ -809,7 +813,7 @@ const styles = StyleSheet.create({
   stageBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 6,
@@ -817,13 +821,13 @@ const styles = StyleSheet.create({
   },
   stageBadgeText: {
     fontSize: 10,
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '700',
     maxWidth: 90,
   },
   dateSubtext: {
     fontSize: 10.5,
-    color: '#94A3B8',
+    color: colors.mutedText,
   },
   rightVerdictCol: {
     alignItems: 'flex-end',
@@ -867,11 +871,11 @@ const styles = StyleSheet.create({
   scoreValue: {
     fontSize: 14,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     marginLeft: 2,
   },
   scoreMax: {
     fontSize: 10,
-    color: '#94A3B8',
+    color: colors.mutedText,
   },
 });

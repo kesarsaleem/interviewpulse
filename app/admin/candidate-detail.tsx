@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   View,
@@ -28,6 +30,8 @@ const VERDICT_CONFIG: Record<string, { label: string; bg: string; text: string; 
 const CHART_COLORS = ['#2563EB', '#16A34A', '#D97706', '#7C3AED', '#DC2626'];
 
 export default function CandidateDetail() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { user } = useAuth();
   const params = useLocalSearchParams();
   const candidateId = (params.id || params.candidateId) as string;
@@ -606,7 +610,7 @@ export default function CandidateDetail() {
   if (loading && !refreshing) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Loading Candidate Profile...</Text>
       </View>
     );
@@ -635,7 +639,7 @@ export default function CandidateDetail() {
     >
       <View style={styles.topNav}>
         <Pressable style={styles.navBackBtn} onPress={() => router.back()} hitSlop={10}>
-          <Ionicons name="arrow-back" size={20} color="#0F172A" />
+          <Ionicons name="arrow-back" size={20} color={colors.text} />
         </Pressable>
         <Text style={styles.navTitle} numberOfLines={1}>
           {candidate.full_name}
@@ -650,7 +654,7 @@ export default function CandidateDetail() {
               })
             }
           >
-            <Ionicons name="create-outline" size={16} color="#2563EB" />
+            <Ionicons name="create-outline" size={16} color={colors.primary} />
             <Text style={styles.navEditText}>Edit</Text>
           </Pressable>
           <Pressable
@@ -690,9 +694,9 @@ export default function CandidateDetail() {
               <Text style={[styles.decisionBadgeText, { color: '#DC2626' }]}>REJECTED</Text>
             </View>
           ) : (
-            <View style={[styles.decisionBadge, { backgroundColor: '#EFF6FF' }]}>
-              <Ionicons name="hourglass-outline" size={13} color="#2563EB" />
-              <Text style={[styles.decisionBadgeText, { color: '#2563EB' }]}>IN REVIEW</Text>
+            <View style={[styles.decisionBadge, { backgroundColor: colors.primaryLight }]}>
+              <Ionicons name="hourglass-outline" size={13} color={colors.primary} />
+              <Text style={[styles.decisionBadgeText, { color: colors.primary }]}>IN REVIEW</Text>
             </View>
           )}
         </View>
@@ -728,7 +732,7 @@ export default function CandidateDetail() {
             <Text style={styles.metricLbl}>Evaluations</Text>
           </View>
           <View style={styles.metricCard}>
-            <Text style={[styles.metricVal, { color: '#2563EB' }]}>{averageScore}</Text>
+            <Text style={[styles.metricVal, { color: colors.primary }]}>{averageScore}</Text>
             <Text style={styles.metricLbl}>Avg Score</Text>
           </View>
           <View style={styles.metricCard}>
@@ -800,12 +804,12 @@ export default function CandidateDetail() {
           <View style={styles.infoCard}>
             <Text style={styles.infoSectionTitle}>Contact Details</Text>
             <View style={styles.infoRow}>
-              <Ionicons name="mail-outline" size={16} color="#64748B" />
+              <Ionicons name="mail-outline" size={16} color={colors.secondaryText} />
               <Text style={styles.infoLabel}>Email:</Text>
               <Text style={styles.infoValue}>{candidate.email || 'Not provided'}</Text>
             </View>
             <View style={styles.infoRow}>
-              <Ionicons name="call-outline" size={16} color="#64748B" />
+              <Ionicons name="call-outline" size={16} color={colors.secondaryText} />
               <Text style={styles.infoLabel}>Phone:</Text>
               <Text style={styles.infoValue}>{candidate.phone || 'Not provided'}</Text>
             </View>
@@ -820,9 +824,9 @@ export default function CandidateDetail() {
             </View>
             {candidate.resume_url ? (
               <Pressable style={styles.resumeBtn} onPress={() => openResume(candidate.resume_url)}>
-                <Ionicons name="document-attach-outline" size={18} color="#2563EB" />
+                <Ionicons name="document-attach-outline" size={18} color={colors.primary} />
                 <Text style={styles.resumeBtnText}>Open Resume / Portfolio Link</Text>
-                <Ionicons name="open-outline" size={14} color="#2563EB" style={{ marginLeft: 'auto' }} />
+                <Ionicons name="open-outline" size={14} color={colors.primary} style={{ marginLeft: 'auto' }} />
               </Pressable>
             ) : null}
           </View>
@@ -833,7 +837,7 @@ export default function CandidateDetail() {
         <View style={styles.tabContent}>
           {feedbackList.length === 0 ? (
             <View style={styles.emptySubCard}>
-              <Ionicons name="chatbubbles-outline" size={36} color="#94A3B8" />
+              <Ionicons name="chatbubbles-outline" size={36} color={colors.mutedText} />
               <Text style={styles.emptySubTitle}>No feedback submitted yet</Text>
               <Text style={styles.emptySubText}>
                 When panel interviewers evaluate this candidate, their verdicts, scores, and structured notes will appear here.
@@ -923,7 +927,7 @@ export default function CandidateDetail() {
         <View style={styles.tabContent}>
           {radarData.labels.length === 0 || radarData.series.length === 0 ? (
             <View style={styles.emptySubCard}>
-              <Ionicons name="analytics-outline" size={36} color="#94A3B8" />
+              <Ionicons name="analytics-outline" size={36} color={colors.mutedText} />
               <Text style={styles.emptySubTitle}>No Radar Data Available</Text>
               <Text style={styles.emptySubText}>
                 Radar visualization requires evaluation criteria and at least one submitted interviewer score.
@@ -945,7 +949,7 @@ export default function CandidateDetail() {
         <View style={styles.tabContent}>
           {activityLogs.length === 0 ? (
             <View style={styles.emptySubCard}>
-              <Ionicons name="time-outline" size={36} color="#94A3B8" />
+              <Ionicons name="time-outline" size={36} color={colors.mutedText} />
               <Text style={styles.emptySubTitle}>No Activity Recorded</Text>
             </View>
           ) : (
@@ -954,12 +958,12 @@ export default function CandidateDetail() {
                 const isLast = idx === activityLogs.length - 1;
                 let title = log.action;
                 let desc = '';
-                let color = '#2563EB';
+                let color = colors.primary;
 
                 if (log.action === 'candidate_added') {
                   title = 'Candidate Added';
                   desc = 'Created in pipeline';
-                  color = '#2563EB';
+                  color = colors.primary;
                 } else if (log.action === 'stage_moved') {
                   title = `Stage Moved: ${log.metadata?.stage_name || 'Advanced'}`;
                   desc = `Updated by ${log.profiles?.name || 'Hiring Manager'}`;
@@ -1002,49 +1006,49 @@ export default function CandidateDetail() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background },
   contentContainer: { padding: 16, paddingBottom: 40 },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F8FAFC', padding: 24 },
-  loadingText: { marginTop: 12, fontSize: 14, color: '#64748B' },
-  errorTitle: { fontSize: 18, fontWeight: '700', color: '#0F172A', marginTop: 12 },
-  backButton: { marginTop: 16, paddingHorizontal: 16, paddingVertical: 10, backgroundColor: '#2563EB', borderRadius: 8 },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background, padding: 24 },
+  loadingText: { marginTop: 12, fontSize: 14, color: colors.secondaryText },
+  errorTitle: { fontSize: 18, fontWeight: '700', color: colors.text, marginTop: 12 },
+  backButton: { marginTop: 16, paddingHorizontal: 16, paddingVertical: 10, backgroundColor: colors.primary, borderRadius: 8 },
   backButtonText: { color: '#FFFFFF', fontWeight: '600' },
   topNav: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 },
-  navBackBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#E2E8F0' },
-  navTitle: { flex: 1, marginHorizontal: 12, fontSize: 16, fontWeight: '700', color: '#0F172A' },
+  navBackBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.cardBorder },
+  navTitle: { flex: 1, marginHorizontal: 12, fontSize: 16, fontWeight: '700', color: colors.text },
   navActionsRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  navEditBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#EFF6FF', paddingHorizontal: 12, paddingVertical: 7, borderRadius: 8, borderWidth: 1, borderColor: '#BFDBFE' },
-  navEditText: { fontSize: 13, fontWeight: '700', color: '#2563EB' },
+  navEditBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.primaryLight, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 8, borderWidth: 1, borderColor: colors.inputBorder },
+  navEditText: { fontSize: 13, fontWeight: '700', color: colors.primary },
   navDeleteBtn: { width: 34, height: 34, borderRadius: 8, backgroundColor: '#FEE2E2', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#FECACA' },
   fbHeaderRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   fbAvgBadge: { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: '#FEF3C7', paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6 },
   fbAvgText: { fontSize: 11, fontWeight: '800', color: '#B45309' },
-  heroCard: { backgroundColor: '#FFFFFF', borderRadius: 16, padding: 18, marginBottom: 16, borderWidth: 1, borderColor: '#E2E8F0', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 3, elevation: 2 },
+  heroCard: { backgroundColor: colors.card, borderRadius: 16, padding: 18, marginBottom: 16, borderWidth: 1, borderColor: colors.cardBorder, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 3, elevation: 2 },
   heroTop: { flexDirection: 'row', alignItems: 'center' },
-  avatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#DBEAFE', alignItems: 'center', justifyContent: 'center', marginRight: 12 },
+  avatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: colors.primaryLight, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
   avatarText: { fontSize: 20, fontWeight: '800', color: '#1E40AF' },
   heroInfo: { flex: 1, marginRight: 8 },
-  candidateName: { fontSize: 18, fontWeight: '800', color: '#0F172A' },
-  candidateRole: { fontSize: 13, color: '#64748B', marginTop: 1 },
-  jobBadgeText: { fontSize: 12, color: '#334155', marginTop: 3 },
+  candidateName: { fontSize: 18, fontWeight: '800', color: colors.text },
+  candidateRole: { fontSize: 13, color: colors.secondaryText, marginTop: 1 },
+  jobBadgeText: { fontSize: 12, color: colors.secondaryText, marginTop: 3 },
   decisionBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
   decisionBadgeText: { fontSize: 11, fontWeight: '800' },
-  stageProgressBox: { backgroundColor: '#F8FAFC', borderRadius: 10, padding: 12, marginTop: 14, borderWidth: 1, borderColor: '#F1F5F9' },
+  stageProgressBox: { backgroundColor: colors.background, borderRadius: 10, padding: 12, marginTop: 14, borderWidth: 1, borderColor: colors.divider },
   stageProgressHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 },
-  stageProgressTitle: { fontSize: 11, fontWeight: '600', color: '#64748B', textTransform: 'uppercase' },
-  stageProgressStep: { fontSize: 11, fontWeight: '700', color: '#2563EB' },
-  stageNameHighlight: { fontSize: 15, fontWeight: '700', color: '#0F172A', marginBottom: 8 },
-  progressBarBg: { height: 6, backgroundColor: '#E2E8F0', borderRadius: 3, overflow: 'hidden' },
-  progressBarFill: { height: '100%', backgroundColor: '#2563EB', borderRadius: 3 },
+  stageProgressTitle: { fontSize: 11, fontWeight: '600', color: colors.secondaryText, textTransform: 'uppercase' },
+  stageProgressStep: { fontSize: 11, fontWeight: '700', color: colors.primary },
+  stageNameHighlight: { fontSize: 15, fontWeight: '700', color: colors.text, marginBottom: 8 },
+  progressBarBg: { height: 6, backgroundColor: colors.cardBorder, borderRadius: 3, overflow: 'hidden' },
+  progressBarFill: { height: '100%', backgroundColor: colors.primary, borderRadius: 3 },
   metricsRow: { flexDirection: 'row', gap: 10, marginTop: 14 },
-  metricCard: { flex: 1, backgroundColor: '#F8FAFC', borderRadius: 10, padding: 10, alignItems: 'center', borderWidth: 1, borderColor: '#E2E8F0' },
-  metricVal: { fontSize: 16, fontWeight: '800', color: '#0F172A' },
-  metricLbl: { fontSize: 11, color: '#64748B', marginTop: 2 },
-  decisionActionsCard: { backgroundColor: '#FFFFFF', borderRadius: 14, padding: 16, marginBottom: 16, borderWidth: 1, borderColor: '#E2E8F0' },
-  decisionActionsTitle: { fontSize: 13, fontWeight: '700', color: '#64748B', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 12 },
+  metricCard: { flex: 1, backgroundColor: colors.background, borderRadius: 10, padding: 10, alignItems: 'center', borderWidth: 1, borderColor: colors.cardBorder },
+  metricVal: { fontSize: 16, fontWeight: '800', color: colors.text },
+  metricLbl: { fontSize: 11, color: colors.secondaryText, marginTop: 2 },
+  decisionActionsCard: { backgroundColor: colors.card, borderRadius: 14, padding: 16, marginBottom: 16, borderWidth: 1, borderColor: colors.cardBorder },
+  decisionActionsTitle: { fontSize: 13, fontWeight: '700', color: colors.secondaryText, textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 12 },
   actionsBtnGroup: { gap: 10 },
-  advanceBtn: { backgroundColor: '#2563EB', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 8 },
+  advanceBtn: { backgroundColor: colors.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 8 },
   advanceBtnText: { fontSize: 14, fontWeight: '700', color: '#FFFFFF' },
   finalDecisionRow: { flexDirection: 'row', gap: 10 },
   hireBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, backgroundColor: '#DCFCE7', paddingVertical: 10, borderRadius: 8, borderWidth: 1, borderColor: '#BBF7D0' },
@@ -1052,50 +1056,50 @@ const styles = StyleSheet.create({
   rejectBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, backgroundColor: '#FEE2E2', paddingVertical: 10, borderRadius: 8, borderWidth: 1, borderColor: '#FECACA' },
   rejectBtnText: { fontSize: 13, fontWeight: '700', color: '#DC2626' },
   actionBtnActive: { opacity: 0.6 },
-  tabsRow: { flexDirection: 'row', backgroundColor: '#E2E8F0', borderRadius: 10, padding: 3, marginBottom: 14 },
+  tabsRow: { flexDirection: 'row', backgroundColor: colors.cardBorder, borderRadius: 10, padding: 3, marginBottom: 14 },
   tabItem: { flex: 1, paddingVertical: 8, alignItems: 'center', borderRadius: 8 },
-  tabItemActive: { backgroundColor: '#FFFFFF', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 2, elevation: 2 },
-  tabItemText: { fontSize: 11, fontWeight: '600', color: '#64748B' },
-  tabItemTextActive: { color: '#2563EB', fontWeight: '700' },
+  tabItemActive: { backgroundColor: colors.card, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 2, elevation: 2 },
+  tabItemText: { fontSize: 11, fontWeight: '600', color: colors.secondaryText },
+  tabItemTextActive: { color: colors.primary, fontWeight: '700' },
   tabContent: { gap: 12 },
-  infoCard: { backgroundColor: '#FFFFFF', borderRadius: 14, padding: 16, borderWidth: 1, borderColor: '#E2E8F0', gap: 10 },
-  infoSectionTitle: { fontSize: 14, fontWeight: '700', color: '#0F172A', marginBottom: 4 },
+  infoCard: { backgroundColor: colors.card, borderRadius: 14, padding: 16, borderWidth: 1, borderColor: colors.cardBorder, gap: 10 },
+  infoSectionTitle: { fontSize: 14, fontWeight: '700', color: colors.text, marginBottom: 4 },
   infoRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  infoLabel: { fontSize: 13, fontWeight: '600', color: '#64748B', width: 70 },
-  infoValue: { fontSize: 13, color: '#0F172A', flex: 1 },
-  resumeBtn: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#EFF6FF', borderRadius: 8, padding: 12, marginTop: 6, borderWidth: 1, borderColor: '#BFDBFE' },
-  resumeBtnText: { fontSize: 13, fontWeight: '700', color: '#2563EB' },
-  emptySubCard: { backgroundColor: '#FFFFFF', borderRadius: 14, padding: 24, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#E2E8F0' },
-  emptySubTitle: { fontSize: 15, fontWeight: '700', color: '#0F172A', marginTop: 10 },
-  emptySubText: { fontSize: 12, color: '#64748B', textAlign: 'center', marginTop: 4, lineHeight: 18 },
-  fbCard: { backgroundColor: '#FFFFFF', borderRadius: 14, padding: 16, borderWidth: 1, borderColor: '#E2E8F0', gap: 12 },
+  infoLabel: { fontSize: 13, fontWeight: '600', color: colors.secondaryText, width: 70 },
+  infoValue: { fontSize: 13, color: colors.text, flex: 1 },
+  resumeBtn: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: colors.primaryLight, borderRadius: 8, padding: 12, marginTop: 6, borderWidth: 1, borderColor: colors.inputBorder },
+  resumeBtnText: { fontSize: 13, fontWeight: '700', color: colors.primary },
+  emptySubCard: { backgroundColor: colors.card, borderRadius: 14, padding: 24, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.cardBorder },
+  emptySubTitle: { fontSize: 15, fontWeight: '700', color: colors.text, marginTop: 10 },
+  emptySubText: { fontSize: 12, color: colors.secondaryText, textAlign: 'center', marginTop: 4, lineHeight: 18 },
+  fbCard: { backgroundColor: colors.card, borderRadius: 14, padding: 16, borderWidth: 1, borderColor: colors.cardBorder, gap: 12 },
   fbHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   fbHeaderLeft: { flex: 1 },
-  fbInterviewer: { fontSize: 15, fontWeight: '700', color: '#0F172A' },
-  fbStageText: { fontSize: 12, color: '#64748B', marginTop: 2 },
+  fbInterviewer: { fontSize: 15, fontWeight: '700', color: colors.text },
+  fbStageText: { fontSize: 12, color: colors.secondaryText, marginTop: 2 },
   verdictBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
   verdictText: { fontSize: 12, fontWeight: '700' },
-  fbScoresContainer: { backgroundColor: '#F8FAFC', borderRadius: 8, padding: 10, gap: 6 },
-  subHeading: { fontSize: 11, fontWeight: '700', color: '#64748B', textTransform: 'uppercase', marginBottom: 4 },
+  fbScoresContainer: { backgroundColor: colors.background, borderRadius: 8, padding: 10, gap: 6 },
+  subHeading: { fontSize: 11, fontWeight: '700', color: colors.secondaryText, textTransform: 'uppercase', marginBottom: 4 },
   scoreRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  criterionName: { fontSize: 13, color: '#334155', flex: 1 },
+  criterionName: { fontSize: 13, color: colors.secondaryText, flex: 1 },
   starsWrap: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  scoreNumber: { fontSize: 12, fontWeight: '700', color: '#0F172A' },
-  scoreNoteText: { fontSize: 11, color: '#64748B', fontStyle: 'italic', marginTop: 2 },
-  noteSection: { backgroundColor: '#F8FAFC', borderRadius: 8, padding: 10 },
-  noteLabel: { fontSize: 12, fontWeight: '700', color: '#334155', marginBottom: 4 },
-  noteBody: { fontSize: 13, color: '#475569', lineHeight: 18 },
-  radarCard: { backgroundColor: '#FFFFFF', borderRadius: 14, padding: 16, alignItems: 'center', borderWidth: 1, borderColor: '#E2E8F0' },
-  radarTitle: { fontSize: 16, fontWeight: '800', color: '#0F172A' },
-  radarSubtitle: { fontSize: 12, color: '#64748B', marginTop: 2, marginBottom: 16 },
-  timelineCard: { backgroundColor: '#FFFFFF', borderRadius: 14, padding: 16, borderWidth: 1, borderColor: '#E2E8F0' },
+  scoreNumber: { fontSize: 12, fontWeight: '700', color: colors.text },
+  scoreNoteText: { fontSize: 11, color: colors.secondaryText, fontStyle: 'italic', marginTop: 2 },
+  noteSection: { backgroundColor: colors.background, borderRadius: 8, padding: 10 },
+  noteLabel: { fontSize: 12, fontWeight: '700', color: colors.secondaryText, marginBottom: 4 },
+  noteBody: { fontSize: 13, color: colors.secondaryText, lineHeight: 18 },
+  radarCard: { backgroundColor: colors.card, borderRadius: 14, padding: 16, alignItems: 'center', borderWidth: 1, borderColor: colors.cardBorder },
+  radarTitle: { fontSize: 16, fontWeight: '800', color: colors.text },
+  radarSubtitle: { fontSize: 12, color: colors.secondaryText, marginTop: 2, marginBottom: 16 },
+  timelineCard: { backgroundColor: colors.card, borderRadius: 14, padding: 16, borderWidth: 1, borderColor: colors.cardBorder },
   timelineRow: { flexDirection: 'row', marginBottom: 16 },
   timelineCol: { alignItems: 'center', marginRight: 12, width: 20 },
   timelineDot: { width: 10, height: 10, borderRadius: 5, marginTop: 4 },
-  timelineBar: { width: 2, flex: 1, backgroundColor: '#E2E8F0', marginTop: 4 },
+  timelineBar: { width: 2, flex: 1, backgroundColor: colors.cardBorder, marginTop: 4 },
   timelineBody: { flex: 1 },
   timelineHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  timelineActionTitle: { fontSize: 13, fontWeight: '700', color: '#0F172A', flex: 1 },
-  timelineDate: { fontSize: 11, color: '#94A3B8' },
-  timelineActionDesc: { fontSize: 12, color: '#64748B', marginTop: 2 },
+  timelineActionTitle: { fontSize: 13, fontWeight: '700', color: colors.text, flex: 1 },
+  timelineDate: { fontSize: 11, color: colors.mutedText },
+  timelineActionDesc: { fontSize: 12, color: colors.secondaryText, marginTop: 2 },
 });

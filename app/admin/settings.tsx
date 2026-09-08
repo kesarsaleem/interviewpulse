@@ -14,11 +14,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "../../lib/supabase/client";
 import { useAuth } from "../../hooks/useAuth";
 import { ROUTES } from "../../constants/routes";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 
 export default function AdminSettingsScreen() {
   const { user, signOut } = useAuth();
   const { themeMode, setThemeMode, colors } = useTheme();
+  const styles = createStyles(colors);
 
   // Settings Toggles (State)
   const [offlineSyncEnabled, setOfflineSyncEnabled] = useState(true);
@@ -82,7 +84,7 @@ export default function AdminSettingsScreen() {
           onPress={() => router.push("/admin/dashboard")}
           hitSlop={8}
         >
-          <Ionicons name="arrow-back" size={22} color="#0F172A" />
+          <Ionicons name="arrow-back" size={22} color={colors.text} />
         </Pressable>
         <Text style={styles.navTitle}>System Settings</Text>
         <View style={{ width: 38 }} />
@@ -107,7 +109,7 @@ export default function AdminSettingsScreen() {
             <Text style={styles.accountEmail}>{user?.email || "admin@interviewpulse.com"}</Text>
             <Text style={styles.accountHint}>Tap to edit name or update password</Text>
           </View>
-          <Ionicons name="chevron-forward" size={20} color="#94A3B8" />
+          <Ionicons name="chevron-forward" size={20} color={colors.mutedText} />
         </Pressable>
 
         {/* APPEARANCE (INDEPENDENT THEME) */}
@@ -134,7 +136,7 @@ export default function AdminSettingsScreen() {
               <Text style={[styles.themeOptionSubtitle, { color: colors.mutedText }]}>Clean</Text>
               {themeMode === "light" && (
                 <View style={styles.checkPill}>
-                  <Ionicons name="checkmark" size={13} color="#2563EB" />
+                  <Ionicons name="checkmark" size={13} color={colors.primary} />
                 </View>
               )}
             </Pressable>
@@ -155,7 +157,7 @@ export default function AdminSettingsScreen() {
               <Text style={[styles.themeOptionSubtitle, { color: colors.mutedText }]}>Midnight</Text>
               {themeMode === "dark" && (
                 <View style={styles.checkPill}>
-                  <Ionicons name="checkmark" size={13} color="#2563EB" />
+                  <Ionicons name="checkmark" size={13} color={colors.primary} />
                 </View>
               )}
             </Pressable>
@@ -176,7 +178,7 @@ export default function AdminSettingsScreen() {
             <Switch
               value={offlineSyncEnabled}
               onValueChange={setOfflineSyncEnabled}
-              trackColor={{ false: "#CBD5E1", true: "#93C5FD" }}
+              trackColor={{ false: colors.inputBorder, true: "#93C5FD" }}
               thumbColor={offlineSyncEnabled ? "#2563EB" : "#F8FAFC"}
             />
           </View>
@@ -193,7 +195,7 @@ export default function AdminSettingsScreen() {
             <Switch
               value={autoAdvanceEnabled}
               onValueChange={setAutoAdvanceEnabled}
-              trackColor={{ false: "#CBD5E1", true: "#93C5FD" }}
+              trackColor={{ false: colors.inputBorder, true: "#93C5FD" }}
               thumbColor={autoAdvanceEnabled ? "#2563EB" : "#F8FAFC"}
             />
           </View>
@@ -210,7 +212,7 @@ export default function AdminSettingsScreen() {
             <Switch
               value={requireFullConsensus}
               onValueChange={setRequireFullConsensus}
-              trackColor={{ false: "#CBD5E1", true: "#93C5FD" }}
+              trackColor={{ false: colors.inputBorder, true: "#93C5FD" }}
               thumbColor={requireFullConsensus ? "#2563EB" : "#F8FAFC"}
             />
           </View>
@@ -221,7 +223,7 @@ export default function AdminSettingsScreen() {
         <View style={styles.card}>
           <View style={styles.policyRow}>
             <View style={styles.policyIconCircle}>
-              <Ionicons name="lock-closed" size={20} color="#2563EB" />
+              <Ionicons name="lock-closed" size={20} color={colors.primary} />
             </View>
             <View style={styles.policyText}>
               <Text style={styles.policyTitle}>60-Minute Edit Window</Text>
@@ -259,7 +261,7 @@ export default function AdminSettingsScreen() {
             <Switch
               value={emailAlertsEnabled}
               onValueChange={setEmailAlertsEnabled}
-              trackColor={{ false: "#CBD5E1", true: "#93C5FD" }}
+              trackColor={{ false: colors.inputBorder, true: "#93C5FD" }}
               thumbColor={emailAlertsEnabled ? "#2563EB" : "#F8FAFC"}
             />
           </View>
@@ -271,10 +273,10 @@ export default function AdminSettingsScreen() {
             onPress={() => router.push("/admin/notifications")}
           >
             <View style={styles.linkRowLeft}>
-              <Ionicons name="time-outline" size={20} color="#64748B" style={{ marginRight: 10 }} />
+              <Ionicons name="time-outline" size={20} color={colors.secondaryText} style={{ marginRight: 10 }} />
               <Text style={styles.linkRowText}>View System Activity Feed</Text>
             </View>
-            <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
+            <Ionicons name="chevron-forward" size={18} color={colors.mutedText} />
           </Pressable>
         </View>
 
@@ -301,7 +303,7 @@ export default function AdminSettingsScreen() {
           <View style={styles.separator} />
 
           <Pressable style={styles.clearCacheBtn} onPress={handleClearCache}>
-            <Ionicons name="trash-bin-outline" size={16} color="#64748B" style={{ marginRight: 8 }} />
+            <Ionicons name="trash-bin-outline" size={16} color={colors.secondaryText} style={{ marginRight: 8 }} />
             <Text style={styles.clearCacheBtnText}>Refresh Local Cache</Text>
           </Pressable>
         </View>
@@ -325,10 +327,10 @@ export default function AdminSettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: colors.background,
   },
   topNav: {
     flexDirection: "row",
@@ -337,22 +339,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 16,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: "#E2E8F0",
+    borderBottomColor: colors.cardBorder,
   },
   backBtn: {
     width: 38,
     height: 38,
     borderRadius: 10,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: colors.divider,
     alignItems: "center",
     justifyContent: "center",
   },
   navTitle: {
     fontSize: 18,
     fontWeight: "800",
-    color: "#0F172A",
+    color: colors.text,
   },
   scrollContent: {
     padding: 20,
@@ -360,11 +362,11 @@ const styles = StyleSheet.create({
   accountCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: colors.cardBorder,
     marginBottom: 24,
     shadowColor: "#000",
     shadowOpacity: 0.04,
@@ -375,7 +377,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#2563EB",
+    backgroundColor: colors.primary,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 14,
@@ -383,38 +385,38 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 22,
     fontWeight: "800",
-    color: "#FFFFFF",
+    color: '#FFFFFF',
   },
   accountName: {
     fontSize: 16,
     fontWeight: "800",
-    color: "#0F172A",
+    color: colors.text,
   },
   accountEmail: {
     fontSize: 13,
-    color: "#64748B",
+    color: colors.secondaryText,
     marginTop: 2,
   },
   accountHint: {
     fontSize: 11,
-    color: "#2563EB",
+    color: colors.primary,
     marginTop: 4,
     fontWeight: "600",
   },
   sectionHeading: {
     fontSize: 12,
     fontWeight: "800",
-    color: "#94A3B8",
+    color: colors.mutedText,
     letterSpacing: 1,
     marginBottom: 10,
     marginLeft: 4,
   },
   card: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 18,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: colors.cardBorder,
     marginBottom: 24,
   },
   settingRow: {
@@ -434,7 +436,7 @@ const styles = StyleSheet.create({
   },
   settingDesc: {
     fontSize: 12,
-    color: "#64748B",
+    color: colors.secondaryText,
     marginTop: 3,
     lineHeight: 18,
   },
@@ -447,7 +449,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: colors.primaryLight,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 12,
@@ -459,17 +461,17 @@ const styles = StyleSheet.create({
   policyTitle: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#0F172A",
+    color: colors.text,
   },
   policyDesc: {
     fontSize: 12,
-    color: "#64748B",
+    color: colors.secondaryText,
     marginTop: 3,
     lineHeight: 18,
   },
   separator: {
     height: 1,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: colors.divider,
     marginVertical: 12,
   },
   linkRow: {
@@ -485,7 +487,7 @@ const styles = StyleSheet.create({
   linkRowText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#334155",
+    color: colors.secondaryText,
   },
   infoRow: {
     flexDirection: "row",
@@ -496,20 +498,20 @@ const styles = StyleSheet.create({
   infoLabel: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#64748B",
+    color: colors.secondaryText,
   },
   infoValue: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#0F172A",
+    color: colors.text,
   },
   clearCacheBtn: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F8FAFC",
+    backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: colors.cardBorder,
     height: 42,
     borderRadius: 10,
     marginTop: 4,
@@ -517,7 +519,7 @@ const styles = StyleSheet.create({
   clearCacheBtnText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#475569",
+    color: colors.secondaryText,
   },
   dangerTitle: {
     fontSize: 14,
@@ -527,7 +529,7 @@ const styles = StyleSheet.create({
   },
   dangerDesc: {
     fontSize: 12,
-    color: "#64748B",
+    color: colors.secondaryText,
     lineHeight: 18,
     marginBottom: 12,
   },
@@ -535,7 +537,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FEF2F2",
+    backgroundColor: colors.dangerLight,
     borderWidth: 1,
     borderColor: "#FCA5A5",
     height: 44,
@@ -544,7 +546,7 @@ const styles = StyleSheet.create({
   dangerBtnText: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#EF4444",
+    color: colors.danger,
   },
   themeCardNote: {
     fontSize: 12,
@@ -587,7 +589,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: colors.primaryLight,
     alignItems: "center",
     justifyContent: "center",
   },

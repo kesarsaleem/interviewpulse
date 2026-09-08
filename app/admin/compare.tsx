@@ -1,4 +1,6 @@
-﻿import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -36,6 +38,8 @@ interface CandidateCompareRow {
 }
 
 export default function CompareCandidatesScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { user } = useAuth();
 
   const [jobs, setJobs] = useState<any[]>([]);
@@ -413,7 +417,7 @@ export default function CompareCandidatesScreen() {
       {/* COMPARISON CONTENT */}
       {loading && !refreshing ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color="#2563EB" />
+          <ActivityIndicator size="large" color={colors.primary} />
           <Text style={styles.loadingText}>Analyzing Candidate Evaluations...</Text>
         </View>
       ) : (
@@ -425,7 +429,7 @@ export default function CompareCandidatesScreen() {
         >
           {compareRows.length === 0 ? (
             <View style={styles.emptyContainer}>
-              <Ionicons name="git-compare-outline" size={42} color="#94A3B8" />
+              <Ionicons name="git-compare-outline" size={42} color={colors.mutedText} />
               <Text style={styles.emptyTitle}>No Candidates to Compare</Text>
               <Text style={styles.emptySubtitle}>
                 Add candidates and collect panel evaluations to see side-by-side competency comparisons.
@@ -457,8 +461,8 @@ export default function CompareCandidatesScreen() {
                 const cand = row.candidate;
                 const verdictCfg = VERDICT_CONFIG[row.consensusVerdict] || {
                   label: 'Pending',
-                  bg: '#F1F5F9',
-                  text: '#64748B',
+                  bg: colors.divider,
+                  text: colors.secondaryText,
                   icon: 'hourglass-outline',
                 };
 
@@ -480,7 +484,7 @@ export default function CompareCandidatesScreen() {
                         {cand.current_role || 'Candidate'}
                       </Text>
                       <View style={styles.rowStageBadge}>
-                        <Ionicons name="git-branch-outline" size={10} color="#2563EB" />
+                        <Ionicons name="git-branch-outline" size={10} color={colors.primary} />
                         <Text style={styles.rowStageText} numberOfLines={1}>
                           {cand.stages?.name || 'Screening'}
                         </Text>
@@ -511,7 +515,7 @@ export default function CompareCandidatesScreen() {
                     <View style={{ width: 60, alignItems: 'flex-end', justifyContent: 'center' }}>
                       <View style={styles.countWrap}>
                         <Text style={styles.countText}>{row.interviewCount}</Text>
-                        <Ionicons name="chevron-forward" size={14} color="#94A3B8" />
+                        <Ionicons name="chevron-forward" size={14} color={colors.mutedText} />
                       </View>
                     </View>
                   </Pressable>
@@ -540,7 +544,7 @@ export default function CompareCandidatesScreen() {
                     </Text>
                     <Text style={styles.modalCandidateSub}>
                       {selectedCandidateRow.candidate.current_role || 'Candidate'} • Current Stage:{' '}
-                      <Text style={{ fontWeight: '700', color: '#2563EB' }}>
+                      <Text style={{ fontWeight: '700', color: colors.primary }}>
                         {selectedCandidateRow.candidate.stages?.name || 'Screening'}
                       </Text>
                     </Text>
@@ -550,7 +554,7 @@ export default function CompareCandidatesScreen() {
                     onPress={() => setDeepDiveVisible(false)}
                     hitSlop={10}
                   >
-                    <Ionicons name="close" size={22} color="#0F172A" />
+                    <Ionicons name="close" size={22} color={colors.text} />
                   </Pressable>
                 </View>
 
@@ -698,73 +702,73 @@ export default function CompareCandidatesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F8FAFC', padding: 24 },
-  loadingText: { marginTop: 12, fontSize: 14, color: '#64748B' },
-  header: { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 12, backgroundColor: '#FFFFFF', borderBottomWidth: 1, borderBottomColor: '#E2E8F0' },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background, padding: 24 },
+  loadingText: { marginTop: 12, fontSize: 14, color: colors.secondaryText },
+  header: { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 12, backgroundColor: colors.card, borderBottomWidth: 1, borderBottomColor: colors.cardBorder },
   headerLeft: { flex: 1 },
-  title: { fontSize: 20, fontWeight: '800', color: '#0F172A' },
-  subtitle: { fontSize: 12, color: '#64748B', marginTop: 2 },
-  jobSelectSection: { backgroundColor: '#FFFFFF', paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#E2E8F0' },
-  jobSelectLabel: { fontSize: 12, fontWeight: '700', color: '#475569', marginBottom: 6, textTransform: 'uppercase' },
+  title: { fontSize: 20, fontWeight: '800', color: colors.text },
+  subtitle: { fontSize: 12, color: colors.secondaryText, marginTop: 2 },
+  jobSelectSection: { backgroundColor: colors.card, paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: colors.cardBorder },
+  jobSelectLabel: { fontSize: 12, fontWeight: '700', color: colors.secondaryText, marginBottom: 6, textTransform: 'uppercase' },
   jobScroll: { gap: 8 },
-  jobPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, backgroundColor: '#F1F5F9', borderWidth: 1, borderColor: '#E2E8F0', marginRight: 6 },
-  jobPillActive: { backgroundColor: '#EFF6FF', borderColor: '#2563EB' },
-  jobPillText: { fontSize: 12, fontWeight: '600', color: '#64748B' },
-  jobPillTextActive: { color: '#2563EB', fontWeight: '700' },
+  jobPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, backgroundColor: colors.divider, borderWidth: 1, borderColor: colors.cardBorder, marginRight: 6 },
+  jobPillActive: { backgroundColor: colors.primaryLight, borderColor: colors.primary },
+  jobPillText: { fontSize: 12, fontWeight: '600', color: colors.secondaryText },
+  jobPillTextActive: { color: colors.primary, fontWeight: '700' },
   content: { flex: 1 },
   contentContainer: { padding: 16, paddingBottom: 40 },
   emptyContainer: { alignItems: 'center', justifyContent: 'center', padding: 40 },
-  emptyTitle: { fontSize: 16, fontWeight: '700', color: '#0F172A', marginTop: 12 },
-  emptySubtitle: { fontSize: 13, color: '#64748B', textAlign: 'center', marginTop: 4, lineHeight: 18, marginBottom: 16 },
-  emptyBtn: { backgroundColor: '#2563EB', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8 },
+  emptyTitle: { fontSize: 16, fontWeight: '700', color: colors.text, marginTop: 12 },
+  emptySubtitle: { fontSize: 13, color: colors.secondaryText, textAlign: 'center', marginTop: 4, lineHeight: 18, marginBottom: 16 },
+  emptyBtn: { backgroundColor: colors.primary, paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8 },
   emptyBtnText: { color: '#FFFFFF', fontWeight: '700', fontSize: 13 },
-  tableHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 8, backgroundColor: '#EFF6FF', borderRadius: 8, marginBottom: 10 },
+  tableHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 8, backgroundColor: colors.primaryLight, borderRadius: 8, marginBottom: 10 },
   th: { fontSize: 11, fontWeight: '700', color: '#1E40AF', textTransform: 'uppercase' },
-  tableRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFFFFF', borderRadius: 12, padding: 14, marginBottom: 10, borderWidth: 1, borderColor: '#E2E8F0', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 2, elevation: 1 },
-  rowCandName: { fontSize: 15, fontWeight: '700', color: '#0F172A' },
-  rowCandRole: { fontSize: 12, color: '#64748B', marginTop: 1 },
-  rowStageBadge: { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: '#EFF6FF', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, alignSelf: 'flex-start', marginTop: 4 },
-  rowStageText: { fontSize: 10, fontWeight: '600', color: '#2563EB' },
+  tableRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.card, borderRadius: 12, padding: 14, marginBottom: 10, borderWidth: 1, borderColor: colors.cardBorder, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 2, elevation: 1 },
+  rowCandName: { fontSize: 15, fontWeight: '700', color: colors.text },
+  rowCandRole: { fontSize: 12, color: colors.secondaryText, marginTop: 1 },
+  rowStageBadge: { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: colors.primaryLight, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, alignSelf: 'flex-start', marginTop: 4 },
+  rowStageText: { fontSize: 10, fontWeight: '600', color: colors.primary },
   scorePill: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#FEF3C7', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 12 },
   scorePillText: { fontSize: 13, fontWeight: '800', color: '#B45309' },
-  scoreMaxText: { fontSize: 10, color: '#94A3B8', marginTop: 2 },
+  scoreMaxText: { fontSize: 10, color: colors.mutedText, marginTop: 2 },
   verdictPill: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10 },
   verdictPillText: { fontSize: 11, fontWeight: '700' },
   countWrap: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  countText: { fontSize: 13, fontWeight: '700', color: '#0F172A' },
-  tapTipText: { fontSize: 12, color: '#64748B', textAlign: 'center', marginTop: 8, fontStyle: 'italic' },
+  countText: { fontSize: 13, fontWeight: '700', color: colors.text },
+  tapTipText: { fontSize: 12, color: colors.secondaryText, textAlign: 'center', marginTop: 8, fontStyle: 'italic' },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
-  modalContent: { backgroundColor: '#FFFFFF', borderTopLeftRadius: 20, borderTopRightRadius: 20, maxHeight: '90%', paddingBottom: 24 },
-  modalHeader: { flexDirection: 'row', alignItems: 'center', padding: 18, borderBottomWidth: 1, borderBottomColor: '#E2E8F0' },
-  modalCandidateName: { fontSize: 18, fontWeight: '800', color: '#0F172A' },
-  modalCandidateSub: { fontSize: 12, color: '#64748B', marginTop: 2 },
+  modalContent: { backgroundColor: colors.card, borderTopLeftRadius: 20, borderTopRightRadius: 20, maxHeight: '90%', paddingBottom: 24 },
+  modalHeader: { flexDirection: 'row', alignItems: 'center', padding: 18, borderBottomWidth: 1, borderBottomColor: colors.cardBorder },
+  modalCandidateName: { fontSize: 18, fontWeight: '800', color: colors.text },
+  modalCandidateSub: { fontSize: 12, color: colors.secondaryText, marginTop: 2 },
   modalCloseBtn: { padding: 4 },
   modalScroll: { padding: 16 },
   modalMetricsRow: { flexDirection: 'row', gap: 10, marginBottom: 16 },
-  modalMetricBox: { flex: 1, backgroundColor: '#F8FAFC', borderRadius: 10, padding: 10, alignItems: 'center', borderWidth: 1, borderColor: '#E2E8F0' },
-  modalMetricNum: { fontSize: 18, fontWeight: '800', color: '#0F172A' },
-  modalMetricLabel: { fontSize: 11, color: '#64748B', marginTop: 2 },
-  modalRadarCard: { backgroundColor: '#FFFFFF', borderRadius: 12, padding: 14, alignItems: 'center', borderWidth: 1, borderColor: '#E2E8F0', marginBottom: 16 },
-  radarCardTitle: { fontSize: 14, fontWeight: '700', color: '#0F172A', marginBottom: 8 },
-  modalFeedbackSectionTitle: { fontSize: 14, fontWeight: '700', color: '#0F172A', marginBottom: 10 },
-  emptyFeedbacksBox: { backgroundColor: '#F8FAFC', borderRadius: 8, padding: 16, alignItems: 'center', marginBottom: 16 },
-  emptyFeedbacksText: { fontSize: 12, color: '#64748B', fontStyle: 'italic' },
-  modalFbCard: { backgroundColor: '#F8FAFC', borderRadius: 10, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: '#E2E8F0', gap: 8 },
+  modalMetricBox: { flex: 1, backgroundColor: colors.background, borderRadius: 10, padding: 10, alignItems: 'center', borderWidth: 1, borderColor: colors.cardBorder },
+  modalMetricNum: { fontSize: 18, fontWeight: '800', color: colors.text },
+  modalMetricLabel: { fontSize: 11, color: colors.secondaryText, marginTop: 2 },
+  modalRadarCard: { backgroundColor: colors.card, borderRadius: 12, padding: 14, alignItems: 'center', borderWidth: 1, borderColor: colors.cardBorder, marginBottom: 16 },
+  radarCardTitle: { fontSize: 14, fontWeight: '700', color: colors.text, marginBottom: 8 },
+  modalFeedbackSectionTitle: { fontSize: 14, fontWeight: '700', color: colors.text, marginBottom: 10 },
+  emptyFeedbacksBox: { backgroundColor: colors.background, borderRadius: 8, padding: 16, alignItems: 'center', marginBottom: 16 },
+  emptyFeedbacksText: { fontSize: 12, color: colors.secondaryText, fontStyle: 'italic' },
+  modalFbCard: { backgroundColor: colors.background, borderRadius: 10, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: colors.cardBorder, gap: 8 },
   modalFbHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
-  reviewerNameText: { fontSize: 14, fontWeight: '700', color: '#0F172A' },
-  reviewerStageText: { fontSize: 11, color: '#64748B' },
-  criteriaGrid: { gap: 4, backgroundColor: '#FFFFFF', borderRadius: 6, padding: 8 },
+  reviewerNameText: { fontSize: 14, fontWeight: '700', color: colors.text },
+  reviewerStageText: { fontSize: 11, color: colors.secondaryText },
+  criteriaGrid: { gap: 4, backgroundColor: colors.card, borderRadius: 6, padding: 8 },
   criterionScoreRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  criterionNameText: { fontSize: 12, color: '#334155', flex: 1 },
+  criterionNameText: { fontSize: 12, color: colors.secondaryText, flex: 1 },
   criterionStarsWrap: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  criterionScoreText: { fontSize: 11, fontWeight: '700', color: '#0F172A' },
-  commentText: { fontSize: 12, color: '#475569', lineHeight: 17 },
-  modalActionsCard: { backgroundColor: '#FFFFFF', borderRadius: 12, padding: 14, marginTop: 12, marginBottom: 20, borderWidth: 1, borderColor: '#E2E8F0' },
-  modalActionsTitle: { fontSize: 12, fontWeight: '700', color: '#64748B', textTransform: 'uppercase', marginBottom: 10 },
+  criterionScoreText: { fontSize: 11, fontWeight: '700', color: colors.text },
+  commentText: { fontSize: 12, color: colors.secondaryText, lineHeight: 17 },
+  modalActionsCard: { backgroundColor: colors.card, borderRadius: 12, padding: 14, marginTop: 12, marginBottom: 20, borderWidth: 1, borderColor: colors.cardBorder },
+  modalActionsTitle: { fontSize: 12, fontWeight: '700', color: colors.secondaryText, textTransform: 'uppercase', marginBottom: 10 },
   modalActionButtons: { gap: 10 },
-  modalAdvanceBtn: { backgroundColor: '#2563EB', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10, borderRadius: 8 },
+  modalAdvanceBtn: { backgroundColor: colors.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10, borderRadius: 8 },
   modalAdvanceBtnText: { color: '#FFFFFF', fontWeight: '700', fontSize: 13 },
   modalDecisionSplit: { flexDirection: 'row', gap: 10 },
   modalHireBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, backgroundColor: '#DCFCE7', paddingVertical: 10, borderRadius: 8, borderWidth: 1, borderColor: '#BBF7D0' },

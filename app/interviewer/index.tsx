@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -18,6 +20,8 @@ import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
 import { runSync } from '../../lib/sync/syncEngine';
 
 export default function InterviewerHome() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { user } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -152,7 +156,7 @@ export default function InterviewerHome() {
     return (
       <View style={styles.center}>
         <View style={styles.loadingCard}>
-          <ActivityIndicator size="large" color="#2563EB" />
+          <ActivityIndicator size="large" color={colors.primary} />
           <Text style={styles.loadingText}>Loading Dashboard...</Text>
         </View>
       </View>
@@ -213,13 +217,13 @@ export default function InterviewerHome() {
         style={styles.scrollArea}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#2563EB" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
       >
         {/* STATS SUMMARY GRID */}
         <View style={styles.statsGrid}>
           <View style={styles.statCard}>
-            <View style={[styles.statIconBadge, { backgroundColor: '#EFF6FF' }]}>
-              <Ionicons name="calendar" size={20} color="#2563EB" />
+            <View style={[styles.statIconBadge, { backgroundColor: colors.primaryLight }]}>
+              <Ionicons name="calendar" size={20} color={colors.primary} />
             </View>
             <Text style={styles.statNumber}>{totalInterviews}</Text>
             <Text style={styles.statLabel}>My Interviews</Text>
@@ -262,8 +266,8 @@ export default function InterviewerHome() {
               style={styles.quickActionBtn}
               onPress={() => router.push('/interviewer/interviews')}
             >
-              <View style={[styles.quickActionIcon, { backgroundColor: '#DBEAFE' }]}>
-                <Ionicons name="list" size={20} color="#2563EB" />
+              <View style={[styles.quickActionIcon, { backgroundColor: colors.primaryLight }]}>
+                <Ionicons name="list" size={20} color={colors.primary} />
               </View>
               <Text style={styles.quickActionLabel}>Interviews</Text>
             </Pressable>
@@ -312,14 +316,14 @@ export default function InterviewerHome() {
             hitSlop={8}
           >
             <Text style={styles.viewAllText}>View all</Text>
-            <Ionicons name="arrow-forward" size={14} color="#2563EB" />
+            <Ionicons name="arrow-forward" size={14} color={colors.primary} />
           </Pressable>
         </View>
 
         {candidates.length === 0 ? (
           <View style={styles.emptyCard}>
             <View style={styles.emptyIconCircle}>
-              <Ionicons name="calendar-outline" size={32} color="#94A3B8" />
+              <Ionicons name="calendar-outline" size={32} color={colors.mutedText} />
             </View>
             <Text style={styles.emptyTitle}>No Assigned Interviews</Text>
             <Text style={styles.emptySubtitle}>
@@ -353,14 +357,14 @@ export default function InterviewerHome() {
 
                   <View style={styles.cardTagsRow}>
                     <View style={styles.jobTag}>
-                      <Ionicons name="briefcase-outline" size={11} color="#475569" />
+                      <Ionicons name="briefcase-outline" size={11} color={colors.secondaryText} />
                       <Text style={styles.jobTagText} numberOfLines={1}>
                         {item.jobs?.title || 'General'}
                       </Text>
                     </View>
 
                     <View style={styles.stageTag}>
-                      <Ionicons name="layers-outline" size={11} color="#2563EB" />
+                      <Ionicons name="layers-outline" size={11} color={colors.primary} />
                       <Text style={styles.stageTagText} numberOfLines={1}>
                         {item.stages?.name || 'Round'}
                       </Text>
@@ -371,11 +375,11 @@ export default function InterviewerHome() {
                 {/* SCHEDULE & ACTION */}
                 <View style={styles.cardRightCol}>
                   <View style={styles.timeBadge}>
-                    <Ionicons name="time-outline" size={12} color="#2563EB" />
+                    <Ionicons name="time-outline" size={12} color={colors.primary} />
                     <Text style={styles.timeText}>{item.interview_time || '10:00 AM'}</Text>
                   </View>
                   <Text style={styles.dateSubtext}>{item.interview_date || 'Upcoming'}</Text>
-                  <Ionicons name="chevron-forward" size={16} color="#CBD5E1" style={{ alignSelf: 'flex-end', marginTop: 4 }} />
+                  <Ionicons name="chevron-forward" size={16} color={colors.inputBorder} style={{ alignSelf: 'flex-end', marginTop: 4 }} />
                 </View>
               </Pressable>
             );
@@ -419,8 +423,8 @@ export default function InterviewerHome() {
 
           <View style={styles.bottomCard}>
             <View style={styles.bottomCardHeader}>
-              <View style={[styles.bottomIconWrap, { backgroundColor: '#EFF6FF' }]}>
-                <Ionicons name="trending-up" size={18} color="#2563EB" />
+              <View style={[styles.bottomIconWrap, { backgroundColor: colors.primaryLight }]}>
+                <Ionicons name="trending-up" size={18} color={colors.primary} />
               </View>
               <Text style={styles.bottomCardTitle}>Completion</Text>
             </View>
@@ -449,7 +453,7 @@ export default function InterviewerHome() {
         <View style={styles.syncCard}>
           <View style={styles.syncCardLeft}>
             <View style={styles.syncIconCircle}>
-              <Ionicons name="cloud-done-outline" size={22} color="#2563EB" />
+              <Ionicons name="cloud-done-outline" size={22} color={colors.primary} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.syncCardTitle}>Offline-First Engine</Text>
@@ -480,17 +484,17 @@ export default function InterviewerHome() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   loadingCard: {
     padding: 24,
     borderRadius: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -502,11 +506,11 @@ const styles = StyleSheet.create({
     marginTop: 14,
     fontSize: 14,
     fontWeight: '600',
-    color: '#475569',
+    color: colors.secondaryText,
   },
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   header: {
     backgroundColor: '#06235C',
@@ -552,7 +556,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
@@ -588,7 +592,7 @@ const styles = StyleSheet.create({
   rolePillText: {
     fontSize: 10,
     fontWeight: '800',
-    color: '#BFDBFE',
+    color: colors.inputBorder,
     letterSpacing: 0.8,
   },
   greetingTitle: {
@@ -619,12 +623,12 @@ const styles = StyleSheet.create({
   },
   statCard: {
     width: '48%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 22,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
-    shadowColor: '#0F172A',
+    borderColor: colors.divider,
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
@@ -641,28 +645,28 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 24,
     fontWeight: '900',
-    color: '#0F172A',
+    color: colors.text,
     letterSpacing: -0.5,
     marginBottom: 2,
   },
   statLabel: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#334155',
+    color: colors.secondaryText,
   },
   statMeta: {
     fontSize: 11,
-    color: '#94A3B8',
+    color: colors.mutedText,
     marginTop: 2,
   },
   quickActionsCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 22,
     padding: 16,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
-    shadowColor: '#0F172A',
+    borderColor: colors.divider,
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.04,
     shadowRadius: 6,
@@ -671,7 +675,7 @@ const styles = StyleSheet.create({
   quickActionsTitle: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#94A3B8',
+    color: colors.mutedText,
     letterSpacing: 0.8,
     marginBottom: 12,
   },
@@ -694,7 +698,7 @@ const styles = StyleSheet.create({
   quickActionLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#475569',
+    color: colors.secondaryText,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -706,12 +710,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     letterSpacing: -0.3,
   },
   sectionSubtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 1,
   },
   viewAllBtn: {
@@ -724,22 +728,22 @@ const styles = StyleSheet.create({
   viewAllText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#2563EB',
+    color: colors.primary,
   },
   emptyCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 22,
     padding: 28,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     marginBottom: 16,
   },
   emptyIconCircle: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
@@ -747,26 +751,26 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#334155',
+    color: colors.secondaryText,
     marginBottom: 4,
   },
   emptySubtitle: {
     fontSize: 12,
-    color: '#94A3B8',
+    color: colors.mutedText,
     textAlign: 'center',
     lineHeight: 18,
     maxWidth: 260,
   },
   interviewCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 22,
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
-    shadowColor: '#0F172A',
+    borderColor: colors.divider,
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
@@ -780,9 +784,9 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 16,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderWidth: 1,
-    borderColor: '#DBEAFE',
+    borderColor: colors.primaryLight,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -790,7 +794,7 @@ const styles = StyleSheet.create({
   cardAvatarText: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#2563EB',
+    color: colors.primary,
   },
   cardBody: {
     flex: 1,
@@ -799,12 +803,12 @@ const styles = StyleSheet.create({
   candidateName: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 2,
   },
   candidateRole: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginBottom: 6,
   },
   cardTagsRow: {
@@ -816,7 +820,7 @@ const styles = StyleSheet.create({
   jobTag: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     paddingHorizontal: 7,
     paddingVertical: 3,
     borderRadius: 8,
@@ -825,13 +829,13 @@ const styles = StyleSheet.create({
   jobTagText: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#475569',
+    color: colors.secondaryText,
     maxWidth: 90,
   },
   stageTag: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 7,
     paddingVertical: 3,
     borderRadius: 8,
@@ -840,7 +844,7 @@ const styles = StyleSheet.create({
   stageTagText: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#2563EB',
+    color: colors.primary,
     maxWidth: 90,
   },
   cardRightCol: {
@@ -850,7 +854,7 @@ const styles = StyleSheet.create({
   timeBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -860,11 +864,11 @@ const styles = StyleSheet.create({
   timeText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#2563EB',
+    color: colors.primary,
   },
   dateSubtext: {
     fontSize: 11,
-    color: '#94A3B8',
+    color: colors.mutedText,
     fontWeight: '500',
   },
   bottomRow: {
@@ -875,12 +879,12 @@ const styles = StyleSheet.create({
   },
   bottomCard: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 22,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
-    shadowColor: '#0F172A',
+    borderColor: colors.divider,
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.04,
     shadowRadius: 6,
@@ -902,11 +906,11 @@ const styles = StyleSheet.create({
   bottomCardTitle: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
   },
   bottomEmptyText: {
     fontSize: 12,
-    color: '#94A3B8',
+    color: colors.mutedText,
     marginVertical: 8,
   },
   feedbackMiniRow: {
@@ -915,17 +919,17 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingVertical: 5,
     borderBottomWidth: 1,
-    borderBottomColor: '#F8FAFC',
+    borderBottomColor: colors.background,
   },
   feedbackMiniText: {
     flex: 1,
     fontSize: 12,
     fontWeight: '600',
-    color: '#334155',
+    color: colors.secondaryText,
   },
   feedbackMiniDate: {
     fontSize: 10,
-    color: '#94A3B8',
+    color: colors.mutedText,
   },
   completionBody: {
     alignItems: 'center',
@@ -934,12 +938,12 @@ const styles = StyleSheet.create({
   completionBigNumber: {
     fontSize: 28,
     fontWeight: '900',
-    color: '#2563EB',
+    color: colors.primary,
     letterSpacing: -0.5,
   },
   completionDesc: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
     marginBottom: 10,
     textAlign: 'center',
@@ -947,24 +951,24 @@ const styles = StyleSheet.create({
   progressBarBg: {
     width: '100%',
     height: 6,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: colors.cardBorder,
     borderRadius: 3,
     overflow: 'hidden',
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     borderRadius: 3,
   },
   syncCard: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderRadius: 22,
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: colors.inputBorder,
     marginTop: 4,
     marginBottom: 24,
   },
@@ -979,7 +983,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: '#DBEAFE',
+    backgroundColor: colors.primaryLight,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -991,17 +995,17 @@ const styles = StyleSheet.create({
   },
   syncCardDesc: {
     fontSize: 11,
-    color: '#3B82F6',
+    color: colors.accent,
     lineHeight: 16,
   },
   syncCardBtn: {
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 14,
-    shadowColor: '#2563EB',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,

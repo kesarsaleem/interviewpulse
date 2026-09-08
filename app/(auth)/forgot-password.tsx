@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
@@ -28,6 +30,8 @@ function normalizeEmail(value: string) {
 }
 
 export default function ForgotPasswordScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { resetPassword } = useAuth();
   const [step, setStep] = useState<'request' | 'verify'>('request');
   const [email, setEmail] = useState('');
@@ -165,7 +169,7 @@ export default function ForgotPasswordScreen() {
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your email"
-                  placeholderTextColor="#94A3B8"
+                  placeholderTextColor={colors.mutedText}
                   value={email}
                   onChangeText={(value) => {
                     setEmail(value);
@@ -194,7 +198,7 @@ export default function ForgotPasswordScreen() {
                 <TextInput
                   style={styles.input}
                   placeholder="Enter code"
-                  placeholderTextColor="#94A3B8"
+                  placeholderTextColor={colors.mutedText}
                   value={otp}
                   onChangeText={(value) => setOtp(value.replace(/\D/g, '').slice(0, 6))}
                   keyboardType="number-pad"
@@ -205,7 +209,7 @@ export default function ForgotPasswordScreen() {
                   <TextInput
                     style={styles.passwordInput}
                     placeholder="Enter new password"
-                    placeholderTextColor="#94A3B8"
+                    placeholderTextColor={colors.mutedText}
                     value={password}
                     onChangeText={setPassword}
                     secureTextEntry={!showPassword}
@@ -214,7 +218,7 @@ export default function ForgotPasswordScreen() {
                     <Ionicons
                       name={showPassword ? 'eye-off' : 'eye'}
                       size={20}
-                      color="#64748B"
+                      color={colors.secondaryText}
                     />
                   </Pressable>
                 </View>
@@ -222,7 +226,7 @@ export default function ForgotPasswordScreen() {
                 <TextInput
                   style={styles.input}
                   placeholder="Confirm new password"
-                  placeholderTextColor="#94A3B8"
+                  placeholderTextColor={colors.mutedText}
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
                   secureTextEntry={!showPassword}
@@ -254,26 +258,26 @@ export default function ForgotPasswordScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: { flex: 1 },
   scroll: { flexGrow: 1, justifyContent: 'center', padding: 25 },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 30,
     padding: 28,
     borderWidth: 1,
-    borderColor: '#475569',
+    borderColor: colors.secondaryText,
     shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowRadius: 20,
     elevation: 8,
   },
   title: { fontSize: 30, fontWeight: '900', color: '#1E3A8A', marginTop: 20 },
-  subtitle: { fontSize: 15, color: '#64748B', marginTop: 8, lineHeight: 22 },
+  subtitle: { fontSize: 15, color: colors.secondaryText, marginTop: 8, lineHeight: 22 },
   line: {
     width: 50,
     height: 4,
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     borderRadius: 10,
     marginVertical: 25,
   },
@@ -286,11 +290,11 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 55,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 16,
     paddingHorizontal: 18,
     borderWidth: 1,
-    borderColor: '#CBD5E1',
+    borderColor: colors.inputBorder,
     marginBottom: 12,
     fontSize: 16,
   },
@@ -298,17 +302,17 @@ const styles = StyleSheet.create({
     height: 55,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 16,
     paddingHorizontal: 18,
     borderWidth: 1,
-    borderColor: '#CBD5E1',
+    borderColor: colors.inputBorder,
     marginBottom: 12,
   },
   passwordInput: { flex: 1, height: 55, fontSize: 16 },
   button: {
     height: 58,
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
@@ -318,21 +322,21 @@ const styles = StyleSheet.create({
   buttonText: { color: '#FFFFFF', fontSize: 17, fontWeight: '800' },
   link: {
     textAlign: 'center',
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '700',
     marginTop: 18,
   },
   back: {
     textAlign: 'center',
     marginTop: 25,
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '700',
   },
   errorBox: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: '#FEF2F2',
+    backgroundColor: colors.dangerLight,
     padding: 12,
     borderRadius: 12,
     marginBottom: 15,

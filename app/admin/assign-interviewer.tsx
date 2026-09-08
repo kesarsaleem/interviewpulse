@@ -1,4 +1,6 @@
-﻿import React, { useEffect, useState, useCallback } from 'react';
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -14,6 +16,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../lib/supabase/client';
 
 export default function AssignInterviewerScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const params = useLocalSearchParams();
   const jobId = params.jobId as string | undefined;
   const userId = params.userId as string | undefined;
@@ -191,7 +195,7 @@ export default function AssignInterviewerScreen() {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Loading panel information...</Text>
       </View>
     );
@@ -202,7 +206,7 @@ export default function AssignInterviewerScreen() {
       {/* HEADER */}
       <View style={styles.header}>
         <Pressable style={styles.backBtn} onPress={() => router.back()} hitSlop={10}>
-          <Ionicons name="arrow-back" size={22} color="#0F172A" />
+          <Ionicons name="arrow-back" size={22} color={colors.text} />
         </Pressable>
         <View style={styles.headerTitleWrap}>
           <Text style={styles.title}>
@@ -225,7 +229,7 @@ export default function AssignInterviewerScreen() {
 
         {items.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Ionicons name="alert-circle-outline" size={36} color="#94A3B8" />
+            <Ionicons name="alert-circle-outline" size={36} color={colors.mutedText} />
             <Text style={styles.emptyText}>
               {mode === 'assign_interviewers_to_job'
                 ? 'No interviewers found. Please create interviewer accounts first.'
@@ -281,22 +285,22 @@ export default function AssignInterviewerScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   center: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     padding: 24,
   },
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   header: {
     flexDirection: 'row',
@@ -304,20 +308,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 14,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.cardBorder,
     gap: 12,
   },
   backBtn: {
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   headerTitleWrap: {
     flex: 1,
@@ -325,11 +329,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
   },
   subtitle: {
     fontSize: 13,
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '600',
     marginTop: 1,
   },
@@ -342,7 +346,7 @@ const styles = StyleSheet.create({
   },
   instruction: {
     fontSize: 13,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginBottom: 14,
     lineHeight: 18,
   },
@@ -353,37 +357,37 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 13,
-    color: '#64748B',
+    color: colors.secondaryText,
     textAlign: 'center',
     marginTop: 8,
   },
   itemCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   itemCardSelected: {
-    borderColor: '#2563EB',
-    backgroundColor: '#EFF6FF',
+    borderColor: colors.primary,
+    backgroundColor: colors.primaryLight,
   },
   checkbox: {
     width: 24,
     height: 24,
     borderRadius: 6,
     borderWidth: 2,
-    borderColor: '#CBD5E1',
+    borderColor: colors.inputBorder,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
   },
   checkboxSelected: {
-    backgroundColor: '#2563EB',
-    borderColor: '#2563EB',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   itemInfo: {
     flex: 1,
@@ -391,28 +395,28 @@ const styles = StyleSheet.create({
   itemTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
   },
   itemSubtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   footer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
+    borderTopColor: colors.cardBorder,
   },
   saveBtn: {
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
     paddingVertical: 14,
     borderRadius: 10,
-    shadowColor: '#2563EB',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,

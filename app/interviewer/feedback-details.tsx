@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   View,
@@ -19,6 +21,8 @@ import { getLocalFeedbackDetails, isFeedbackEditable } from '../../services/feed
 import { getDb } from '../../lib/sqlite/schema';
 
 export default function FeedbackDetails() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const params = useLocalSearchParams<{
     feedbackId?: string;
     candidateId?: string;
@@ -179,7 +183,7 @@ export default function FeedbackDetails() {
     return [
       {
         interviewerName: 'Your Score',
-        color: '#2563EB',
+        color: colors.primary,
         scores: criteria.map((c) => {
           const found = feedback?.feedback_scores?.find((s: any) => s.criterion_id === c.id);
           return found ? found.score : 0;
@@ -209,7 +213,7 @@ export default function FeedbackDetails() {
   if (loading && !feedback) {
     return (
       <SafeAreaView style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Loading evaluation details...</Text>
       </SafeAreaView>
     );
@@ -218,7 +222,7 @@ export default function FeedbackDetails() {
   if (!feedback) {
     return (
       <SafeAreaView style={styles.center}>
-        <Ionicons name="document-text-outline" size={48} color="#94A3B8" />
+        <Ionicons name="document-text-outline" size={48} color={colors.mutedText} />
         <Text style={styles.notFoundTitle}>Feedback not found</Text>
         <Text style={styles.notFoundSub}>This feedback record could not be loaded.</Text>
         <Pressable style={styles.backButtonCenter} onPress={() => router.back()}>
@@ -251,7 +255,7 @@ export default function FeedbackDetails() {
           </Pressable>
         ) : (
           <View style={styles.headerLockedPill}>
-            <Ionicons name="lock-closed" size={13} color="#CBD5E1" />
+            <Ionicons name="lock-closed" size={13} color={colors.inputBorder} />
             <Text style={styles.headerLockedText}>Locked</Text>
           </View>
         )}
@@ -313,7 +317,7 @@ export default function FeedbackDetails() {
       {/* 1-HOUR EDIT STATUS BANNER */}
       {isEditable ? (
         <View style={styles.editWindowBanner}>
-          <Ionicons name="time-outline" size={18} color="#2563EB" />
+          <Ionicons name="time-outline" size={18} color={colors.primary} />
           <Text style={styles.editWindowText}>
             Editable for {minutesRemaining} more minutes (within 1 hour of submission).
           </Text>
@@ -323,7 +327,7 @@ export default function FeedbackDetails() {
         </View>
       ) : (
         <View style={styles.lockedBanner}>
-          <Ionicons name="lock-closed" size={16} color="#64748B" />
+          <Ionicons name="lock-closed" size={16} color={colors.secondaryText} />
           <Text style={styles.lockedBannerText}>
             Read only. Feedback is locked 1 hour after submission.
           </Text>
@@ -488,7 +492,7 @@ export default function FeedbackDetails() {
                           key={star}
                           name={star <= scoreVal ? 'star' : 'star-outline'}
                           size={18}
-                          color={star <= scoreVal ? '#F59E0B' : '#CBD5E1'}
+                          color={star <= scoreVal ? '#F59E0B' : colors.inputBorder}
                         />
                       ))}
                     </View>
@@ -538,7 +542,7 @@ export default function FeedbackDetails() {
           </Pressable>
         ) : (
           <View style={styles.bottomLockedContainer}>
-            <Ionicons name="lock-closed" size={18} color="#64748B" />
+            <Ionicons name="lock-closed" size={18} color={colors.secondaryText} />
             <Text style={styles.bottomLockedText}>
               Feedback is permanently locked. The 1-hour editing window has elapsed.
             </Text>
@@ -560,6 +564,8 @@ function FeedbackRow({
   title: string;
   text?: string;
 }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   return (
     <View style={styles.feedbackRow}>
       <View style={[styles.feedbackIcon, { backgroundColor: color + '15' }]}>
@@ -574,46 +580,48 @@ function FeedbackRow({
 }
 
 function QuickBox({ title, value, icon }: { title: string; value: string; icon: any }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   return (
     <View style={styles.quickBox}>
-      <Ionicons name={icon} size={18} color="#2563EB" style={{ marginBottom: 4 }} />
+      <Ionicons name={icon} size={18} color={colors.primary} style={{ marginBottom: 4 }} />
       <Text style={styles.quickTitle}>{title}</Text>
       <Text style={styles.quickValue}>{value}</Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     padding: 20,
   },
   loadingText: {
     marginTop: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontSize: 14,
   },
   notFoundTitle: {
     fontSize: 17,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     marginTop: 12,
   },
   notFoundSub: {
     fontSize: 13,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 4,
   },
   backButtonCenter: {
     marginTop: 20,
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 10,
@@ -641,14 +649,14 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   headerSubtitle: {
-    color: '#CBD5E1',
+    color: colors.inputBorder,
     fontSize: 12,
     marginTop: 2,
   },
   headerEditBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
@@ -669,12 +677,12 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   headerLockedText: {
-    color: '#CBD5E1',
+    color: colors.inputBorder,
     fontSize: 11,
     fontWeight: '700',
   },
   candidateCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     marginHorizontal: 14,
     marginTop: 12,
     padding: 14,
@@ -682,13 +690,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   avatar: {
     height: 48,
     width: 48,
     borderRadius: 24,
-    backgroundColor: '#DBEAFE',
+    backgroundColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -696,27 +704,27 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 20,
     fontWeight: '900',
-    color: '#2563EB',
+    color: colors.primary,
   },
   candidateName: {
     fontSize: 16,
     fontWeight: '900',
-    color: '#0F172A',
+    color: colors.text,
   },
   role: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   jobBadgeText: {
     fontSize: 11,
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '700',
     marginTop: 3,
   },
   round: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   badge: {
@@ -749,9 +757,9 @@ const styles = StyleSheet.create({
   editWindowBanner: {
     marginHorizontal: 14,
     marginTop: 10,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: colors.inputBorder,
     borderRadius: 12,
     padding: 10,
     flexDirection: 'row',
@@ -765,7 +773,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   bannerEditBtn: {
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 8,
@@ -778,7 +786,7 @@ const styles = StyleSheet.create({
   lockedBanner: {
     marginHorizontal: 14,
     marginTop: 10,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     borderRadius: 12,
     padding: 10,
     flexDirection: 'row',
@@ -787,15 +795,15 @@ const styles = StyleSheet.create({
   },
   lockedBannerText: {
     fontSize: 11.5,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontWeight: '600',
   },
   tabs: {
     height: 46,
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     marginTop: 12,
   },
   tab: {
@@ -805,15 +813,15 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     borderBottomWidth: 3,
-    borderColor: '#2563EB',
+    borderColor: colors.primary,
   },
   tabText: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontWeight: '700',
   },
   activeTabText: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '800',
   },
   scrollContent: {
@@ -821,22 +829,22 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   sectionCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     padding: 16,
     borderRadius: 16,
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   sectionTitle: {
     fontSize: 15,
     fontWeight: '900',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 10,
   },
   sectionHelp: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginBottom: 10,
   },
   summaryRow: {
@@ -851,7 +859,7 @@ const styles = StyleSheet.create({
   },
   summaryItemLabel: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontWeight: '700',
     textTransform: 'uppercase',
   },
@@ -867,30 +875,30 @@ const styles = StyleSheet.create({
   scoreBig: {
     fontSize: 17,
     fontWeight: '900',
-    color: '#2563EB',
+    color: colors.primary,
     marginTop: 4,
   },
   scoreCount: {
     fontSize: 10.5,
-    color: '#94A3B8',
+    color: colors.mutedText,
     marginTop: 2,
   },
   soloHireText: {
     fontSize: 15,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     marginTop: 6,
   },
   divider: {
     height: 40,
     width: 1,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: colors.cardBorder,
   },
   feedbackRow: {
     flexDirection: 'row',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: colors.divider,
     gap: 12,
   },
   feedbackIcon: {
@@ -904,12 +912,12 @@ const styles = StyleSheet.create({
   feedbackTitle: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 3,
   },
   feedbackText: {
     fontSize: 13,
-    color: '#475569',
+    color: colors.secondaryText,
     lineHeight: 18,
   },
   quickRow: {
@@ -919,28 +927,28 @@ const styles = StyleSheet.create({
   },
   quickBox: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderRadius: 12,
     padding: 12,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   quickTitle: {
     fontSize: 10.5,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontWeight: '700',
     textTransform: 'uppercase',
   },
   quickValue: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     marginTop: 4,
   },
   criterionDetailBlock: {
     borderTopWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: colors.divider,
     paddingVertical: 12,
   },
   criterionDetailHeader: {
@@ -952,13 +960,13 @@ const styles = StyleSheet.create({
   criterionDetailName: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
     flex: 1,
   },
   criterionDetailScore: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#2563EB',
+    color: colors.primary,
   },
   starsDisplayRow: {
     flexDirection: 'row',
@@ -966,26 +974,26 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   criterionNoteBox: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderLeftWidth: 3,
-    borderLeftColor: '#2563EB',
+    borderLeftColor: colors.primary,
     padding: 8,
     borderRadius: 4,
   },
   criterionNoteText: {
     fontSize: 12,
-    color: '#475569',
+    color: colors.secondaryText,
     fontStyle: 'italic',
   },
   noNoteText: {
     fontSize: 11,
-    color: '#94A3B8',
+    color: colors.mutedText,
   },
   openPanelBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingVertical: 14,
     borderRadius: 12,
     marginTop: 14,
@@ -997,7 +1005,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   bottomEditBtn: {
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     borderRadius: 14,
     paddingVertical: 14,
     flexDirection: 'row',
@@ -1012,7 +1020,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   bottomLockedContainer: {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     borderRadius: 12,
     padding: 14,
     flexDirection: 'row',
@@ -1022,7 +1030,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   bottomLockedText: {
-    color: '#64748B',
+    color: colors.secondaryText,
     fontSize: 12,
     fontWeight: '600',
     textAlign: 'center',

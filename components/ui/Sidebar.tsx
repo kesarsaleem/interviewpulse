@@ -19,6 +19,7 @@ supabase
 
 import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../context/ThemeContext";
+import { ThemeColors } from "../../theme/colors";
 import { ROUTES } from "../../constants/routes";
 
 
@@ -30,6 +31,7 @@ closeDrawer?:()=>void
 
 const { user } = useAuth();
 const { colors } = useTheme();
+const styles = createStyles(colors);
 const pathname = usePathname();
 
 
@@ -180,6 +182,7 @@ const logout = () => {
 
 
 const MenuItem=({item}:any)=>{
+const { colors } = useTheme();
 
 
 const active = pathname === item.route;
@@ -197,7 +200,7 @@ style={[
 
 styles.menuItem,
 
-active && styles.activeMenu
+{ backgroundColor: active ? colors.primaryLight : 'transparent' }
 
 ]}
 
@@ -211,7 +214,7 @@ active && styles.activeMenu
 
 styles.icon,
 
-active && styles.activeIcon
+{ color: active ? colors.primary : colors.secondaryText }
 
 ]}>
 
@@ -229,7 +232,7 @@ active && styles.activeIcon
 
 styles.menuText,
 
-active && styles.activeText
+{ color: active ? colors.primary : colors.secondaryText }
 
 ]}>
 
@@ -243,7 +246,7 @@ active && styles.activeText
 {
 item.badge &&
 
-<View style={styles.badge}>
+<View style={[styles.badge, { backgroundColor: colors.primary }]}>
 
 <Text style={styles.badgeText}>
 {item.badge}
@@ -283,14 +286,14 @@ return(
 
 
 <Pressable
-  style={styles.profileArea}
+  style={[styles.profileArea, { backgroundColor: colors.primaryDark }]}
   onPress={() => navigate('/admin/profile')}
 >
   <Pressable
     style={styles.closeButton}
     onPress={closeDrawer}
   >
-    <Text style={styles.closeText}>×</Text>
+    <Text style={[styles.closeText, { color: colors.secondaryText }]}>×</Text>
   </Pressable>
 
   <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
@@ -303,11 +306,11 @@ return(
     {user?.name || 'Administrator'}
   </Text>
 
-  <Text style={styles.email}>
+  <Text style={[styles.email, { color: colors.secondaryText }]}>
     {user?.email || 'admin@interviewpulse.com'}
   </Text>
 
-  <View style={styles.roleBadge}>
+  <View style={[styles.roleBadge, { backgroundColor: colors.primary }]}>
     <Text style={styles.roleText}>
       {user?.role === 'admin' ? 'Administrator' : 'Admin Operations'}
     </Text>
@@ -383,19 +386,19 @@ item={item}
 
 <Pressable
 
-style={styles.logout}
+style={[styles.logout, { backgroundColor: colors.dangerLight }]}
 
 onPress={logout}
 
 >
 
 
-<Text style={styles.logoutIcon}>
+<Text style={[styles.logoutIcon, { color: colors.danger }]}>
 ⇥
 </Text>
 
 
-<Text style={styles.logoutText}>
+<Text style={[styles.logoutText, { color: colors.danger }]}>
 Logout
 </Text>
 
@@ -426,7 +429,7 @@ Logout
 
 
 
-const styles=StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
 
 
 
@@ -436,7 +439,7 @@ container:{
 
 flex:1,
 
-backgroundColor:"#FFFFFF",
+backgroundColor:colors.card,
 
 },
 
@@ -448,7 +451,7 @@ backgroundColor:"#FFFFFF",
 profileArea:{
 
 
-backgroundColor:"#06245B",
+backgroundColor:colors.primaryDark,
 
 paddingTop:45,
 
@@ -488,7 +491,7 @@ fontSize:28,
 
 fontWeight:"300",
 
-color:"#CBD5E1",
+color:colors.inputBorder,
 
 },
 
@@ -507,7 +510,7 @@ width:52,
 
 borderRadius:26,
 
-backgroundColor:"#2563EB",
+backgroundColor: colors.primary,
 
 alignItems:"center",
 
@@ -556,7 +559,7 @@ email:{
 
 fontSize:12,
 
-color:"#CBD5E1",
+color:colors.inputBorder,
 
 marginTop:5,
 
@@ -572,7 +575,7 @@ marginTop:5,
 roleBadge:{
 
 
-backgroundColor:"#0B5ED7",
+backgroundColor:colors.primary,
 
 paddingHorizontal:10,
 
@@ -637,7 +640,7 @@ fontWeight:"800",
 
 letterSpacing:1,
 
-color:"#94A3B8",
+color:colors.mutedText,
 
 marginTop:18,
 
@@ -679,7 +682,7 @@ marginBottom:6,
 activeMenu:{
 
 
-backgroundColor:"#EFF6FF",
+backgroundColor: colors.primaryLight,
 
 
 },
@@ -708,7 +711,7 @@ icon:{
 
 fontSize:21,
 
-color:"#64748B",
+color:colors.secondaryText,
 
 },
 
@@ -720,7 +723,7 @@ color:"#64748B",
 activeIcon:{
 
 
-color:"#2563EB",
+color: colors.primary,
 
 },
 
@@ -737,7 +740,7 @@ fontSize:15,
 
 fontWeight:"600",
 
-color:"#334155",
+color:colors.secondaryText,
 
 flex:1,
 
@@ -753,7 +756,7 @@ flex:1,
 activeText:{
 
 
-color:"#2563EB",
+color: colors.primary,
 
 fontWeight:"800",
 
@@ -775,7 +778,7 @@ width:22,
 
 borderRadius:11,
 
-backgroundColor:"#2563EB",
+backgroundColor: colors.primary,
 
 alignItems:"center",
 
@@ -812,7 +815,7 @@ height:55,
 
 borderRadius:15,
 
-backgroundColor:"#FEF2F2",
+backgroundColor:colors.dangerLight,
 
 flexDirection:"row",
 
@@ -835,7 +838,7 @@ logoutIcon:{
 
 fontSize:20,
 
-color:"#EF4444",
+color:colors.danger,
 
 marginRight:10,
 
@@ -854,7 +857,7 @@ fontSize:16,
 
 fontWeight:"800",
 
-color:"#EF4444",
+color:colors.danger,
 
 },
 

@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   View,
@@ -24,6 +26,8 @@ import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
 type SortOption = 'date_asc' | 'date_desc' | 'name_asc' | 'stage';
 
 export default function MyInterviews() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
@@ -212,7 +216,7 @@ export default function MyInterviews() {
     return (
       <View style={styles.center}>
         <View style={styles.loadingCard}>
-          <ActivityIndicator size="large" color="#2563EB" />
+          <ActivityIndicator size="large" color={colors.primary} />
           <Text style={styles.loadingText}>Loading assigned interviews...</Text>
         </View>
       </View>
@@ -259,17 +263,17 @@ export default function MyInterviews() {
         {/* SEARCH & SORT INPUT */}
         <View style={styles.searchRow}>
           <View style={styles.searchBox}>
-            <Ionicons name="search-outline" size={18} color="#94A3B8" />
+            <Ionicons name="search-outline" size={18} color={colors.mutedText} />
             <TextInput
               placeholder="Search candidate, role, or stage..."
-              placeholderTextColor="#94A3B8"
+              placeholderTextColor={colors.mutedText}
               value={search}
               onChangeText={setSearch}
               style={styles.searchInput}
             />
             {search ? (
               <Pressable onPress={() => setSearch('')} hitSlop={6}>
-                <Ionicons name="close-circle" size={18} color="#94A3B8" />
+                <Ionicons name="close-circle" size={18} color={colors.mutedText} />
               </Pressable>
             ) : null}
           </View>
@@ -293,7 +297,7 @@ export default function MyInterviews() {
           <Ionicons
             name="calendar"
             size={15}
-            color={tab === 'upcoming' ? '#2563EB' : '#64748B'}
+            color={tab === 'upcoming' ? '#2563EB' : colors.secondaryText}
             style={{ marginRight: 6 }}
           />
           <Text style={[styles.tabItemText, tab === 'upcoming' && styles.activeTabItemText]}>
@@ -308,7 +312,7 @@ export default function MyInterviews() {
           <Ionicons
             name="time"
             size={15}
-            color={tab === 'past' ? '#2563EB' : '#64748B'}
+            color={tab === 'past' ? '#2563EB' : colors.secondaryText}
             style={{ marginRight: 6 }}
           />
           <Text style={[styles.tabItemText, tab === 'past' && styles.activeTabItemText]}>
@@ -320,7 +324,7 @@ export default function MyInterviews() {
       {/* ACTIVE SORT CHIP */}
       <View style={styles.activeSortRow}>
         <View style={styles.sortPill}>
-          <Ionicons name="funnel-outline" size={12} color="#2563EB" />
+          <Ionicons name="funnel-outline" size={12} color={colors.primary} />
           <Text style={styles.sortPillText}>
             {sortBy === 'date_asc'
               ? 'Date: Earliest First'
@@ -339,7 +343,7 @@ export default function MyInterviews() {
         style={styles.scrollArea}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#2563EB" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
       >
         {processedInterviews.length === 0 ? (
           <View style={styles.emptyCard}>
@@ -347,7 +351,7 @@ export default function MyInterviews() {
               <Ionicons
                 name={tab === 'upcoming' ? 'calendar-outline' : 'archive-outline'}
                 size={36}
-                color="#94A3B8"
+                color={colors.mutedText}
               />
             </View>
             <Text style={styles.emptyTitle}>
@@ -393,7 +397,7 @@ export default function MyInterviews() {
                       {item.current_role || 'Candidate'}{item.current_company ? ` • ${item.current_company}` : ''}
                     </Text>
                     <View style={styles.jobBadgeRow}>
-                      <Ionicons name="briefcase-outline" size={11} color="#475569" />
+                      <Ionicons name="briefcase-outline" size={11} color={colors.secondaryText} />
                       <Text style={styles.jobText} numberOfLines={1}>
                         {item.jobs?.title || 'Open Position'}
                         {item.jobs?.department ? ` (${item.jobs.department})` : ''}
@@ -402,7 +406,7 @@ export default function MyInterviews() {
                   </View>
 
                   <View style={styles.stageBadge}>
-                    <Ionicons name="layers-outline" size={11} color="#2563EB" />
+                    <Ionicons name="layers-outline" size={11} color={colors.primary} />
                     <Text style={styles.stageBadgeText} numberOfLines={1}>
                       {item.stages?.name || 'Interview Round'}
                     </Text>
@@ -415,12 +419,12 @@ export default function MyInterviews() {
                 {/* SCHEDULE AND STATUS INFO ROW */}
                 <View style={styles.infoRow}>
                   <View style={styles.infoPill}>
-                    <Ionicons name="calendar-outline" size={13} color="#2563EB" />
+                    <Ionicons name="calendar-outline" size={13} color={colors.primary} />
                     <Text style={styles.infoText}>{item.interview_date || 'Date TBD'}</Text>
                   </View>
 
                   <View style={styles.infoPill}>
-                    <Ionicons name="time-outline" size={13} color="#2563EB" />
+                    <Ionicons name="time-outline" size={13} color={colors.primary} />
                     <Text style={styles.infoText}>{item.interview_time || 'Time TBD'}</Text>
                   </View>
 
@@ -450,7 +454,7 @@ export default function MyInterviews() {
                           } as any);
                         }}
                       >
-                        <Ionicons name="people-outline" size={14} color="#2563EB" />
+                        <Ionicons name="people-outline" size={14} color={colors.primary} />
                         <Text style={styles.panelSummaryText}>Panel Summary</Text>
                       </Pressable>
 
@@ -482,7 +486,7 @@ export default function MyInterviews() {
                           } as any);
                         }}
                       >
-                        <Ionicons name="people-outline" size={14} color="#2563EB" />
+                        <Ionicons name="people-outline" size={14} color={colors.primary} />
                         <Text style={styles.panelSummaryText}>Panel</Text>
                       </Pressable>
 
@@ -531,12 +535,12 @@ export default function MyInterviews() {
                 <Ionicons
                   name={opt.icon as any}
                   size={18}
-                  color={sortBy === opt.id ? '#2563EB' : '#64748B'}
+                  color={sortBy === opt.id ? '#2563EB' : colors.secondaryText}
                 />
                 <Text style={[styles.sortOptionText, sortBy === opt.id && styles.sortOptionTextActive]}>
                   {opt.label}
                 </Text>
-                {sortBy === opt.id && <Ionicons name="checkmark-circle" size={18} color="#2563EB" />}
+                {sortBy === opt.id && <Ionicons name="checkmark-circle" size={18} color={colors.primary} />}
               </Pressable>
             ))}
           </View>
@@ -546,17 +550,17 @@ export default function MyInterviews() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   loadingCard: {
     padding: 24,
     borderRadius: 22,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -566,13 +570,13 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontSize: 14,
     fontWeight: '600',
   },
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   header: {
     backgroundColor: '#06235C',
@@ -619,13 +623,13 @@ const styles = StyleSheet.create({
   syncBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 12,
     gap: 5,
     borderWidth: 1,
-    borderColor: '#3B82F6',
+    borderColor: colors.accent,
   },
   syncText: {
     color: '#FFFFFF',
@@ -639,7 +643,7 @@ const styles = StyleSheet.create({
   },
   searchBox: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     height: 46,
     borderRadius: 14,
     flexDirection: 'row',
@@ -655,7 +659,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 13,
-    color: '#0F172A',
+    color: colors.text,
   },
   sortBtn: {
     width: 46,
@@ -669,14 +673,14 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     marginHorizontal: 18,
     marginTop: 14,
     borderRadius: 16,
     padding: 4,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
-    shadowColor: '#0F172A',
+    borderColor: colors.cardBorder,
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.04,
     shadowRadius: 4,
@@ -691,15 +695,15 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   activeTabItem: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
   },
   tabItemText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   activeTabItemText: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '800',
   },
   activeSortRow: {
@@ -714,19 +718,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 8,
   },
   sortPillText: {
     fontSize: 11,
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '700',
   },
   resultCountText: {
     fontSize: 12,
-    color: '#94A3B8',
+    color: colors.mutedText,
     fontWeight: '500',
   },
   scrollArea: {
@@ -738,14 +742,14 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   emptyCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 24,
     padding: 32,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     marginTop: 16,
-    shadowColor: '#0F172A',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.03,
     shadowRadius: 6,
@@ -755,7 +759,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 14,
@@ -763,12 +767,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 17,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 4,
   },
   emptySubtitle: {
     fontSize: 13,
-    color: '#64748B',
+    color: colors.secondaryText,
     textAlign: 'center',
     lineHeight: 18,
     maxWidth: 270,
@@ -777,24 +781,24 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingHorizontal: 16,
     paddingVertical: 8,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: colors.inputBorder,
   },
   clearSearchText: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '700',
     fontSize: 12,
   },
   interviewCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 22,
     padding: 18,
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
-    shadowColor: '#0F172A',
+    borderColor: colors.divider,
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
@@ -808,15 +812,15 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 16,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderWidth: 1,
-    borderColor: '#DBEAFE',
+    borderColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
   },
   avatarText: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '900',
     fontSize: 18,
   },
@@ -827,12 +831,12 @@ const styles = StyleSheet.create({
   candidateName: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 2,
   },
   candidateRole: {
     fontSize: 12.5,
-    color: '#475569',
+    color: colors.secondaryText,
     fontWeight: '500',
     marginBottom: 4,
   },
@@ -843,13 +847,13 @@ const styles = StyleSheet.create({
   },
   jobText: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
     flex: 1,
   },
   stageBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -858,12 +862,12 @@ const styles = StyleSheet.create({
   },
   stageBadgeText: {
     fontSize: 10.5,
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '700',
   },
   cardDivider: {
     height: 1,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     marginVertical: 14,
   },
   infoRow: {
@@ -876,17 +880,17 @@ const styles = StyleSheet.create({
   infoPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     paddingHorizontal: 9,
     paddingVertical: 5,
     borderRadius: 8,
     gap: 5,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   infoText: {
     fontSize: 11.5,
-    color: '#334155',
+    color: colors.secondaryText,
     fontWeight: '600',
   },
   statusPill: {
@@ -899,7 +903,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
   },
   submittedPill: {
-    backgroundColor: '#ECFDF5',
+    backgroundColor: colors.successLight,
   },
   submittedPillText: {
     fontSize: 11,
@@ -907,7 +911,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   pendingPill: {
-    backgroundColor: '#FFFBEB',
+    backgroundColor: colors.warningLight,
   },
   pendingPillText: {
     fontSize: 11,
@@ -928,16 +932,16 @@ const styles = StyleSheet.create({
   panelSummaryBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#DBEAFE',
+    borderColor: colors.primaryLight,
     gap: 5,
   },
   panelSummaryText: {
-    color: '#2563EB',
+    color: colors.primary,
     fontSize: 12,
     fontWeight: '700',
   },
@@ -960,12 +964,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 12,
     gap: 6,
-    shadowColor: '#2563EB',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -982,7 +986,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   sortModal: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     padding: 22,
@@ -997,14 +1001,14 @@ const styles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: colors.cardBorder,
     alignSelf: 'center',
     marginBottom: 16,
   },
   sortModalTitle: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 16,
   },
   sortOption: {
@@ -1017,16 +1021,16 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   sortOptionActive: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
   },
   sortOptionText: {
     fontSize: 14,
-    color: '#475569',
+    color: colors.secondaryText,
     fontWeight: '600',
     flex: 1,
   },
   sortOptionTextActive: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '800',
   },
 });

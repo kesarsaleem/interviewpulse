@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
@@ -17,6 +19,8 @@ import { supabase } from '../../lib/supabase/client';
 import { useAuth } from '../../hooks/useAuth';
 
 export default function CreateOrEditJob() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { user } = useAuth();
   const params = useLocalSearchParams();
   const jobId = (params.jobId || params.id) as string | undefined;
@@ -389,7 +393,7 @@ export default function CreateOrEditJob() {
   if (initialLoading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Loading Job Details...</Text>
       </View>
     );
@@ -404,7 +408,7 @@ export default function CreateOrEditJob() {
       {/* HEADER */}
       <View style={styles.header}>
         <Pressable style={styles.backBtn} onPress={() => router.back()} hitSlop={10}>
-          <Ionicons name="arrow-back" size={22} color="#0F172A" />
+          <Ionicons name="arrow-back" size={22} color={colors.text} />
         </Pressable>
         <View style={styles.headerTitleWrap}>
           <Text style={styles.title}>{isEditing ? 'Edit Job Opening' : 'Create Job Opening'}</Text>
@@ -426,7 +430,7 @@ export default function CreateOrEditJob() {
         <TextInput
           style={styles.input}
           placeholder="e.g. Senior Frontend Engineer"
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={colors.mutedText}
           value={title}
           onChangeText={setTitle}
         />
@@ -437,7 +441,7 @@ export default function CreateOrEditJob() {
         <TextInput
           style={styles.input}
           placeholder="e.g. Engineering, Product, Design"
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={colors.mutedText}
           value={department}
           onChangeText={setDepartment}
         />
@@ -446,7 +450,7 @@ export default function CreateOrEditJob() {
         <TextInput
           style={[styles.input, styles.textArea]}
           placeholder="Brief description of the position, key responsibilities, and qualifications..."
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={colors.mutedText}
           value={description}
           onChangeText={setDescription}
           multiline
@@ -460,9 +464,9 @@ export default function CreateOrEditJob() {
           disabled={uploadingJd}
         >
           {uploadingJd ? (
-            <ActivityIndicator size="small" color="#2563EB" />
+            <ActivityIndicator size="small" color={colors.primary} />
           ) : (
-            <Ionicons name="document-attach-outline" size={18} color="#2563EB" />
+            <Ionicons name="document-attach-outline" size={18} color={colors.primary} />
           )}
           <Text style={styles.uploadBtnText}>
             {uploadingJd
@@ -532,7 +536,7 @@ export default function CreateOrEditJob() {
           <TextInput
             style={styles.addInput}
             placeholder="Add new stage (e.g. System Architecture)..."
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.mutedText}
             value={newStage}
             onChangeText={setNewStage}
             onSubmitEditing={addStage}
@@ -560,8 +564,8 @@ export default function CreateOrEditJob() {
         <View style={styles.itemsList}>
           {criteria.map((item, index) => (
             <View key={index} style={styles.itemRow}>
-              <View style={[styles.itemOrderBadge, { backgroundColor: '#EFF6FF' }]}>
-                <Ionicons name="star" size={12} color="#2563EB" />
+              <View style={[styles.itemOrderBadge, { backgroundColor: colors.primaryLight }]}>
+                <Ionicons name="star" size={12} color={colors.primary} />
               </View>
               <Text style={styles.itemTitle}>{item}</Text>
               <Pressable
@@ -580,7 +584,7 @@ export default function CreateOrEditJob() {
           <TextInput
             style={styles.addInput}
             placeholder="Add custom criterion (e.g. Leadership)..."
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.mutedText}
             value={newCriteria}
             onChangeText={setNewCriteria}
             onSubmitEditing={addCriteria}
@@ -618,7 +622,7 @@ export default function CreateOrEditJob() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   uploadBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -631,17 +635,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: 'dashed',
     borderColor: '#93C5FD',
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
   },
   uploadBtnText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#2563EB',
+    color: colors.primary,
     flexShrink: 1,
   },
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   contentContainer: {
     padding: 16,
@@ -651,12 +655,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   header: {
     flexDirection: 'row',
@@ -668,11 +672,11 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   headerTitleWrap: {
     flex: 1,
@@ -680,29 +684,29 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
   },
   subtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   sectionHeading: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
   },
   sectionSub: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   sectionHeaderRow: {
@@ -712,7 +716,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   countBadge: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 10,
     paddingVertical: 3,
     borderRadius: 12,
@@ -720,12 +724,12 @@ const styles = StyleSheet.create({
   countBadgeText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#2563EB',
+    color: colors.primary,
   },
   label: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#334155',
+    color: colors.secondaryText,
     marginTop: 12,
     marginBottom: 6,
   },
@@ -733,14 +737,14 @@ const styles = StyleSheet.create({
     color: '#DC2626',
   },
   input: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 14,
-    color: '#0F172A',
+    color: colors.text,
   },
   textArea: {
     minHeight: 80,
@@ -758,21 +762,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   statusPillActive: {
-    backgroundColor: '#EFF6FF',
-    borderColor: '#2563EB',
+    backgroundColor: colors.primaryLight,
+    borderColor: colors.primary,
   },
   statusPillText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   statusPillTextActive: {
-    color: '#2563EB',
+    color: colors.primary,
   },
   itemsList: {
     gap: 8,
@@ -781,18 +785,18 @@ const styles = StyleSheet.create({
   itemRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   itemOrderBadge: {
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: colors.cardBorder,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
@@ -800,13 +804,13 @@ const styles = StyleSheet.create({
   itemOrderText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#475569',
+    color: colors.secondaryText,
   },
   itemTitle: {
     flex: 1,
     fontSize: 14,
     fontWeight: '600',
-    color: '#0F172A',
+    color: colors.text,
   },
   removeIconBtn: {
     padding: 4,
@@ -818,20 +822,20 @@ const styles = StyleSheet.create({
   },
   addInput: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 8,
     fontSize: 13,
-    color: '#0F172A',
+    color: colors.text,
   },
   addBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 14,
     paddingVertical: 9,
     borderRadius: 8,
@@ -842,7 +846,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   submitButton: {
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -850,7 +854,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 10,
     marginTop: 8,
-    shadowColor: '#2563EB',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,

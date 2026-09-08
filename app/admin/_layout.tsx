@@ -20,7 +20,8 @@ Slot
 
 import Sidebar from "../../components/ui/Sidebar";
 import Header from "../../components/ui/Header";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 
 
 
@@ -28,6 +29,7 @@ import { useTheme } from "../../context/ThemeContext";
 
 export default function AdminLayout(){
 const { colors } = useTheme();
+  const styles = createStyles(colors);
 
 
 
@@ -321,7 +323,7 @@ onMenuPress={openDrawer}
 
 
 
-const styles=StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
 
 
 
@@ -330,7 +332,7 @@ container:{
 
 flex:1,
 
-backgroundColor:"#F8FAFC",
+backgroundColor:colors.background,
 
 
 },
@@ -353,7 +355,7 @@ bottom:0,
 
 width:260,
 
-backgroundColor:"#FFFFFF",
+backgroundColor:colors.card,
 
 zIndex:20,
 

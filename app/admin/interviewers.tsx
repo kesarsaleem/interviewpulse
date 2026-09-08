@@ -1,4 +1,6 @@
-﻿import React, { useCallback, useState } from 'react';
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -16,6 +18,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../lib/supabase/client';
 
 export default function InterviewersScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const [interviewers, setInterviewers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -126,7 +130,7 @@ export default function InterviewersScreen() {
   if (loading && !refreshing) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Loading Interviewers...</Text>
       </View>
     );
@@ -155,10 +159,10 @@ export default function InterviewersScreen() {
       {/* SEARCH BAR */}
       <View style={styles.searchSection}>
         <View style={styles.searchBar}>
-          <Ionicons name="search-outline" size={18} color="#64748B" style={styles.searchIcon} />
+          <Ionicons name="search-outline" size={18} color={colors.secondaryText} style={styles.searchIcon} />
           <TextInput
             placeholder="Search by name or email..."
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.mutedText}
             value={search}
             onChangeText={setSearch}
             style={styles.searchInput}
@@ -166,7 +170,7 @@ export default function InterviewersScreen() {
           />
           {search.length > 0 && (
             <Pressable onPress={() => setSearch('')} hitSlop={8}>
-              <Ionicons name="close-circle" size={18} color="#94A3B8" />
+              <Ionicons name="close-circle" size={18} color={colors.mutedText} />
             </Pressable>
           )}
         </View>
@@ -182,7 +186,7 @@ export default function InterviewersScreen() {
         {filteredInterviewers.length === 0 ? (
           <View style={styles.emptyContainer}>
             <View style={styles.emptyIconCircle}>
-              <Ionicons name="people-outline" size={40} color="#94A3B8" />
+              <Ionicons name="people-outline" size={40} color={colors.mutedText} />
             </View>
             <Text style={styles.emptyTitle}>
               {search.trim() ? 'No matching interviewers' : 'No interviewers found'}
@@ -223,7 +227,7 @@ export default function InterviewersScreen() {
                   </View>
 
                   <View style={styles.roleBadge}>
-                    <Ionicons name="shield-checkmark" size={12} color="#2563EB" />
+                    <Ionicons name="shield-checkmark" size={12} color={colors.primary} />
                     <Text style={styles.roleBadgeText}>Interviewer</Text>
                   </View>
                 </View>
@@ -243,7 +247,7 @@ export default function InterviewersScreen() {
                         })
                       }
                     >
-                      <Ionicons name="add" size={14} color="#2563EB" />
+                      <Ionicons name="add" size={14} color={colors.primary} />
                       <Text style={styles.assignLinkText}>Assign Job</Text>
                     </Pressable>
                   </View>
@@ -258,7 +262,7 @@ export default function InterviewersScreen() {
                         const jobTitle = a.jobs?.title || 'Job Opening';
                         return (
                           <View key={a.id} style={styles.jobChip}>
-                            <Ionicons name="briefcase-outline" size={12} color="#2563EB" />
+                            <Ionicons name="briefcase-outline" size={12} color={colors.primary} />
                             <Text style={styles.jobChipText} numberOfLines={1}>
                               {jobTitle}
                             </Text>
@@ -267,7 +271,7 @@ export default function InterviewersScreen() {
                               hitSlop={6}
                               style={styles.chipRemoveBtn}
                             >
-                              <Ionicons name="close" size={13} color="#64748B" />
+                              <Ionicons name="close" size={13} color={colors.secondaryText} />
                             </Pressable>
                           </View>
                         );
@@ -284,22 +288,22 @@ export default function InterviewersScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   center: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     padding: 24,
   },
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   header: {
     flexDirection: 'row',
@@ -308,9 +312,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 12,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.cardBorder,
   },
   headerLeft: {
     flex: 1,
@@ -318,18 +322,18 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
   },
   subtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   addBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 8,
@@ -340,16 +344,16 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   searchSection: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.cardBorder,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     paddingHorizontal: 12,
     borderRadius: 8,
     height: 38,
@@ -360,7 +364,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 14,
-    color: '#0F172A',
+    color: colors.text,
     height: '100%',
   },
   list: {
@@ -371,12 +375,12 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -408,18 +412,18 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
   },
   email: {
     fontSize: 13,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 1,
   },
   roleBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
@@ -427,12 +431,12 @@ const styles = StyleSheet.create({
   roleBadgeText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#2563EB',
+    color: colors.primary,
   },
   assignedSection: {
     marginTop: 14,
     borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
+    borderTopColor: colors.divider,
     paddingTop: 12,
   },
   assignedHeader: {
@@ -444,7 +448,7 @@ const styles = StyleSheet.create({
   assignedTitle: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#475569',
+    color: colors.secondaryText,
     textTransform: 'uppercase',
     letterSpacing: 0.3,
   },
@@ -456,11 +460,11 @@ const styles = StyleSheet.create({
   assignLinkText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#2563EB',
+    color: colors.primary,
   },
   noJobsText: {
     fontSize: 12,
-    color: '#94A3B8',
+    color: colors.mutedText,
     fontStyle: 'italic',
   },
   jobChipsRow: {
@@ -472,13 +476,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingLeft: 8,
     paddingRight: 4,
     paddingVertical: 4,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#DBEAFE',
+    borderColor: colors.primaryLight,
     maxWidth: 200,
   },
   jobChipText: {
@@ -500,7 +504,7 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 14,
@@ -508,12 +512,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 6,
   },
   emptySubtitle: {
     fontSize: 13,
-    color: '#64748B',
+    color: colors.secondaryText,
     textAlign: 'center',
     lineHeight: 18,
     marginBottom: 16,
@@ -522,17 +526,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: colors.inputBorder,
   },
   clearBtnText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#2563EB',
+    color: colors.primary,
   },
   emptyAddBtn: {
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 18,
     paddingVertical: 10,
     borderRadius: 8,

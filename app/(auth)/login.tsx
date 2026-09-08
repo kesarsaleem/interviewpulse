@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useState } from "react";
 import {
   View,
@@ -18,6 +20,8 @@ import { useAuth } from "../../hooks/useAuth";
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function LoginScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { signIn } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -109,7 +113,7 @@ export default function LoginScreen() {
             <TextInput
               style={styles.input}
               placeholder="Enter your email"
-              placeholderTextColor="#94A3B8"
+              placeholderTextColor={colors.mutedText}
               value={email}
               onChangeText={(v) => {
                 setEmail(v);
@@ -129,7 +133,7 @@ export default function LoginScreen() {
               <TextInput
                 style={styles.inputPassword}
                 placeholder="Enter your password"
-                placeholderTextColor="#94A3B8"
+                placeholderTextColor={colors.mutedText}
                 value={password}
                 onChangeText={(v) => {
                   setPassword(v);
@@ -142,7 +146,7 @@ export default function LoginScreen() {
                 <Ionicons
                   name={showPassword ? "eye-off" : "eye"}
                   size={20}
-                  color="#64748B"
+                  color={colors.secondaryText}
                 />
               </Pressable>
             </View>
@@ -172,7 +176,7 @@ export default function LoginScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container:{flex:1},
   scroll:{flexGrow:1,justifyContent:"center",padding:15},
   card:{
@@ -182,8 +186,8 @@ const styles = StyleSheet.create({
     elevation:8,
   },
   title:{fontSize:32,fontWeight:"900",color:"#1E3A8A",marginTop:20},
-  subtitle:{color:"#64748B",marginTop:6},
-  line:{width:50,height:4,backgroundColor:"#2563EB",marginVertical:25},
+  subtitle:{color:colors.secondaryText,marginTop:6},
+  line:{width:50,height:4,backgroundColor:colors.primary,marginVertical:25},
   label:{fontWeight:"700",marginBottom:8,color:"#1E293B"},
   input:{
     height:55,
@@ -192,7 +196,7 @@ const styles = StyleSheet.create({
     paddingHorizontal:18,
     marginBottom:12,
      borderWidth:1,
-  borderColor:"#CBD5E1",
+  borderColor:colors.inputBorder,
 
   },
   passwordBox:{
@@ -202,22 +206,22 @@ const styles = StyleSheet.create({
     borderRadius:16,
     paddingHorizontal:18,
     borderWidth:1,
-  borderColor:"#CBD5E1",
+  borderColor:colors.inputBorder,
   },
   inputPassword:{flex:1,height:55},
   errorBox:{
     flexDirection:"row",
     gap:8,
-    backgroundColor:"#FEF2F2",
+    backgroundColor:colors.dangerLight,
     padding:12,
     borderRadius:12,
   },
   error:{color:"#DC2626",flex:1},
   fieldError:{color:"#DC2626",fontSize:12},
-  forgot:{textAlign:"right",color:"#2563EB",marginVertical:18},
+  forgot:{textAlign:"right",color:colors.primary,marginVertical:18},
   button:{
     height:58,
-    backgroundColor:"#2563EB",
+    backgroundColor:colors.primary,
     borderRadius:18,
     alignItems:"center",
     justifyContent:"center",
@@ -225,6 +229,6 @@ const styles = StyleSheet.create({
   disabled:{opacity:.6},
   buttonText:{color:"#fff",fontWeight:"800",fontSize:18},
   signupRow:{flexDirection:"row",justifyContent:"center",marginTop:25},
-  bottomText:{color:"#64748B"},
-  signup:{color:"#2563EB",fontWeight:"800",marginLeft:5},
+  bottomText:{color:colors.secondaryText},
+  signup:{color:colors.primary,fontWeight:"800",marginLeft:5},
 });

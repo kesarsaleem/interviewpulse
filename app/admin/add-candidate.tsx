@@ -1,4 +1,6 @@
-﻿import React, { useEffect, useState, useCallback } from 'react';
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -26,6 +28,8 @@ const REFERRAL_SOURCES = [
 ];
 
 export default function AddOrEditCandidate() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { user } = useAuth();
   const params = useLocalSearchParams();
   const candidateId = (params.candidateId || params.id) as string | undefined;
@@ -364,7 +368,7 @@ export default function AddOrEditCandidate() {
   if (fetchingData) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Loading details...</Text>
       </View>
     );
@@ -379,7 +383,7 @@ export default function AddOrEditCandidate() {
       {/* HEADER */}
       <View style={styles.header}>
         <Pressable style={styles.backBtn} onPress={() => router.back()} hitSlop={10}>
-          <Ionicons name="arrow-back" size={22} color="#0F172A" />
+          <Ionicons name="arrow-back" size={22} color={colors.text} />
         </Pressable>
         <View style={styles.headerTitleWrap}>
           <Text style={styles.title}>
@@ -455,7 +459,7 @@ export default function AddOrEditCandidate() {
         <TextInput
           style={styles.input}
           placeholder="e.g. Alex Johnson"
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={colors.mutedText}
           value={fullName}
           onChangeText={setFullName}
         />
@@ -464,7 +468,7 @@ export default function AddOrEditCandidate() {
         <TextInput
           style={styles.input}
           placeholder="e.g. alex.johnson@example.com"
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={colors.mutedText}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -475,7 +479,7 @@ export default function AddOrEditCandidate() {
         <TextInput
           style={styles.input}
           placeholder="e.g. +1 (555) 234-5678"
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={colors.mutedText}
           value={phone}
           onChangeText={setPhone}
           keyboardType="phone-pad"
@@ -487,7 +491,7 @@ export default function AddOrEditCandidate() {
             <TextInput
               style={styles.input}
               placeholder="e.g. Frontend Engineer"
-              placeholderTextColor="#94A3B8"
+              placeholderTextColor={colors.mutedText}
               value={currentRole}
               onChangeText={setCurrentRole}
             />
@@ -498,7 +502,7 @@ export default function AddOrEditCandidate() {
             <TextInput
               style={styles.input}
               placeholder="e.g. Stripe, Acme Corp"
-              placeholderTextColor="#94A3B8"
+              placeholderTextColor={colors.mutedText}
               value={currentCompany}
               onChangeText={setCurrentCompany}
             />
@@ -509,7 +513,7 @@ export default function AddOrEditCandidate() {
         <TextInput
           style={styles.input}
           placeholder="e.g. https://linkedin.com/in/alex or Drive link"
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={colors.mutedText}
           value={resumeUrl}
           onChangeText={(text) => {
             setResumeUrl(text);
@@ -524,9 +528,9 @@ export default function AddOrEditCandidate() {
           disabled={uploadingResume}
         >
           {uploadingResume ? (
-            <ActivityIndicator size="small" color="#2563EB" />
+            <ActivityIndicator size="small" color={colors.primary} />
           ) : (
-            <Ionicons name="document-attach-outline" size={18} color="#2563EB" />
+            <Ionicons name="document-attach-outline" size={18} color={colors.primary} />
           )}
           <Text style={styles.uploadBtnText}>
             {uploadingResume
@@ -570,7 +574,7 @@ export default function AddOrEditCandidate() {
               style={styles.pickerBtn}
               onPress={() => setShowDatePicker(true)}
             >
-              <Ionicons name="calendar-outline" size={16} color="#2563EB" />
+              <Ionicons name="calendar-outline" size={16} color={colors.primary} />
               <Text style={styles.pickerBtnText}>
                 {interviewDate ? interviewDate.toLocaleDateString() : 'Select Date'}
               </Text>
@@ -583,7 +587,7 @@ export default function AddOrEditCandidate() {
               style={styles.pickerBtn}
               onPress={() => setShowTimePicker(true)}
             >
-              <Ionicons name="time-outline" size={16} color="#2563EB" />
+              <Ionicons name="time-outline" size={16} color={colors.primary} />
               <Text style={styles.pickerBtnText}>
                 {interviewTime
                   ? interviewTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -655,7 +659,7 @@ export default function AddOrEditCandidate() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   uploadBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -667,17 +671,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: 'dashed',
     borderColor: '#93C5FD',
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
   },
   uploadBtnText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#2563EB',
+    color: colors.primary,
     flexShrink: 1,
   },
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   contentContainer: {
     padding: 16,
@@ -687,12 +691,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   header: {
     flexDirection: 'row',
@@ -704,11 +708,11 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   headerTitleWrap: {
     flex: 1,
@@ -716,36 +720,36 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
   },
   subtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   cardHeading: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 2,
   },
   sectionSub: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginBottom: 12,
   },
   label: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#334155',
+    color: colors.secondaryText,
     marginTop: 12,
     marginBottom: 6,
   },
@@ -753,14 +757,14 @@ const styles = StyleSheet.create({
     color: '#DC2626',
   },
   input: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 14,
-    color: '#0F172A',
+    color: colors.text,
   },
   row: {
     flexDirection: 'row',
@@ -775,31 +779,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 7,
     borderRadius: 8,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     marginRight: 6,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   chipActive: {
-    backgroundColor: '#EFF6FF',
-    borderColor: '#2563EB',
+    backgroundColor: colors.primaryLight,
+    borderColor: colors.primary,
   },
   chipText: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontWeight: '600',
   },
   chipTextActive: {
-    color: '#2563EB',
+    color: colors.primary,
   },
   stageChip: {
     paddingHorizontal: 12,
     paddingVertical: 7,
     borderRadius: 8,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     marginRight: 6,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   stageChipActive: {
     backgroundColor: '#F0FDF4',
@@ -807,7 +811,7 @@ const styles = StyleSheet.create({
   },
   stageChipText: {
     fontSize: 12,
-    color: '#475569',
+    color: colors.secondaryText,
     fontWeight: '600',
   },
   stageChipTextActive: {
@@ -815,7 +819,7 @@ const styles = StyleSheet.create({
   },
   noStagesNote: {
     fontSize: 13,
-    color: '#94A3B8',
+    color: colors.mutedText,
     fontStyle: 'italic',
   },
   referralGrid: {
@@ -828,36 +832,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 7,
     borderRadius: 8,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   referralPillActive: {
-    backgroundColor: '#EFF6FF',
-    borderColor: '#2563EB',
+    backgroundColor: colors.primaryLight,
+    borderColor: colors.primary,
   },
   referralPillText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   referralPillTextActive: {
-    color: '#2563EB',
+    color: colors.primary,
   },
   pickerBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 11,
   },
   pickerBtnText: {
     fontSize: 13,
-    color: '#0F172A',
+    color: colors.text,
     fontWeight: '600',
   },
   clearScheduleBtn: {
@@ -870,7 +874,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   submitBtn: {
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -878,7 +882,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 10,
     marginTop: 8,
-    shadowColor: '#2563EB',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,

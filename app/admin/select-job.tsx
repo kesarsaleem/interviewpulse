@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, {
 useEffect,
 useState
@@ -27,6 +29,8 @@ supabase
 
 
 export default function SelectJob(){
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
 
 const [jobs,setJobs]=useState<any[]>([]);
@@ -127,7 +131,7 @@ return(
 
 size="large"
 
-color="#2563EB"
+color={colors.primary}
 
 />
 
@@ -269,7 +273,7 @@ jobId:String(job.id)
 
 
 
-const styles=StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
 
 
 
@@ -277,7 +281,7 @@ container:{
 
 flex:1,
 
-backgroundColor:"#F8FAFC",
+backgroundColor:colors.background,
 
 padding:20,
 
@@ -313,7 +317,7 @@ marginTop:10,
 
 subtitle:{
 
-color:"#64748B",
+color:colors.secondaryText,
 
 marginTop:5,
 
@@ -325,7 +329,7 @@ marginBottom:25,
 
 card:{
 
-backgroundColor:"#FFFFFF",
+backgroundColor:colors.card,
 
 padding:20,
 
@@ -343,7 +347,7 @@ fontSize:18,
 
 fontWeight:"900",
 
-color:"#0F172A",
+color:colors.text,
 
 },
 
@@ -353,7 +357,7 @@ department:{
 
 marginTop:6,
 
-color:"#2563EB",
+color:colors.primary,
 
 fontWeight:"700",
 
@@ -387,7 +391,7 @@ alignItems:"center",
 
 emptyText:{
 
-color:"#64748B",
+color:colors.secondaryText,
 
 fontSize:16,
 

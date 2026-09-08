@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
@@ -42,6 +44,8 @@ interface ActivityItem {
 }
 
 export default function AdminDashboard() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
@@ -266,7 +270,7 @@ export default function AdminDashboard() {
   const getActivityIcon = (action: string) => {
     switch (action) {
       case 'candidate_added':
-        return { icon: 'person-add-outline', color: '#2563EB', bg: '#EFF6FF' };
+        return { icon: 'person-add-outline', color: colors.primary, bg: '#EFF6FF' };
       case 'stage_moved':
         return { icon: 'arrow-forward-circle-outline', color: '#0D9488', bg: '#F0FDFA' };
       case 'feedback_submitted':
@@ -276,7 +280,7 @@ export default function AdminDashboard() {
       case 'marked_reject':
         return { icon: 'close-circle-outline', color: '#DC2626', bg: '#FEE2E2' };
       default:
-        return { icon: 'flash-outline', color: '#64748B', bg: '#F1F5F9' };
+        return { icon: 'flash-outline', color: colors.secondaryText, bg: colors.divider };
     }
   };
 
@@ -323,7 +327,7 @@ export default function AdminDashboard() {
   if (loading && !refreshing) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Loading Hiring Dashboard...</Text>
       </View>
     );
@@ -346,7 +350,7 @@ export default function AdminDashboard() {
 
         <View style={styles.headerActions}>
           <Pressable style={styles.refreshBtn} onPress={onRefresh} hitSlop={10}>
-            <Ionicons name="refresh-outline" size={20} color="#2563EB" />
+            <Ionicons name="refresh-outline" size={20} color={colors.primary} />
           </Pressable>
           <Pressable
             style={[styles.syncBtn, syncing && styles.syncBtnDisabled]}
@@ -366,8 +370,8 @@ export default function AdminDashboard() {
           style={[styles.statCard, { borderLeftColor: '#2563EB' }]}
           onPress={() => router.push('/admin/jobs')}
         >
-          <View style={[styles.statIconWrap, { backgroundColor: '#EFF6FF' }]}>
-            <Ionicons name="briefcase-outline" size={20} color="#2563EB" />
+          <View style={[styles.statIconWrap, { backgroundColor: colors.primaryLight }]}>
+            <Ionicons name="briefcase-outline" size={20} color={colors.primary} />
           </View>
           <Text style={styles.statNumber}>{stats.jobs}</Text>
           <Text style={styles.statLabel}>Total Jobs</Text>
@@ -414,7 +418,7 @@ export default function AdminDashboard() {
           style={styles.actionBtn}
           onPress={() => router.push('/admin/create-job')}
         >
-          <View style={[styles.actionIconCircle, { backgroundColor: '#2563EB' }]}>
+          <View style={[styles.actionIconCircle, { backgroundColor: colors.primary }]}>
             <Ionicons name="add" size={20} color="#FFFFFF" />
           </View>
           <Text style={styles.actionBtnText}>Create Job</Text>
@@ -444,7 +448,7 @@ export default function AdminDashboard() {
           style={styles.actionBtn}
           onPress={() => router.push('/admin/interviewers')}
         >
-          <View style={[styles.actionIconCircle, { backgroundColor: '#475569' }]}>
+          <View style={[styles.actionIconCircle, { backgroundColor: colors.secondaryText }]}>
             <Ionicons name="people-outline" size={18} color="#FFFFFF" />
           </View>
           <Text style={styles.actionBtnText}>Interviewers</Text>
@@ -461,7 +465,7 @@ export default function AdminDashboard() {
 
       {recentJobs.length === 0 ? (
         <View style={styles.emptyCard}>
-          <Ionicons name="briefcase-outline" size={32} color="#94A3B8" />
+          <Ionicons name="briefcase-outline" size={32} color={colors.mutedText} />
           <Text style={styles.emptyTitle}>No Jobs Created Yet</Text>
           <Text style={styles.emptySubtitle}>
             Create your first job opening to start receiving candidates and evaluations.
@@ -510,20 +514,20 @@ export default function AdminDashboard() {
 
             <View style={styles.jobMetaRow}>
               <View style={styles.jobMetaItem}>
-                <Ionicons name="people-outline" size={14} color="#64748B" />
+                <Ionicons name="people-outline" size={14} color={colors.secondaryText} />
                 <Text style={styles.jobMetaText}>
                   {job.candidates?.length || 0} candidate{job.candidates?.length === 1 ? '' : 's'}
                 </Text>
               </View>
 
               <View style={styles.jobMetaItem}>
-                <Ionicons name="git-branch-outline" size={14} color="#64748B" />
+                <Ionicons name="git-branch-outline" size={14} color={colors.secondaryText} />
                 <Text style={styles.jobMetaText}>
                   {job.stages?.length || 0} stage{job.stages?.length === 1 ? '' : 's'}
                 </Text>
               </View>
 
-              <Ionicons name="chevron-forward" size={16} color="#94A3B8" style={{ marginLeft: 'auto' }} />
+              <Ionicons name="chevron-forward" size={16} color={colors.mutedText} style={{ marginLeft: 'auto' }} />
             </View>
           </Pressable>
         ))
@@ -536,7 +540,7 @@ export default function AdminDashboard() {
 
       {activities.length === 0 ? (
         <View style={styles.emptyCard}>
-          <Ionicons name="time-outline" size={32} color="#94A3B8" />
+          <Ionicons name="time-outline" size={32} color={colors.mutedText} />
           <Text style={styles.emptyTitle}>No Activity Yet</Text>
           <Text style={styles.emptySubtitle}>
             Candidate actions, stage transitions, and feedback submissions will appear here in real-time.
@@ -574,10 +578,10 @@ export default function AdminDashboard() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   contentContainer: {
     padding: 16,
@@ -587,12 +591,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   header: {
     flexDirection: 'row',
@@ -611,18 +615,18 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 13,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontWeight: '500',
   },
   userName: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     marginTop: 2,
   },
   userRole: {
     fontSize: 12,
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '600',
     marginTop: 2,
   },
@@ -630,17 +634,17 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#DBEAFE',
+    borderColor: colors.primaryLight,
   },
   syncBtn: {
     minHeight: 38,
     paddingHorizontal: 12,
     borderRadius: 19,
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -670,7 +674,7 @@ const styles = StyleSheet.create({
   seeAllLink: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#2563EB',
+    color: colors.primary,
   },
   statsGrid: {
     flexDirection: 'row',
@@ -681,11 +685,11 @@ const styles = StyleSheet.create({
   statCard: {
     flexBasis: '48%',
     flexGrow: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 14,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     borderLeftWidth: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -704,11 +708,11 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
   },
   statLabel: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontWeight: '500',
     marginTop: 2,
   },
@@ -719,14 +723,14 @@ const styles = StyleSheet.create({
   },
   actionBtn: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 8,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.04,
@@ -744,16 +748,16 @@ const styles = StyleSheet.create({
   actionBtnText: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#334155',
+    color: colors.secondaryText,
     textAlign: 'center',
   },
   jobCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 14,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   jobCardTop: {
     flexDirection: 'row',
@@ -768,11 +772,11 @@ const styles = StyleSheet.create({
   jobCardTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
   },
   jobCardDept: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   jobStatusPill: {
@@ -784,7 +788,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#DCFCE7',
   },
   statusClosed: {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
   },
   jobStatusText: {
     fontSize: 11,
@@ -795,14 +799,14 @@ const styles = StyleSheet.create({
     color: '#16A34A',
   },
   statusClosedText: {
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   jobMetaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
     borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
+    borderTopColor: colors.divider,
     paddingTop: 10,
   },
   jobMetaItem: {
@@ -812,33 +816,33 @@ const styles = StyleSheet.create({
   },
   jobMetaText: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   emptyCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 24,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   emptyTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
     marginTop: 10,
     marginBottom: 4,
   },
   emptySubtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     textAlign: 'center',
     lineHeight: 18,
     marginBottom: 14,
   },
   emptyCta: {
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
@@ -849,11 +853,11 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   activityList: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   activityItem: {
     flexDirection: 'row',
@@ -873,7 +877,7 @@ const styles = StyleSheet.create({
   timelineLine: {
     width: 2,
     flex: 1,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: colors.cardBorder,
     marginTop: 4,
   },
   activityContent: {
@@ -889,16 +893,16 @@ const styles = StyleSheet.create({
   activityPrimary: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
     flex: 1,
     marginRight: 8,
   },
   activityTime: {
     fontSize: 11,
-    color: '#94A3B8',
+    color: colors.mutedText,
   },
   activitySecondary: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
   },
 });

@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   View,
@@ -18,6 +20,8 @@ import { supabase } from '../../lib/supabase/client';
 type SortOption = 'newest' | 'oldest' | 'name_asc' | 'interview_date';
 
 export default function AdminCandidatesScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const [candidates, setCandidates] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
   const [decisionsMap, setDecisionsMap] = useState<Record<string, 'hired' | 'rejected'>>({});
@@ -245,7 +249,7 @@ export default function AdminCandidatesScreen() {
   if (loading && !refreshing) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Loading Candidates...</Text>
       </View>
     );
@@ -274,10 +278,10 @@ export default function AdminCandidatesScreen() {
       {/* SEARCH BAR */}
       <View style={styles.searchSection}>
         <View style={styles.searchBar}>
-          <Ionicons name="search-outline" size={18} color="#64748B" style={styles.searchIcon} />
+          <Ionicons name="search-outline" size={18} color={colors.secondaryText} style={styles.searchIcon} />
           <TextInput
             placeholder="Search candidate name, role, email..."
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.mutedText}
             value={search}
             onChangeText={setSearch}
             style={styles.searchInput}
@@ -285,7 +289,7 @@ export default function AdminCandidatesScreen() {
           />
           {search.length > 0 && (
             <Pressable onPress={() => setSearch('')} hitSlop={8}>
-              <Ionicons name="close-circle" size={18} color="#94A3B8" />
+              <Ionicons name="close-circle" size={18} color={colors.mutedText} />
             </Pressable>
           )}
         </View>
@@ -374,7 +378,7 @@ export default function AdminCandidatesScreen() {
               setSortBy(nextSort[sortBy]);
             }}
           >
-            <Ionicons name="funnel-outline" size={14} color="#2563EB" />
+            <Ionicons name="funnel-outline" size={14} color={colors.primary} />
             <Text style={styles.sortToggleText}>
               {sortBy === 'newest'
                 ? 'Newest'
@@ -398,7 +402,7 @@ export default function AdminCandidatesScreen() {
         {filteredCandidates.length === 0 ? (
           <View style={styles.emptyContainer}>
             <View style={styles.emptyIconCircle}>
-              <Ionicons name="people-outline" size={40} color="#94A3B8" />
+              <Ionicons name="people-outline" size={40} color={colors.mutedText} />
             </View>
             <Text style={styles.emptyTitle}>
               {search.trim() || selectedJobId !== 'all' || selectedStageName !== 'all'
@@ -474,7 +478,7 @@ export default function AdminCandidatesScreen() {
                     </View>
                   ) : (
                     <View style={styles.stageBadge}>
-                      <Ionicons name="git-branch-outline" size={11} color="#2563EB" />
+                      <Ionicons name="git-branch-outline" size={11} color={colors.primary} />
                       <Text style={styles.stageBadgeText} numberOfLines={1}>
                         {stageName}
                       </Text>
@@ -487,7 +491,7 @@ export default function AdminCandidatesScreen() {
                 {/* DETAILS ROW */}
                 <View style={styles.detailsRow}>
                   <View style={styles.detailItem}>
-                    <Ionicons name="briefcase-outline" size={14} color="#64748B" />
+                    <Ionicons name="briefcase-outline" size={14} color={colors.secondaryText} />
                     <Text style={styles.detailText} numberOfLines={1}>
                       {jobTitle}
                       {dept ? ` (${dept})` : ''}
@@ -496,7 +500,7 @@ export default function AdminCandidatesScreen() {
 
                   {cand.email ? (
                     <View style={styles.detailItem}>
-                      <Ionicons name="mail-outline" size={14} color="#64748B" />
+                      <Ionicons name="mail-outline" size={14} color={colors.secondaryText} />
                       <Text style={styles.detailText} numberOfLines={1}>
                         {cand.email}
                       </Text>
@@ -541,7 +545,7 @@ export default function AdminCandidatesScreen() {
 
                     <View style={styles.footerAction}>
                       <Text style={styles.viewProfileText}>Candidate Profile</Text>
-                      <Ionicons name="chevron-forward" size={16} color="#2563EB" />
+                      <Ionicons name="chevron-forward" size={16} color={colors.primary} />
                     </View>
                   </View>
                 </View>
@@ -554,21 +558,21 @@ export default function AdminCandidatesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   center: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   header: {
     flexDirection: 'row',
@@ -577,9 +581,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 12,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.cardBorder,
   },
   headerLeft: {
     flex: 1,
@@ -587,18 +591,18 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
   },
   subtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   addBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 8,
@@ -609,15 +613,15 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   searchSection: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.cardBorder,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     marginHorizontal: 16,
     paddingHorizontal: 12,
     borderRadius: 8,
@@ -630,7 +634,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 14,
-    color: '#0F172A',
+    color: colors.text,
     height: '100%',
   },
   filterScroll: {
@@ -642,21 +646,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 16,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     marginRight: 6,
   },
   filterPillActive: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: colors.inputBorder,
   },
   filterPillText: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   filterPillTextActive: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '700',
   },
   subFilterRow: {
@@ -672,39 +676,39 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     marginRight: 6,
   },
   stagePillActive: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderColor: '#93C5FD',
   },
   stagePillText: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontWeight: '500',
   },
   stagePillTextActive: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '700',
   },
   sortToggleBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: colors.inputBorder,
   },
   sortToggleText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#2563EB',
+    color: colors.primary,
   },
   list: {
     flex: 1,
@@ -714,12 +718,12 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -734,7 +738,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#DBEAFE',
+    backgroundColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -751,33 +755,33 @@ const styles = StyleSheet.create({
   candidateName: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 2,
   },
   candidateRole: {
     fontSize: 13,
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   stageBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#DBEAFE',
+    borderColor: colors.primaryLight,
     maxWidth: 120,
   },
   stageBadgeText: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#2563EB',
+    color: colors.primary,
   },
   cardDivider: {
     height: 1,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     marginVertical: 12,
   },
   detailsRow: {
@@ -790,7 +794,7 @@ const styles = StyleSheet.create({
   },
   detailText: {
     fontSize: 13,
-    color: '#475569',
+    color: colors.secondaryText,
     flex: 1,
   },
   cardFooter: {
@@ -798,13 +802,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
+    borderTopColor: colors.divider,
     paddingTop: 10,
     marginTop: 12,
   },
   referralText: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   footerActionGroup: {
     flexDirection: 'row',
@@ -827,7 +831,7 @@ const styles = StyleSheet.create({
   viewProfileText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#2563EB',
+    color: colors.primary,
   },
   emptyContainer: {
     alignItems: 'center',
@@ -839,7 +843,7 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 14,
@@ -847,12 +851,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 6,
   },
   emptySubtitle: {
     fontSize: 13,
-    color: '#64748B',
+    color: colors.secondaryText,
     textAlign: 'center',
     lineHeight: 18,
     marginBottom: 16,
@@ -861,17 +865,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: colors.inputBorder,
   },
   resetBtnText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#2563EB',
+    color: colors.primary,
   },
   emptyAddBtn: {
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 18,
     paddingVertical: 10,
     borderRadius: 8,

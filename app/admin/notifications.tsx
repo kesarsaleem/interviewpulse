@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
@@ -34,6 +36,8 @@ interface ActivityLogItem {
 }
 
 export default function AdminNotificationsScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const [logs, setLogs] = useState<ActivityLogItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -195,7 +199,7 @@ export default function AdminNotificationsScreen() {
       case "moved_stage":
         return {
           icon: "arrow-forward-circle",
-          color: "#2563EB",
+          color: colors.primary,
           bgColor: "#EFF6FF",
           label: "Moved Stage",
         };
@@ -209,8 +213,8 @@ export default function AdminNotificationsScreen() {
       default:
         return {
           icon: "notifications",
-          color: "#64748B",
-          bgColor: "#F1F5F9",
+          color: colors.secondaryText,
+          bgColor: colors.divider,
           label: action.replace(/_/g, " "),
         };
     }
@@ -259,7 +263,7 @@ export default function AdminNotificationsScreen() {
           onPress={() => router.push("/admin/dashboard")}
           hitSlop={8}
         >
-          <Ionicons name="arrow-back" size={22} color="#0F172A" />
+          <Ionicons name="arrow-back" size={22} color={colors.text} />
         </Pressable>
         <Text style={styles.navTitle}>Activity & Alerts</Text>
         <Pressable
@@ -267,7 +271,7 @@ export default function AdminNotificationsScreen() {
           onPress={onRefresh}
           hitSlop={8}
         >
-          <Ionicons name="refresh" size={20} color="#2563EB" />
+          <Ionicons name="refresh" size={20} color={colors.primary} />
         </Pressable>
       </View>
 
@@ -304,7 +308,7 @@ export default function AdminNotificationsScreen() {
       {/* LIST */}
       {loading ? (
         <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color="#2563EB" />
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
       ) : (
         <FlatList
@@ -318,7 +322,7 @@ export default function AdminNotificationsScreen() {
           ListEmptyComponent={
             <View style={styles.emptyState}>
               <View style={styles.emptyIconCircle}>
-                <Ionicons name="notifications-off-outline" size={36} color="#94A3B8" />
+                <Ionicons name="notifications-off-outline" size={36} color={colors.mutedText} />
               </View>
               <Text style={styles.emptyTitle}>No Activity Found</Text>
               <Text style={styles.emptyDesc}>
@@ -368,7 +372,7 @@ export default function AdminNotificationsScreen() {
                   </Text>
                 </View>
 
-                <Ionicons name="chevron-forward" size={16} color="#CBD5E1" />
+                <Ionicons name="chevron-forward" size={16} color={colors.inputBorder} />
               </Pressable>
             );
           }}
@@ -378,10 +382,10 @@ export default function AdminNotificationsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: colors.background,
   },
   topNav: {
     flexDirection: "row",
@@ -390,56 +394,56 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 16,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: "#E2E8F0",
+    borderBottomColor: colors.cardBorder,
   },
   backBtn: {
     width: 38,
     height: 38,
     borderRadius: 10,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: colors.divider,
     alignItems: "center",
     justifyContent: "center",
   },
   navTitle: {
     fontSize: 18,
     fontWeight: "800",
-    color: "#0F172A",
+    color: colors.text,
   },
   refreshBtn: {
     width: 38,
     height: 38,
     borderRadius: 10,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: colors.primaryLight,
     alignItems: "center",
     justifyContent: "center",
   },
   filterBar: {
     flexDirection: "row",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     paddingHorizontal: 16,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#E2E8F0",
+    borderBottomColor: colors.cardBorder,
     gap: 8,
   },
   tab: {
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: colors.divider,
   },
   tabActive: {
-    backgroundColor: "#2563EB",
+    backgroundColor: colors.primary,
   },
   tabText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#64748B",
+    color: colors.secondaryText,
   },
   tabTextActive: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontWeight: "700",
   },
   listContent: {
@@ -454,12 +458,12 @@ const styles = StyleSheet.create({
   itemCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 14,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: colors.cardBorder,
     shadowColor: "#000",
     shadowOpacity: 0.03,
     shadowRadius: 6,
@@ -486,31 +490,31 @@ const styles = StyleSheet.create({
   itemActionTitle: {
     fontSize: 14,
     fontWeight: "800",
-    color: "#0F172A",
+    color: colors.text,
   },
   itemTime: {
     fontSize: 11,
-    color: "#94A3B8",
+    color: colors.mutedText,
     fontWeight: "500",
   },
   candidateName: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#334155",
+    color: colors.secondaryText,
     marginBottom: 2,
   },
   stageMoveNote: {
     fontSize: 12,
-    color: "#64748B",
+    color: colors.secondaryText,
     marginTop: 2,
   },
   actorNote: {
     fontSize: 11,
-    color: "#94A3B8",
+    color: colors.mutedText,
     marginTop: 3,
   },
   actorName: {
-    color: "#475569",
+    color: colors.secondaryText,
     fontWeight: "600",
   },
   emptyState: {
@@ -523,7 +527,7 @@ const styles = StyleSheet.create({
     width: 68,
     height: 68,
     borderRadius: 34,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: colors.divider,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 14,
@@ -531,12 +535,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 16,
     fontWeight: "800",
-    color: "#0F172A",
+    color: colors.text,
     marginBottom: 6,
   },
   emptyDesc: {
     fontSize: 13,
-    color: "#64748B",
+    color: colors.secondaryText,
     textAlign: "center",
     lineHeight: 19,
   },

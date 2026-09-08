@@ -1,4 +1,6 @@
-﻿import React, { useEffect, useState, useCallback } from 'react';
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -26,6 +28,8 @@ import {
 import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
 
 export default function InterviewerProfileScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
@@ -226,7 +230,7 @@ export default function InterviewerProfileScreen() {
 
           <View style={styles.badgeRow}>
             <View style={styles.roleBadge}>
-              <Ionicons name="shield-checkmark" size={13} color="#2563EB" />
+              <Ionicons name="shield-checkmark" size={13} color={colors.primary} />
               <Text style={styles.roleBadgeText}>Interviewer</Text>
             </View>
 
@@ -241,8 +245,8 @@ export default function InterviewerProfileScreen() {
         <Text style={styles.sectionTitle}>Interview Statistics</Text>
         <View style={styles.statsGrid}>
           <View style={styles.statBox}>
-            <View style={[styles.statIconWrap, { backgroundColor: '#EFF6FF' }]}>
-              <Ionicons name="briefcase-outline" size={20} color="#2563EB" />
+            <View style={[styles.statIconWrap, { backgroundColor: colors.primaryLight }]}>
+              <Ionicons name="briefcase-outline" size={20} color={colors.primary} />
             </View>
             <Text style={styles.statValue}>{totalAssigned}</Text>
             <Text style={styles.statLabel}>Assigned</Text>
@@ -415,10 +419,10 @@ export default function InterviewerProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   header: {
     backgroundColor: '#06235C',
@@ -461,13 +465,13 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   profileCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -491,12 +495,12 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 4,
   },
   userEmail: {
     fontSize: 13,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginBottom: 12,
   },
   badgeRow: {
@@ -507,23 +511,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#DBEAFE',
+    borderColor: colors.primaryLight,
   },
   roleBadgeText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#2563EB',
+    color: colors.primary,
   },
   onlineBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#ECFDF5',
+    backgroundColor: colors.successLight,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 20,
@@ -534,7 +538,7 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#10B981',
+    backgroundColor: colors.success,
   },
   onlineBadgeText: {
     fontSize: 12,
@@ -544,7 +548,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#334155',
+    color: colors.secondaryText,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
     marginBottom: 10,
@@ -557,12 +561,12 @@ const styles = StyleSheet.create({
   },
   statBox: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 14,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   statIconWrap: {
     width: 36,
@@ -575,22 +579,22 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 2,
   },
   statLabel: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontWeight: '500',
     textAlign: 'center',
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 16,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   syncHeader: {
     flexDirection: 'row',
@@ -606,16 +610,16 @@ const styles = StyleSheet.create({
   syncStatusTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#0F172A',
+    color: colors.text,
   },
   syncStatusSubtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   divider: {
     height: 1,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     marginVertical: 14,
   },
   syncActions: {
@@ -628,7 +632,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingVertical: 10,
     borderRadius: 8,
   },
@@ -642,24 +646,24 @@ const styles = StyleSheet.create({
   },
   conflictIntro: {
     fontSize: 13,
-    color: '#64748B',
+    color: colors.secondaryText,
     lineHeight: 19,
     marginBottom: 12,
   },
   conflictItem: {
     borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
+    borderTopColor: colors.divider,
     paddingTop: 12,
     marginTop: 4,
   },
   conflictTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
   },
   conflictDetail: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 4,
     marginBottom: 10,
   },
@@ -693,12 +697,12 @@ const styles = StyleSheet.create({
     color: '#DC2626',
   },
   rulesCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 16,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   ruleItem: {
     flexDirection: 'row',
@@ -708,7 +712,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 2,
@@ -719,26 +723,26 @@ const styles = StyleSheet.create({
   ruleTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 4,
   },
   ruleDescription: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     lineHeight: 18,
   },
   ruleDivider: {
     height: 1,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     marginVertical: 12,
   },
   appInfoCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 14,
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     gap: 10,
   },
   appInfoRow: {
@@ -748,19 +752,19 @@ const styles = StyleSheet.create({
   },
   appInfoLabel: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   appInfoValue: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#0F172A',
+    color: colors.text,
   },
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#FEF2F2',
+    backgroundColor: colors.dangerLight,
     borderWidth: 1,
     borderColor: '#FECACA',
     paddingVertical: 12,

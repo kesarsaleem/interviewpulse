@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import { useTheme } from '../../context/ThemeContext';
 import Svg, { Polygon, Line, Circle, Text as SvgText } from 'react-native-svg';
 
 export interface RadarSeries {
@@ -22,6 +23,7 @@ interface RadarChartProps {
  * not support React Native.
  */
 export function RadarChart({ criteriaLabels, series, size = 280 }: RadarChartProps) {
+  const { colors } = useTheme();
   const center = size / 2;
   const radius = size / 2 - 40; // leave room for labels
   const maxScore = 5;
@@ -46,7 +48,7 @@ export function RadarChart({ criteriaLabels, series, size = 280 }: RadarChartPro
               return `${p.x},${p.y}`;
             })
             .join(' ');
-          return <Polygon key={level} points={points} fill="none" stroke="#E5E7EB" strokeWidth={1} />;
+          return <Polygon key={level} points={points} fill="none" stroke={colors.border} strokeWidth={1} />;
         })}
 
         {/* Axis lines + labels */}
@@ -55,12 +57,12 @@ export function RadarChart({ criteriaLabels, series, size = 280 }: RadarChartPro
           const labelPoint = pointFor(i, maxScore + 0.9);
           return (
             <React.Fragment key={label}>
-              <Line x1={center} y1={center} x2={outer.x} y2={outer.y} stroke="#E5E7EB" strokeWidth={1} />
+              <Line x1={center} y1={center} x2={outer.x} y2={outer.y} stroke={colors.border} strokeWidth={1} />
               <SvgText
                 x={labelPoint.x}
                 y={labelPoint.y}
                 fontSize={11}
-                fill="#4B5563"
+                fill={colors.secondaryText}
                 textAnchor="middle"
               >
                 {label}
@@ -101,7 +103,7 @@ export function RadarChart({ criteriaLabels, series, size = 280 }: RadarChartPro
         {series.map((s) => (
           <View key={s.interviewerName} className="flex-row items-center">
             <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: s.color, marginRight: 6 }} />
-            <Text className="text-xs text-text-secondary">{s.interviewerName}</Text>
+            <Text className="text-xs" style={{ color: colors.secondaryText }}>{s.interviewerName}</Text>
           </View>
         ))}
       </View>

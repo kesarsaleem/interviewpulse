@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useMemo, useState, useEffect } from 'react';
 import {
   View,
@@ -31,6 +33,8 @@ import { runSync } from '../../lib/sync/syncEngine';
 import { StarRating } from '../../components/feedback/StarRating';
 
 export default function FeedbackFormScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const params = useLocalSearchParams<{
     candidateId: string;
     stageId?: string;
@@ -332,7 +336,7 @@ export default function FeedbackFormScreen() {
   if (candidateLoading && !candidate) {
     return (
       <SafeAreaView style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Loading interview details...</Text>
       </SafeAreaView>
     );
@@ -384,7 +388,7 @@ export default function FeedbackFormScreen() {
         {/* 1-HOUR EDIT NOTICE IF STILL EDITABLE */}
         {!isLocked && existingFeedback && (
           <View style={styles.editWindowBanner}>
-            <Ionicons name="time-outline" size={20} color="#2563EB" />
+            <Ionicons name="time-outline" size={20} color={colors.primary} />
             <View style={{ flex: 1, marginLeft: 10 }}>
               <Text style={styles.editWindowTitle}>Editing Mode</Text>
               <Text style={styles.editWindowText}>
@@ -443,7 +447,7 @@ export default function FeedbackFormScreen() {
                   ]}
                 >
                   <Text style={styles.verdictEmoji}>{item.emoji}</Text>
-                  <Text style={[styles.verdictLabel, { color: selected ? item.color : '#475569' }]}>
+                  <Text style={[styles.verdictLabel, { color: selected ? item.color : colors.secondaryText }]}>
                     {item.label}
                   </Text>
                 </Pressable>
@@ -504,7 +508,7 @@ export default function FeedbackFormScreen() {
                         value={value || ''}
                         onChangeText={onChange}
                         placeholder={`Optional notes for ${item.name}...`}
-                        placeholderTextColor="#94A3B8"
+                        placeholderTextColor={colors.mutedText}
                         editable={!isLocked}
                         style={styles.criterionNoteInput}
                       />
@@ -575,7 +579,7 @@ export default function FeedbackFormScreen() {
                 value={value ? String(value) : ''}
                 onChangeText={(v) => onChange(v ? parseInt(v, 10) || 0 : 0)}
                 placeholder="45"
-                placeholderTextColor="#94A3B8"
+                placeholderTextColor={colors.mutedText}
                 editable={!isLocked}
                 style={styles.numericInput}
               />
@@ -673,7 +677,7 @@ export default function FeedbackFormScreen() {
           </Pressable>
         ) : (
           <View style={styles.lockedFooter}>
-            <Ionicons name="lock-closed" size={18} color="#64748B" />
+            <Ionicons name="lock-closed" size={18} color={colors.secondaryText} />
             <Text style={styles.lockedFooterText}>
               Feedback is locked. The 1-hour editing window has expired.
             </Text>
@@ -699,6 +703,8 @@ function FormField({
   error?: string;
   editable?: boolean;
 }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   return (
     <View style={styles.formGroup}>
       <Text style={styles.inputLabel}>{label}</Text>
@@ -710,7 +716,7 @@ function FormField({
             value={value || ''}
             onChangeText={onChange}
             placeholder={placeholder}
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.mutedText}
             multiline
             numberOfLines={4}
             editable={editable}
@@ -728,20 +734,20 @@ function FormField({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   loadingText: {
     marginTop: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontSize: 14,
   },
   header: {
@@ -762,7 +768,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   headerSubtitle: {
-    color: '#CBD5E1',
+    color: colors.inputBorder,
     fontSize: 12,
     marginTop: 2,
   },
@@ -786,7 +792,7 @@ const styles = StyleSheet.create({
   },
   lockNoticeBanner: {
     flexDirection: 'row',
-    backgroundColor: '#FEF2F2',
+    backgroundColor: colors.dangerLight,
     borderWidth: 1,
     borderColor: '#FECACA',
     borderRadius: 12,
@@ -807,16 +813,16 @@ const styles = StyleSheet.create({
   },
   editWindowBanner: {
     flexDirection: 'row',
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: colors.inputBorder,
     borderRadius: 12,
     padding: 12,
     marginBottom: 14,
     alignItems: 'center',
   },
   editWindowTitle: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '800',
     fontSize: 13,
   },
@@ -827,52 +833,52 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   candidateCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   avatar: {
     width: 46,
     height: 46,
     borderRadius: 23,
-    backgroundColor: '#DBEAFE',
+    backgroundColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
   },
   avatarText: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '900',
     fontSize: 20,
   },
   candidateName: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
   },
   subText: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   jobBadgeText: {
     fontSize: 11,
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '600',
     marginTop: 4,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 16,
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   sectionHeaderRow: {
     flexDirection: 'row',
@@ -883,17 +889,17 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 15,
     fontWeight: '900',
-    color: '#0F172A',
+    color: colors.text,
   },
   sectionHelp: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginBottom: 12,
     lineHeight: 16,
   },
   requiredStar: {
     fontSize: 11,
-    color: '#EF4444',
+    color: colors.danger,
     fontWeight: '700',
   },
   verdictRow: {
@@ -902,10 +908,10 @@ const styles = StyleSheet.create({
   },
   verdictCard: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     paddingVertical: 14,
     alignItems: 'center',
     justifyContent: 'center',
@@ -920,7 +926,7 @@ const styles = StyleSheet.create({
   },
   criteriaBlock: {
     borderTopWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: colors.divider,
     paddingVertical: 12,
   },
   criteriaHeader: {
@@ -932,30 +938,30 @@ const styles = StyleSheet.create({
   criteriaName: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
     flex: 1,
   },
   scoreNumberText: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#2563EB',
+    color: colors.primary,
   },
   starRow: {
     marginBottom: 8,
   },
   criterionNoteInput: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 6,
     fontSize: 12,
-    color: '#0F172A',
+    color: colors.text,
   },
   noCriteriaText: {
     fontSize: 13,
-    color: '#94A3B8',
+    color: colors.mutedText,
     fontStyle: 'italic',
     paddingVertical: 8,
   },
@@ -965,22 +971,22 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#334155',
+    color: colors.secondaryText,
     marginBottom: 6,
   },
   textArea: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     borderRadius: 10,
     padding: 12,
     fontSize: 13,
-    color: '#0F172A',
+    color: colors.text,
     minHeight: 80,
     textAlignVertical: 'top',
   },
   inputErrorBorder: {
-    borderColor: '#EF4444',
+    borderColor: colors.danger,
   },
   errorRow: {
     flexDirection: 'row',
@@ -990,18 +996,18 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 11,
-    color: '#EF4444',
+    color: colors.danger,
     fontWeight: '600',
   },
   numericInput: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 8,
     fontSize: 14,
-    color: '#0F172A',
+    color: colors.text,
     width: 100,
   },
   modeRow: {
@@ -1010,26 +1016,26 @@ const styles = StyleSheet.create({
   },
   modeBtn: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     borderRadius: 10,
     paddingVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
   activeModeBtn: {
-    backgroundColor: '#EFF6FF',
-    borderColor: '#2563EB',
+    backgroundColor: colors.primaryLight,
+    borderColor: colors.primary,
     borderWidth: 2,
   },
   modeBtnText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#475569',
+    color: colors.secondaryText,
   },
   activeModeBtnText: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '800',
   },
   activeYesBtn: {
@@ -1042,7 +1048,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   activeNoBtn: {
-    backgroundColor: '#FEF2F2',
+    backgroundColor: colors.dangerLight,
     borderColor: '#DC2626',
     borderWidth: 2,
   },
@@ -1051,7 +1057,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   submitBtn: {
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     borderRadius: 14,
     paddingVertical: 14,
     flexDirection: 'row',
@@ -1059,7 +1065,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 8,
     marginTop: 6,
-    shadowColor: '#2563EB',
+    shadowColor: colors.primary,
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 3,
@@ -1073,7 +1079,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   lockedFooter: {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     borderRadius: 12,
     padding: 14,
     flexDirection: 'row',
@@ -1083,7 +1089,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   lockedFooterText: {
-    color: '#64748B',
+    color: colors.secondaryText,
     fontSize: 12,
     fontWeight: '600',
   },

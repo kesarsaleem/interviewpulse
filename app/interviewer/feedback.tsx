@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   View,
@@ -20,6 +22,8 @@ import { getLocalInterviewerFeedback } from '../../services/feedbackService';
 import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
 
 export default function FeedbackGiven() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
@@ -194,7 +198,7 @@ export default function FeedbackGiven() {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Loading submitted feedback...</Text>
       </View>
     );
@@ -227,17 +231,17 @@ export default function FeedbackGiven() {
 
       {/* SEARCH BOX */}
       <View style={styles.searchBox}>
-        <Ionicons name="search-outline" size={19} color="#94A3B8" />
+        <Ionicons name="search-outline" size={19} color={colors.mutedText} />
         <TextInput
           placeholder="Search by candidate name, role, or stage..."
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={colors.mutedText}
           value={search}
           onChangeText={setSearch}
           style={styles.searchInput}
         />
         {search ? (
           <Pressable onPress={() => setSearch('')}>
-            <Ionicons name="close-circle" size={18} color="#94A3B8" />
+            <Ionicons name="close-circle" size={18} color={colors.mutedText} />
           </Pressable>
         ) : null}
       </View>
@@ -281,7 +285,7 @@ export default function FeedbackGiven() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#2563EB" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
       >
         {/* SECTION HEADER */}
         <View style={styles.sectionHeader}>
@@ -294,7 +298,7 @@ export default function FeedbackGiven() {
         {/* CARDS LIST */}
         {filtered.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Ionicons name="chatbox-ellipses-outline" size={48} color="#94A3B8" />
+            <Ionicons name="chatbox-ellipses-outline" size={48} color={colors.mutedText} />
             <Text style={styles.emptyTitle}>No feedback records found</Text>
             <Text style={styles.emptySubtitle}>
               {search || selectedJobId !== 'all'
@@ -342,12 +346,12 @@ export default function FeedbackGiven() {
 
                     <View style={styles.metaRow}>
                       <View style={styles.stagePill}>
-                        <Ionicons name="layers-outline" size={12} color="#475569" />
+                        <Ionicons name="layers-outline" size={12} color={colors.secondaryText} />
                         <Text style={styles.stageText}>{item.stages?.name || 'Round'}</Text>
                       </View>
 
                       <View style={styles.datePill}>
-                        <Ionicons name="calendar-outline" size={12} color="#94A3B8" />
+                        <Ionicons name="calendar-outline" size={12} color={colors.mutedText} />
                         <Text style={styles.dateText}>
                           {item.submitted_at ? new Date(item.submitted_at).toLocaleDateString() : 'Recent'}
                         </Text>
@@ -388,7 +392,7 @@ export default function FeedbackGiven() {
                       <Ionicons name="star" size={16} color="#F59E0B" />
                       <Text style={styles.scoreText}>{avg}</Text>
                       <Text style={styles.scoreMax}>/5</Text>
-                      <Ionicons name="chevron-forward" size={20} color="#94A3B8" />
+                      <Ionicons name="chevron-forward" size={20} color={colors.mutedText} />
                     </View>
                   </View>
                 </View>
@@ -401,20 +405,20 @@ export default function FeedbackGiven() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   loadingText: {
     marginTop: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontSize: 14,
     fontWeight: '600',
   },
@@ -433,14 +437,14 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   headerSubtitle: {
-    color: '#CBD5E1',
+    color: colors.inputBorder,
     fontSize: 12.5,
     marginTop: 3,
   },
   syncBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 9,
     borderRadius: 20,
@@ -454,11 +458,11 @@ const styles = StyleSheet.create({
   searchBox: {
     marginHorizontal: 16,
     marginTop: 16,
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     height: 48,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 14,
@@ -467,7 +471,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 14,
-    color: '#0F172A',
+    color: colors.text,
   },
   filterSection: {
     marginTop: 14,
@@ -477,20 +481,20 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   filterPill: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   activeFilterPill: {
-    backgroundColor: '#2563EB',
-    borderColor: '#2563EB',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   filterPillText: {
     fontSize: 13,
-    color: '#475569',
+    color: colors.secondaryText,
     fontWeight: '700',
   },
   activeFilterPillText: {
@@ -510,10 +514,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '900',
-    color: '#0F172A',
+    color: colors.text,
   },
   countBadgeWrap: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     minWidth: 28,
     height: 28,
     borderRadius: 14,
@@ -522,25 +526,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
   },
   countBadge: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '800',
     fontSize: 13,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 20,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     elevation: 3,
-    shadowColor: '#0F172A',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
     shadowRadius: 6,
   },
   cardPressed: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   cardRow: {
     flexDirection: 'row',
@@ -550,12 +554,12 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: '#DBEAFE',
+    backgroundColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '900',
     fontSize: 18,
   },
@@ -567,11 +571,11 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: '900',
-    color: '#0F172A',
+    color: colors.text,
   },
   roleText: {
     fontSize: 13,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 4,
   },
   metaRow: {
@@ -583,7 +587,7 @@ const styles = StyleSheet.create({
   stagePill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
@@ -591,7 +595,7 @@ const styles = StyleSheet.create({
   },
   stageText: {
     fontSize: 11,
-    color: '#475569',
+    color: colors.secondaryText,
     fontWeight: '700',
   },
   datePill: {
@@ -601,7 +605,7 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 11.5,
-    color: '#94A3B8',
+    color: colors.mutedText,
   },
   cardRight: {
     alignItems: 'flex-end',
@@ -644,11 +648,11 @@ const styles = StyleSheet.create({
   scoreText: {
     fontSize: 15,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
   },
   scoreMax: {
     fontSize: 11,
-    color: '#94A3B8',
+    color: colors.mutedText,
     marginRight: 4,
   },
   emptyContainer: {
@@ -660,12 +664,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     marginTop: 12,
   },
   emptySubtitle: {
     fontSize: 13,
-    color: '#64748B',
+    color: colors.secondaryText,
     textAlign: 'center',
     marginTop: 6,
     lineHeight: 18,
@@ -674,11 +678,11 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingHorizontal: 16,
     paddingVertical: 8,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderRadius: 8,
   },
   resetFilterText: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '700',
     fontSize: 12,
   },

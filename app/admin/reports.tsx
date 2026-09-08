@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import {
   View,
@@ -14,6 +16,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../lib/supabase/client';
 
 export default function AdminReportsScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -139,7 +143,7 @@ export default function AdminReportsScreen() {
   if (loading && !refreshing) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Computing Pipeline Reports...</Text>
       </View>
     );
@@ -161,8 +165,8 @@ export default function AdminReportsScreen() {
       <Text style={styles.sectionTitle}>Pipeline Conversion Funnel</Text>
       <View style={styles.funnelCard}>
         <View style={styles.funnelStep}>
-          <View style={[styles.funnelIconCircle, { backgroundColor: '#EFF6FF' }]}>
-            <Ionicons name="people" size={20} color="#2563EB" />
+          <View style={[styles.funnelIconCircle, { backgroundColor: colors.primaryLight }]}>
+            <Ionicons name="people" size={20} color={colors.primary} />
           </View>
           <View style={styles.funnelInfo}>
             <Text style={styles.funnelStepTitle}>Total Applicants</Text>
@@ -232,7 +236,7 @@ export default function AdminReportsScreen() {
             <Text style={styles.statusLabel}>Open ({openingStatus.open.pct}%)</Text>
           </View>
           <View style={styles.statusCard}>
-            <Text style={[styles.statusNum, { color: '#64748B' }]}>{openingStatus.closed.count}</Text>
+            <Text style={[styles.statusNum, { color: colors.secondaryText }]}>{openingStatus.closed.count}</Text>
             <Text style={styles.statusLabel}>Closed ({openingStatus.closed.pct}%)</Text>
           </View>
           <View style={styles.statusCard}>
@@ -268,7 +272,7 @@ export default function AdminReportsScreen() {
           <View style={styles.verdictRow}>
             <Text style={styles.verdictLabel}>Yes</Text>
             <View style={styles.barWrap}>
-              <View style={[styles.barFill, { width: `${verdictDistribution.yes.pct}%`, backgroundColor: '#2563EB' }]} />
+              <View style={[styles.barFill, { width: `${verdictDistribution.yes.pct}%`, backgroundColor: colors.primary }]} />
             </View>
             <Text style={styles.verdictCountText}>{verdictDistribution.yes.count} ({verdictDistribution.yes.pct}%)</Text>
           </View>
@@ -314,47 +318,47 @@ export default function AdminReportsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background },
   contentContainer: { padding: 16, paddingBottom: 40 },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F8FAFC', padding: 24 },
-  loadingText: { marginTop: 12, fontSize: 14, color: '#64748B' },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background, padding: 24 },
+  loadingText: { marginTop: 12, fontSize: 14, color: colors.secondaryText },
   header: { marginBottom: 20, paddingTop: 4 },
-  title: { fontSize: 22, fontWeight: '800', color: '#0F172A' },
-  subtitle: { fontSize: 13, color: '#64748B', marginTop: 2 },
-  sectionTitle: { fontSize: 14, fontWeight: '700', color: '#334155', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 10, marginTop: 10 },
-  funnelCard: { backgroundColor: '#FFFFFF', borderRadius: 16, padding: 16, borderWidth: 1, borderColor: '#E2E8F0', marginBottom: 16 },
+  title: { fontSize: 22, fontWeight: '800', color: colors.text },
+  subtitle: { fontSize: 13, color: colors.secondaryText, marginTop: 2 },
+  sectionTitle: { fontSize: 14, fontWeight: '700', color: colors.secondaryText, textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 10, marginTop: 10 },
+  funnelCard: { backgroundColor: colors.card, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: colors.cardBorder, marginBottom: 16 },
   funnelStep: { flexDirection: 'row', alignItems: 'center' },
   funnelIconCircle: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
   funnelInfo: { flex: 1 },
-  funnelStepTitle: { fontSize: 14, fontWeight: '700', color: '#0F172A' },
-  funnelStepSub: { fontSize: 11, color: '#64748B', marginTop: 1 },
-  funnelStepCount: { fontSize: 18, fontWeight: '800', color: '#0F172A' },
-  funnelDivider: { height: 1, backgroundColor: '#F1F5F9', marginVertical: 12 },
-  card: { backgroundColor: '#FFFFFF', borderRadius: 16, padding: 16, borderWidth: 1, borderColor: '#E2E8F0', marginBottom: 16 },
-  overallRatingRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
-  overallRatingLabel: { fontSize: 14, fontWeight: '700', color: '#0F172A' },
-  overallRatingSub: { fontSize: 11, color: '#64748B', marginTop: 1 },
+  funnelStepTitle: { fontSize: 14, fontWeight: '700', color: colors.text },
+  funnelStepSub: { fontSize: 11, color: colors.secondaryText, marginTop: 1 },
+  funnelStepCount: { fontSize: 18, fontWeight: '800', color: colors.text },
+  funnelDivider: { height: 1, backgroundColor: colors.divider, marginVertical: 12 },
+  card: { backgroundColor: colors.card, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: colors.cardBorder, marginBottom: 16 },
+  overallRatingRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: colors.divider },
+  overallRatingLabel: { fontSize: 14, fontWeight: '700', color: colors.text },
+  overallRatingSub: { fontSize: 11, color: colors.secondaryText, marginTop: 1 },
   ratingBadge: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#FEF3C7', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 10 },
   ratingBadgeText: { fontSize: 14, fontWeight: '800', color: '#B45309' },
   verdictBarSection: { marginTop: 14, gap: 10 },
   verdictRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  verdictLabel: { width: 75, fontSize: 12, fontWeight: '600', color: '#475569' },
-  barWrap: { flex: 1, height: 8, backgroundColor: '#F1F5F9', borderRadius: 4, overflow: 'hidden' },
+  verdictLabel: { width: 75, fontSize: 12, fontWeight: '600', color: colors.secondaryText },
+  barWrap: { flex: 1, height: 8, backgroundColor: colors.divider, borderRadius: 4, overflow: 'hidden' },
   barFill: { height: '100%', borderRadius: 4 },
-  verdictCountText: { width: 70, fontSize: 11, fontWeight: '600', color: '#64748B', textAlign: 'right' },
-  jobRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
-  jobRowTitle: { fontSize: 14, fontWeight: '700', color: '#0F172A' },
-  jobRowDept: { fontSize: 12, color: '#64748B', marginTop: 1 },
-  jobCountPill: { backgroundColor: '#EFF6FF', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
-  jobCountText: { fontSize: 11, fontWeight: '700', color: '#2563EB' },
+  verdictCountText: { width: 70, fontSize: 11, fontWeight: '600', color: colors.secondaryText, textAlign: 'right' },
+  jobRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: colors.divider },
+  jobRowTitle: { fontSize: 14, fontWeight: '700', color: colors.text },
+  jobRowDept: { fontSize: 12, color: colors.secondaryText, marginTop: 1 },
+  jobCountPill: { backgroundColor: colors.primaryLight, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
+  jobCountText: { fontSize: 11, fontWeight: '700', color: colors.primary },
   conversionMetricsRow: { flexDirection: 'row', gap: 10, marginTop: 4 },
-  conversionBox: { flex: 1, backgroundColor: '#F8FAFC', borderRadius: 8, padding: 10, alignItems: 'center', borderWidth: 1, borderColor: '#F1F5F9' },
+  conversionBox: { flex: 1, backgroundColor: colors.background, borderRadius: 8, padding: 10, alignItems: 'center', borderWidth: 1, borderColor: colors.divider },
   conversionNum: { fontSize: 18, fontWeight: '800', color: '#16A34A' },
-  conversionLabel: { fontSize: 11, color: '#64748B', marginTop: 2, textAlign: 'center' },
+  conversionLabel: { fontSize: 11, color: colors.secondaryText, marginTop: 2, textAlign: 'center' },
   statusGrid: { flexDirection: 'row', gap: 10 },
-  statusCard: { flex: 1, backgroundColor: '#F8FAFC', borderRadius: 10, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: '#F1F5F9' },
+  statusCard: { flex: 1, backgroundColor: colors.background, borderRadius: 10, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: colors.divider },
   statusNum: { fontSize: 20, fontWeight: '800' },
-  statusLabel: { fontSize: 11, fontWeight: '600', color: '#64748B', marginTop: 2, textAlign: 'center' },
-  emptyText: { fontSize: 13, color: '#94A3B8', fontStyle: 'italic', textAlign: 'center', paddingVertical: 12 },
+  statusLabel: { fontSize: 11, fontWeight: '600', color: colors.secondaryText, marginTop: 2, textAlign: 'center' },
+  emptyText: { fontSize: 13, color: colors.mutedText, fontStyle: 'italic', textAlign: 'center', paddingVertical: 12 },
 });

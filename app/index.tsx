@@ -1,3 +1,5 @@
+import { useTheme } from '../context/ThemeContext';
+import { ThemeColors } from '../theme/colors';
 import React, {
   useEffect,
   useRef,
@@ -20,6 +22,8 @@ import { ROUTES } from "../constants/routes";
 
 
 export default function SplashScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
 
   const { user, loading } = useAuth();
@@ -174,7 +178,7 @@ export default function SplashScreen() {
 
 
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
 
 
   logo:{
@@ -184,7 +188,7 @@ const styles = StyleSheet.create({
 
   loading:{
     marginTop:50,
-    color:"#FFFFFF",
+    color:colors.card,
     fontSize:14,
   }
 

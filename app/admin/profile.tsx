@@ -1,4 +1,6 @@
-﻿import React, { useState, useEffect } from "react";
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -17,6 +19,8 @@ import { useAuth } from "../../hooks/useAuth";
 import { ROUTES } from "../../constants/routes";
 
 export default function AdminProfileScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { user, signOut } = useAuth();
 
   const [name, setName] = useState(user?.name || "");
@@ -152,7 +156,7 @@ export default function AdminProfileScreen() {
           onPress={() => router.push("/admin/dashboard")}
           hitSlop={8}
         >
-          <Ionicons name="arrow-back" size={22} color="#0F172A" />
+          <Ionicons name="arrow-back" size={22} color={colors.text} />
         </Pressable>
         <Text style={styles.navTitle}>Admin Profile</Text>
         <Pressable
@@ -160,7 +164,7 @@ export default function AdminProfileScreen() {
           onPress={() => router.push("/admin/settings")}
           hitSlop={8}
         >
-          <Ionicons name="settings-outline" size={22} color="#0F172A" />
+          <Ionicons name="settings-outline" size={22} color={colors.text} />
         </Pressable>
       </View>
 
@@ -179,7 +183,7 @@ export default function AdminProfileScreen() {
           <Text style={styles.heroEmail}>{user?.email || "admin@interviewpulse.com"}</Text>
           <View style={styles.badgeRow}>
             <View style={styles.roleBadge}>
-              <Ionicons name="shield-checkmark" size={14} color="#2563EB" style={{ marginRight: 5 }} />
+              <Ionicons name="shield-checkmark" size={14} color={colors.primary} style={{ marginRight: 5 }} />
               <Text style={styles.roleBadgeText}>Administrator</Text>
             </View>
             <View style={styles.statusBadge}>
@@ -192,7 +196,7 @@ export default function AdminProfileScreen() {
         <Text style={styles.sectionHeading}>SYSTEM PIPELINE STATS</Text>
         <View style={styles.statsGrid}>
           <View style={styles.statCard}>
-            <Ionicons name="briefcase-outline" size={22} color="#2563EB" />
+            <Ionicons name="briefcase-outline" size={22} color={colors.primary} />
             <Text style={styles.statValue}>
               {loadingStats ? "..." : stats.jobs}
             </Text>
@@ -233,7 +237,7 @@ export default function AdminProfileScreen() {
             value={name}
             onChangeText={setName}
             placeholder="Enter your full name"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.mutedText}
           />
 
           <Text style={styles.fieldLabel}>Email Address</Text>
@@ -270,7 +274,7 @@ export default function AdminProfileScreen() {
             onChangeText={setNewPassword}
             secureTextEntry
             placeholder="Minimum 6 characters"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.mutedText}
           />
 
           <Text style={styles.fieldLabel}>Confirm New Password</Text>
@@ -280,7 +284,7 @@ export default function AdminProfileScreen() {
             onChangeText={setConfirmPassword}
             secureTextEntry
             placeholder="Re-enter new password"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.mutedText}
           />
 
           <Pressable
@@ -289,10 +293,10 @@ export default function AdminProfileScreen() {
             disabled={updatingPassword}
           >
             {updatingPassword ? (
-              <ActivityIndicator color="#2563EB" size="small" />
+              <ActivityIndicator color={colors.primary} size="small" />
             ) : (
               <>
-                <Ionicons name="key-outline" size={18} color="#2563EB" style={{ marginRight: 8 }} />
+                <Ionicons name="key-outline" size={18} color={colors.primary} style={{ marginRight: 8 }} />
                 <Text style={styles.outlineBtnText}>Update Password</Text>
               </>
             )}
@@ -307,12 +311,12 @@ export default function AdminProfileScreen() {
             onPress={() => router.push("/admin/settings")}
           >
             <View style={styles.navRowLeft}>
-              <View style={[styles.navIconBox, { backgroundColor: "#EFF6FF" }]}>
-                <Ionicons name="settings-sharp" size={18} color="#2563EB" />
+              <View style={[styles.navIconBox, { backgroundColor: colors.primaryLight }]}>
+                <Ionicons name="settings-sharp" size={18} color={colors.primary} />
               </View>
               <Text style={styles.navRowText}>System Settings</Text>
             </View>
-            <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
+            <Ionicons name="chevron-forward" size={18} color={colors.mutedText} />
           </Pressable>
 
           <View style={styles.separator} />
@@ -327,7 +331,7 @@ export default function AdminProfileScreen() {
               </View>
               <Text style={styles.navRowText}>Activity & Notifications</Text>
             </View>
-            <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
+            <Ionicons name="chevron-forward" size={18} color={colors.mutedText} />
           </Pressable>
         </View>
 
@@ -343,10 +347,10 @@ export default function AdminProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: colors.background,
   },
   topNav: {
     flexDirection: "row",
@@ -355,28 +359,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 16,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: "#E2E8F0",
+    borderBottomColor: colors.cardBorder,
   },
   backBtn: {
     width: 38,
     height: 38,
     borderRadius: 10,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: colors.divider,
     alignItems: "center",
     justifyContent: "center",
   },
   navTitle: {
     fontSize: 18,
     fontWeight: "800",
-    color: "#0F172A",
+    color: colors.text,
   },
   settingsBtn: {
     width: 38,
     height: 38,
     borderRadius: 10,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: colors.divider,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -384,12 +388,12 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   heroCard: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderRadius: 18,
     padding: 24,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: colors.cardBorder,
     marginBottom: 24,
     shadowColor: "#000",
     shadowOpacity: 0.04,
@@ -400,11 +404,11 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: "#2563EB",
+    backgroundColor: colors.primary,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 14,
-    shadowColor: "#2563EB",
+    shadowColor: colors.primary,
     shadowOpacity: 0.25,
     shadowRadius: 10,
     elevation: 4,
@@ -412,17 +416,17 @@ const styles = StyleSheet.create({
   avatarLargeText: {
     fontSize: 34,
     fontWeight: "800",
-    color: "#FFFFFF",
+    color: '#FFFFFF',
   },
   heroName: {
     fontSize: 22,
     fontWeight: "800",
-    color: "#0F172A",
+    color: colors.text,
     marginBottom: 4,
   },
   heroEmail: {
     fontSize: 14,
-    color: "#64748B",
+    color: colors.secondaryText,
     marginBottom: 14,
   },
   badgeRow: {
@@ -432,9 +436,9 @@ const styles = StyleSheet.create({
   roleBadge: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#EFF6FF",
+    backgroundColor: colors.primaryLight,
     borderWidth: 1,
-    borderColor: "#BFDBFE",
+    borderColor: colors.inputBorder,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
@@ -442,10 +446,10 @@ const styles = StyleSheet.create({
   roleBadgeText: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#2563EB",
+    color: colors.primary,
   },
   statusBadge: {
-    backgroundColor: "#ECFDF5",
+    backgroundColor: colors.successLight,
     borderWidth: 1,
     borderColor: "#A7F3D0",
     paddingHorizontal: 12,
@@ -455,12 +459,12 @@ const styles = StyleSheet.create({
   statusBadgeText: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#10B981",
+    color: colors.success,
   },
   sectionHeading: {
     fontSize: 12,
     fontWeight: "800",
-    color: "#94A3B8",
+    color: colors.mutedText,
     letterSpacing: 1,
     marginBottom: 12,
     marginLeft: 4,
@@ -474,62 +478,62 @@ const styles = StyleSheet.create({
   statCard: {
     flex: 1,
     minWidth: "45%",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 16,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: colors.cardBorder,
   },
   statValue: {
     fontSize: 24,
     fontWeight: "800",
-    color: "#0F172A",
+    color: colors.text,
     marginTop: 8,
     marginBottom: 2,
   },
   statLabel: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#64748B",
+    color: colors.secondaryText,
   },
   card: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 18,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: colors.cardBorder,
     marginBottom: 24,
   },
   fieldLabel: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#334155",
+    color: colors.secondaryText,
     marginBottom: 6,
     marginTop: 4,
   },
   fieldHint: {
     fontSize: 11,
-    color: "#94A3B8",
+    color: colors.mutedText,
     marginTop: -6,
     marginBottom: 14,
   },
   input: {
     height: 46,
     borderWidth: 1,
-    borderColor: "#CBD5E1",
+    borderColor: colors.inputBorder,
     borderRadius: 10,
     paddingHorizontal: 14,
     fontSize: 14,
-    color: "#0F172A",
-    backgroundColor: "#F8FAFC",
+    color: colors.text,
+    backgroundColor: colors.background,
     marginBottom: 14,
   },
   inputDisabled: {
-    backgroundColor: "#F1F5F9",
-    color: "#64748B",
+    backgroundColor: colors.divider,
+    color: colors.secondaryText,
   },
   primaryBtn: {
-    backgroundColor: "#2563EB",
+    backgroundColor: colors.primary,
     height: 46,
     borderRadius: 10,
     flexDirection: "row",
@@ -538,14 +542,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   primaryBtnText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontSize: 14,
     fontWeight: "700",
   },
   outlineBtn: {
     borderWidth: 1.5,
-    borderColor: "#2563EB",
-    backgroundColor: "#EFF6FF",
+    borderColor: colors.primary,
+    backgroundColor: colors.primaryLight,
     height: 46,
     borderRadius: 10,
     flexDirection: "row",
@@ -554,7 +558,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   outlineBtnText: {
-    color: "#2563EB",
+    color: colors.primary,
     fontSize: 14,
     fontWeight: "700",
   },
@@ -586,14 +590,14 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: colors.divider,
     marginVertical: 4,
   },
   logoutBtn: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FEF2F2",
+    backgroundColor: colors.dangerLight,
     borderWidth: 1,
     borderColor: "#FECACA",
     height: 50,
@@ -603,6 +607,6 @@ const styles = StyleSheet.create({
   logoutBtnText: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#EF4444",
+    color: colors.danger,
   },
 });

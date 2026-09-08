@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
@@ -15,6 +17,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../lib/supabase/client';
 
 export default function JobDetail() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const params = useLocalSearchParams();
   const id = params.id as string;
 
@@ -355,7 +359,7 @@ export default function JobDetail() {
   if (loading && !refreshing) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Loading Job Details...</Text>
       </View>
     );
@@ -386,7 +390,7 @@ export default function JobDetail() {
       {/* TOP NAV BAR */}
       <View style={styles.topNav}>
         <Pressable style={styles.navBackBtn} onPress={() => router.back()} hitSlop={10}>
-          <Ionicons name="arrow-back" size={20} color="#0F172A" />
+          <Ionicons name="arrow-back" size={20} color={colors.text} />
         </Pressable>
         <Text style={styles.navTitle} numberOfLines={1}>
           {job.title}
@@ -401,7 +405,7 @@ export default function JobDetail() {
               })
             }
           >
-            <Ionicons name="create-outline" size={18} color="#2563EB" />
+            <Ionicons name="create-outline" size={18} color={colors.primary} />
             <Text style={styles.navEditText}>Edit</Text>
           </Pressable>
           <Pressable
@@ -421,7 +425,7 @@ export default function JobDetail() {
           <View style={styles.headerInfo}>
             <Text style={styles.jobTitle}>{job.title}</Text>
             <View style={styles.deptRow}>
-              <Ionicons name="business-outline" size={14} color="#64748B" />
+              <Ionicons name="business-outline" size={14} color={colors.secondaryText} />
               <Text style={styles.department}>{job.department || 'General'}</Text>
             </View>
           </View>
@@ -502,7 +506,7 @@ export default function JobDetail() {
               })
             }
           >
-            <Ionicons name="people" size={15} color="#2563EB" />
+            <Ionicons name="people" size={15} color={colors.primary} />
             <Text style={styles.secondaryActionBtnText}>Assign Panel</Text>
           </Pressable>
         </View>
@@ -538,8 +542,8 @@ export default function JobDetail() {
               onPress={() => updateStatus('archived')}
               disabled={updating}
             >
-              <Ionicons name="archive-outline" size={16} color="#64748B" />
-              <Text style={[styles.statusActionText, { color: '#64748B' }]}>Archive</Text>
+              <Ionicons name="archive-outline" size={16} color={colors.secondaryText} />
+              <Text style={[styles.statusActionText, { color: colors.secondaryText }]}>Archive</Text>
             </Pressable>
           )}
 
@@ -583,7 +587,7 @@ export default function JobDetail() {
         <View style={styles.tabContent}>
           {candidates.length === 0 ? (
             <View style={styles.emptySubCard}>
-              <Ionicons name="people-outline" size={32} color="#94A3B8" />
+              <Ionicons name="people-outline" size={32} color={colors.mutedText} />
               <Text style={styles.emptySubTitle}>No candidates in this pipeline yet</Text>
               <Pressable
                 style={styles.emptySubBtn}
@@ -623,7 +627,7 @@ export default function JobDetail() {
                   </Text>
                   <View style={styles.candMeta}>
                     <View style={styles.candStageBadge}>
-                      <Ionicons name="git-branch-outline" size={11} color="#2563EB" />
+                      <Ionicons name="git-branch-outline" size={11} color={colors.primary} />
                       <Text style={styles.candStageText}>
                         {cand.stages?.name || 'Interview Stage'}
                       </Text>
@@ -636,7 +640,7 @@ export default function JobDetail() {
                   </View>
                 </View>
 
-                <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
+                <Ionicons name="chevron-forward" size={18} color={colors.mutedText} />
               </Pressable>
             ))
           )}
@@ -665,7 +669,7 @@ export default function JobDetail() {
         <View style={styles.tabContent}>
           {sortedCriteria.map((item, idx) => (
             <View key={item.id || idx} style={styles.criterionCard}>
-              <Ionicons name="star" size={18} color="#2563EB" />
+              <Ionicons name="star" size={18} color={colors.primary} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.criterionTitle}>{item.name}</Text>
                 <Text style={styles.criterionSub}>0–5 Star Rating with notes</Text>
@@ -680,7 +684,7 @@ export default function JobDetail() {
         <View style={styles.tabContent}>
           {interviewers.length === 0 ? (
             <View style={styles.emptySubCard}>
-              <Ionicons name="shield-outline" size={32} color="#94A3B8" />
+              <Ionicons name="shield-outline" size={32} color={colors.mutedText} />
               <Text style={styles.emptySubTitle}>No interviewers assigned to this panel</Text>
               <Pressable
                 style={styles.emptySubBtn}
@@ -737,10 +741,10 @@ export default function JobDetail() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   contentContainer: {
     padding: 16,
@@ -750,25 +754,25 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     padding: 24,
   },
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   errorTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
     marginTop: 12,
   },
   backButton: {
     marginTop: 16,
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     borderRadius: 8,
   },
   backButtonText: {
@@ -785,34 +789,34 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   navTitle: {
     flex: 1,
     marginHorizontal: 12,
     fontSize: 16,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
   },
   navEditBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 12,
     paddingVertical: 7,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: colors.inputBorder,
   },
   navEditText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#2563EB',
+    color: colors.primary,
   },
   navDeleteBtn: {
     alignItems: 'center',
@@ -820,17 +824,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 7,
     borderRadius: 8,
-    backgroundColor: '#FEF2F2',
+    backgroundColor: colors.dangerLight,
     borderWidth: 1,
     borderColor: '#FECACA',
   },
   headerCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 18,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -849,7 +853,7 @@ const styles = StyleSheet.create({
   jobTitle: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
   },
   deptRow: {
     flexDirection: 'row',
@@ -859,7 +863,7 @@ const styles = StyleSheet.create({
   },
   department: {
     fontSize: 13,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontWeight: '600',
   },
   statusPill: {
@@ -871,7 +875,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#DCFCE7',
   },
   statusClosed: {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
   },
   statusArchived: {
     backgroundColor: '#FEE2E2',
@@ -884,25 +888,25 @@ const styles = StyleSheet.create({
     color: '#16A34A',
   },
   statusClosedText: {
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   statusArchivedText: {
     color: '#DC2626',
   },
   description: {
     fontSize: 13,
-    color: '#475569',
+    color: colors.secondaryText,
     marginTop: 12,
     lineHeight: 19,
   },
   statsRow: {
     flexDirection: 'row',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderRadius: 12,
     padding: 12,
     marginTop: 16,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: colors.divider,
   },
   statBox: {
     flex: 1,
@@ -911,11 +915,11 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
   },
   statLabel: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontWeight: '500',
     marginTop: 2,
   },
@@ -926,7 +930,7 @@ const styles = StyleSheet.create({
   },
   primaryActionBtn: {
     flex: 1,
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -941,9 +945,9 @@ const styles = StyleSheet.create({
   },
   secondaryActionBtn: {
     flex: 1,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: colors.inputBorder,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -954,20 +958,20 @@ const styles = StyleSheet.create({
   secondaryActionBtnText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#2563EB',
+    color: colors.primary,
   },
   statusManagementCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 14,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   statusSectionHeading: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#64748B',
+    color: colors.secondaryText,
     textTransform: 'uppercase',
     letterSpacing: 0.4,
     marginBottom: 10,
@@ -982,9 +986,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 5,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     paddingVertical: 8,
     borderRadius: 6,
   },
@@ -994,7 +998,7 @@ const styles = StyleSheet.create({
   },
   tabsRow: {
     flexDirection: 'row',
-    backgroundColor: '#E2E8F0',
+    backgroundColor: colors.cardBorder,
     borderRadius: 10,
     padding: 3,
     marginBottom: 14,
@@ -1006,7 +1010,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   tabItemActive: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.08,
@@ -1016,35 +1020,35 @@ const styles = StyleSheet.create({
   tabItemText: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   tabItemTextActive: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '700',
   },
   tabContent: {
     gap: 10,
   },
   emptySubCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 24,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   emptySubTitle: {
     fontSize: 14,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 8,
     marginBottom: 12,
     textAlign: 'center',
   },
   emptySubBtn: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: colors.inputBorder,
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 6,
@@ -1052,22 +1056,22 @@ const styles = StyleSheet.create({
   emptySubBtnText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#2563EB',
+    color: colors.primary,
   },
   candidateCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   candidateAvatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#DBEAFE',
+    backgroundColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -1083,11 +1087,11 @@ const styles = StyleSheet.create({
   candName: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
   },
   candRole: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 1,
   },
   candMeta: {
@@ -1100,34 +1104,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 3,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
   },
   candStageText: {
     fontSize: 11,
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '600',
   },
   candDateText: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   pipelineStageCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 10,
     padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   stageOrderCircle: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -1135,7 +1139,7 @@ const styles = StyleSheet.create({
   stageOrderNum: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#2563EB',
+    color: colors.primary,
   },
   stageCardInfo: {
     flex: 1,
@@ -1143,41 +1147,41 @@ const styles = StyleSheet.create({
   stageCardName: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
   },
   stageCardPosition: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   criterionCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 10,
     padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   criterionTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
   },
   criterionSub: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   interviewerCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 10,
     padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   interviewerAvatar: {
     width: 38,
@@ -1199,18 +1203,18 @@ const styles = StyleSheet.create({
   interviewerName: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
   },
   interviewerEmail: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
   },
   interviewerBadgeRow: {
     flexDirection: 'row',
     marginTop: 4,
   },
   interviewerStatusBadge: {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
@@ -1218,7 +1222,7 @@ const styles = StyleSheet.create({
   interviewerStatusText: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#475569',
+    color: colors.secondaryText,
   },
   removePanelBtn: {
     padding: 6,

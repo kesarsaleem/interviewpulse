@@ -1,4 +1,6 @@
-﻿import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -16,6 +18,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../lib/supabase/client';
 
 export default function AdminInterviewsScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const [interviews, setInterviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -105,7 +109,7 @@ export default function AdminInterviewsScreen() {
   if (loading && !refreshing) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Loading Interview Sessions...</Text>
       </View>
     );
@@ -126,17 +130,17 @@ export default function AdminInterviewsScreen() {
       {/* SEARCH & TABS */}
       <View style={styles.searchSection}>
         <View style={styles.searchBar}>
-          <Ionicons name="search-outline" size={18} color="#64748B" style={styles.searchIcon} />
+          <Ionicons name="search-outline" size={18} color={colors.secondaryText} style={styles.searchIcon} />
           <TextInput
             placeholder="Search candidate, position, role..."
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.mutedText}
             value={search}
             onChangeText={setSearch}
             style={styles.searchInput}
           />
           {search.length > 0 && (
             <Pressable onPress={() => setSearch('')} hitSlop={8}>
-              <Ionicons name="close-circle" size={18} color="#94A3B8" />
+              <Ionicons name="close-circle" size={18} color={colors.mutedText} />
             </Pressable>
           )}
         </View>
@@ -170,7 +174,7 @@ export default function AdminInterviewsScreen() {
       >
         {filteredInterviews.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Ionicons name="calendar-outline" size={40} color="#94A3B8" />
+            <Ionicons name="calendar-outline" size={40} color={colors.mutedText} />
             <Text style={styles.emptyTitle}>No interviews found</Text>
             <Text style={styles.emptySubtitle}>
               {tab === 'upcoming'
@@ -238,12 +242,12 @@ export default function AdminInterviewsScreen() {
 
                 <View style={styles.metaRow}>
                   <View style={styles.metaItem}>
-                    <Ionicons name="briefcase-outline" size={13} color="#64748B" />
+                    <Ionicons name="briefcase-outline" size={13} color={colors.secondaryText} />
                     <Text style={styles.metaText}>{item.jobs?.title || 'Open Role'}</Text>
                   </View>
                   <View style={styles.metaItem}>
-                    <Ionicons name="git-branch-outline" size={13} color="#2563EB" />
-                    <Text style={[styles.metaText, { color: '#2563EB' }]}>
+                    <Ionicons name="git-branch-outline" size={13} color={colors.primary} />
+                    <Text style={[styles.metaText, { color: colors.primary }]}>
                       {item.stages?.name || 'Stage'}
                     </Text>
                   </View>
@@ -257,40 +261,40 @@ export default function AdminInterviewsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F8FAFC', padding: 24 },
-  loadingText: { marginTop: 12, fontSize: 14, color: '#64748B' },
-  header: { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 12, backgroundColor: '#FFFFFF', borderBottomWidth: 1, borderBottomColor: '#E2E8F0' },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background, padding: 24 },
+  loadingText: { marginTop: 12, fontSize: 14, color: colors.secondaryText },
+  header: { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 12, backgroundColor: colors.card, borderBottomWidth: 1, borderBottomColor: colors.cardBorder },
   headerLeft: { flex: 1 },
-  title: { fontSize: 20, fontWeight: '800', color: '#0F172A' },
-  subtitle: { fontSize: 12, color: '#64748B', marginTop: 2 },
-  searchSection: { backgroundColor: '#FFFFFF', paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#E2E8F0' },
-  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F1F5F9', paddingHorizontal: 12, borderRadius: 8, height: 38, marginBottom: 10 },
+  title: { fontSize: 20, fontWeight: '800', color: colors.text },
+  subtitle: { fontSize: 12, color: colors.secondaryText, marginTop: 2 },
+  searchSection: { backgroundColor: colors.card, paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: colors.cardBorder },
+  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.divider, paddingHorizontal: 12, borderRadius: 8, height: 38, marginBottom: 10 },
   searchIcon: { marginRight: 8 },
-  searchInput: { flex: 1, fontSize: 14, color: '#0F172A', height: '100%' },
+  searchInput: { flex: 1, fontSize: 14, color: colors.text, height: '100%' },
   tabsRow: { flexDirection: 'row', gap: 10 },
-  tabBtn: { flex: 1, paddingVertical: 7, borderRadius: 8, backgroundColor: '#F1F5F9', alignItems: 'center' },
-  tabBtnActive: { backgroundColor: '#EFF6FF', borderWidth: 1, borderColor: '#BFDBFE' },
-  tabBtnText: { fontSize: 12, fontWeight: '600', color: '#64748B' },
-  tabBtnTextActive: { color: '#2563EB', fontWeight: '700' },
+  tabBtn: { flex: 1, paddingVertical: 7, borderRadius: 8, backgroundColor: colors.divider, alignItems: 'center' },
+  tabBtnActive: { backgroundColor: colors.primaryLight, borderWidth: 1, borderColor: colors.inputBorder },
+  tabBtnText: { fontSize: 12, fontWeight: '600', color: colors.secondaryText },
+  tabBtnTextActive: { color: colors.primary, fontWeight: '700' },
   list: { flex: 1 },
   listContent: { padding: 16, paddingBottom: 32 },
-  card: { backgroundColor: '#FFFFFF', borderRadius: 14, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: '#E2E8F0', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 2, elevation: 1 },
+  card: { backgroundColor: colors.card, borderRadius: 14, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: colors.cardBorder, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 2, elevation: 1 },
   cardTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   dateBadge: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   dateBadgeText: { fontSize: 12, fontWeight: '700' },
   feedbackSubmittedBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#DCFCE7', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
   feedbackSubmittedText: { fontSize: 11, fontWeight: '700', color: '#16A34A' },
-  pendingBadge: { backgroundColor: '#F1F5F9', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
-  pendingText: { fontSize: 11, fontWeight: '600', color: '#64748B' },
-  divider: { height: 1, backgroundColor: '#F1F5F9', marginVertical: 10 },
-  candidateName: { fontSize: 16, fontWeight: '700', color: '#0F172A' },
-  candidateRole: { fontSize: 13, color: '#64748B', marginTop: 1 },
+  pendingBadge: { backgroundColor: colors.divider, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
+  pendingText: { fontSize: 11, fontWeight: '600', color: colors.secondaryText },
+  divider: { height: 1, backgroundColor: colors.divider, marginVertical: 10 },
+  candidateName: { fontSize: 16, fontWeight: '700', color: colors.text },
+  candidateRole: { fontSize: 13, color: colors.secondaryText, marginTop: 1 },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 16, marginTop: 10 },
   metaItem: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  metaText: { fontSize: 12, color: '#475569', fontWeight: '500' },
+  metaText: { fontSize: 12, color: colors.secondaryText, fontWeight: '500' },
   emptyContainer: { alignItems: 'center', justifyContent: 'center', padding: 40 },
-  emptyTitle: { fontSize: 16, fontWeight: '700', color: '#0F172A', marginTop: 12 },
-  emptySubtitle: { fontSize: 13, color: '#64748B', textAlign: 'center', marginTop: 4, lineHeight: 18 },
+  emptyTitle: { fontSize: 16, fontWeight: '700', color: colors.text, marginTop: 12 },
+  emptySubtitle: { fontSize: 13, color: colors.secondaryText, textAlign: 'center', marginTop: 4, lineHeight: 18 },
 });

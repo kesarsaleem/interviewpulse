@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   View,
@@ -21,6 +23,8 @@ import { getLocalInterviews } from '../../services/feedbackService';
 import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
 
 export default function CandidatesScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
@@ -200,7 +204,7 @@ export default function CandidatesScreen() {
     return (
       <View style={styles.center}>
         <View style={styles.loadingCard}>
-          <ActivityIndicator size="large" color="#2563EB" />
+          <ActivityIndicator size="large" color={colors.primary} />
           <Text style={styles.loadingText}>Loading assigned candidates...</Text>
         </View>
       </View>
@@ -248,18 +252,18 @@ export default function CandidatesScreen() {
 
         {/* SEARCH BAR (INTEGRATED IN HEADER CARD) */}
         <View style={styles.searchBar}>
-          <Ionicons name="search-outline" size={18} color="#94A3B8" />
+          <Ionicons name="search-outline" size={18} color={colors.mutedText} />
           <TextInput
             style={styles.searchInput}
             placeholder="Search candidate, role, company, or job..."
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.mutedText}
             value={search}
             onChangeText={setSearch}
             returnKeyType="search"
           />
           {search.length > 0 && (
             <Pressable onPress={() => setSearch('')} hitSlop={8}>
-              <Ionicons name="close-circle" size={18} color="#94A3B8" />
+              <Ionicons name="close-circle" size={18} color={colors.mutedText} />
             </Pressable>
           )}
         </View>
@@ -294,7 +298,7 @@ export default function CandidatesScreen() {
                   <Ionicons
                     name="layers-outline"
                     size={13}
-                    color={active ? '#FFFFFF' : '#64748B'}
+                    color={active ? '#FFFFFF' : colors.secondaryText}
                     style={{ marginRight: 4 }}
                   />
                   <Text style={[styles.filterPillText, active && styles.activeFilterPillText]}>
@@ -312,12 +316,12 @@ export default function CandidatesScreen() {
         style={styles.scrollArea}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#2563EB" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
       >
         {filteredCandidates.length === 0 ? (
           <View style={styles.emptyCard}>
             <View style={styles.emptyIconCircle}>
-              <Ionicons name="people-outline" size={36} color="#94A3B8" />
+              <Ionicons name="people-outline" size={36} color={colors.mutedText} />
             </View>
             <Text style={styles.emptyTitle}>No Candidates Found</Text>
             <Text style={styles.emptySubtitle}>
@@ -364,7 +368,7 @@ export default function CandidatesScreen() {
                       {candidate.current_company ? ` • ${candidate.current_company}` : ''}
                     </Text>
                     <View style={styles.jobBadgeRow}>
-                      <Ionicons name="briefcase-outline" size={11} color="#475569" />
+                      <Ionicons name="briefcase-outline" size={11} color={colors.secondaryText} />
                       <Text style={styles.jobText} numberOfLines={1}>
                         {jobTitle}
                         {department ? ` (${department})` : ''}
@@ -373,7 +377,7 @@ export default function CandidatesScreen() {
                   </View>
 
                   <View style={styles.stageBadge}>
-                    <Ionicons name="layers-outline" size={11} color="#2563EB" />
+                    <Ionicons name="layers-outline" size={11} color={colors.primary} />
                     <Text style={styles.stageBadgeText} numberOfLines={1}>
                       {stageName}
                     </Text>
@@ -387,7 +391,7 @@ export default function CandidatesScreen() {
                 <View style={styles.infoRow}>
                   {candidate.interview_date ? (
                     <View style={styles.infoPill}>
-                      <Ionicons name="calendar-outline" size={13} color="#2563EB" />
+                      <Ionicons name="calendar-outline" size={13} color={colors.primary} />
                       <Text style={styles.infoText}>
                         {candidate.interview_date}{candidate.interview_time ? ` at ${candidate.interview_time}` : ''}
                       </Text>
@@ -396,7 +400,7 @@ export default function CandidatesScreen() {
 
                   {candidate.email ? (
                     <View style={styles.infoPill}>
-                      <Ionicons name="mail-outline" size={13} color="#64748B" />
+                      <Ionicons name="mail-outline" size={13} color={colors.secondaryText} />
                       <Text style={styles.infoText} numberOfLines={1}>
                         {candidate.email}
                       </Text>
@@ -432,7 +436,7 @@ export default function CandidatesScreen() {
                           })
                         }
                       >
-                        <Ionicons name="people-outline" size={15} color="#2563EB" />
+                        <Ionicons name="people-outline" size={15} color={colors.primary} />
                         <Text style={styles.btnSecondaryText}>Panel Summary</Text>
                       </Pressable>
 
@@ -467,7 +471,7 @@ export default function CandidatesScreen() {
                           })
                         }
                       >
-                        <Ionicons name="people-outline" size={15} color="#2563EB" />
+                        <Ionicons name="people-outline" size={15} color={colors.primary} />
                         <Text style={styles.btnSecondaryText}>Panel</Text>
                       </Pressable>
 
@@ -499,17 +503,17 @@ export default function CandidatesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   loadingCard: {
     padding: 24,
     borderRadius: 22,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -519,13 +523,13 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontSize: 14,
     fontWeight: '600',
   },
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   header: {
     backgroundColor: '#06235C',
@@ -572,13 +576,13 @@ const styles = StyleSheet.create({
   syncBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 12,
     gap: 5,
     borderWidth: 1,
-    borderColor: '#3B82F6',
+    borderColor: colors.accent,
   },
   syncBtnText: {
     color: '#FFFFFF',
@@ -586,7 +590,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   searchBar: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     height: 46,
     borderRadius: 14,
     flexDirection: 'row',
@@ -602,7 +606,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 13,
-    color: '#0F172A',
+    color: colors.text,
   },
   filterSection: {
     marginTop: 14,
@@ -615,20 +619,20 @@ const styles = StyleSheet.create({
   filterPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   activeFilterPill: {
-    backgroundColor: '#2563EB',
-    borderColor: '#2563EB',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   filterPillText: {
     fontSize: 12,
-    color: '#475569',
+    color: colors.secondaryText,
     fontWeight: '700',
   },
   activeFilterPillText: {
@@ -643,14 +647,14 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   emptyCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 24,
     padding: 32,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     marginTop: 16,
-    shadowColor: '#0F172A',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.03,
     shadowRadius: 6,
@@ -660,7 +664,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 14,
@@ -668,12 +672,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 17,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 4,
   },
   emptySubtitle: {
     fontSize: 13,
-    color: '#64748B',
+    color: colors.secondaryText,
     textAlign: 'center',
     lineHeight: 18,
     maxWidth: 270,
@@ -682,24 +686,24 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingHorizontal: 16,
     paddingVertical: 8,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: colors.inputBorder,
   },
   clearFilterBtnText: {
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '700',
     fontSize: 12,
   },
   candidateCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 22,
     padding: 18,
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
-    shadowColor: '#0F172A',
+    borderColor: colors.divider,
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
@@ -713,9 +717,9 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 16,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     borderWidth: 1,
-    borderColor: '#DBEAFE',
+    borderColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -723,7 +727,7 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 18,
     fontWeight: '900',
-    color: '#2563EB',
+    color: colors.primary,
   },
   headerInfo: {
     flex: 1,
@@ -732,12 +736,12 @@ const styles = StyleSheet.create({
   candidateName: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     marginBottom: 2,
   },
   candidateRole: {
     fontSize: 12.5,
-    color: '#475569',
+    color: colors.secondaryText,
     fontWeight: '500',
     marginBottom: 4,
   },
@@ -748,13 +752,13 @@ const styles = StyleSheet.create({
   },
   jobText: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
     flex: 1,
   },
   stageBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -763,12 +767,12 @@ const styles = StyleSheet.create({
   },
   stageBadgeText: {
     fontSize: 10.5,
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '700',
   },
   cardDivider: {
     height: 1,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     marginVertical: 14,
   },
   infoRow: {
@@ -781,17 +785,17 @@ const styles = StyleSheet.create({
   infoPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     paddingHorizontal: 9,
     paddingVertical: 5,
     borderRadius: 8,
     gap: 5,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   infoText: {
     fontSize: 11.5,
-    color: '#334155',
+    color: colors.secondaryText,
     fontWeight: '600',
   },
   statusPill: {
@@ -804,7 +808,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
   },
   submittedPill: {
-    backgroundColor: '#ECFDF5',
+    backgroundColor: colors.successLight,
   },
   submittedPillText: {
     fontSize: 11,
@@ -812,7 +816,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   pendingPill: {
-    backgroundColor: '#FFFBEB',
+    backgroundColor: colors.warningLight,
   },
   pendingPillText: {
     fontSize: 11,
@@ -835,12 +839,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 12,
     gap: 6,
-    shadowColor: '#2563EB',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -854,18 +858,18 @@ const styles = StyleSheet.create({
   btnSecondary: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#DBEAFE',
+    borderColor: colors.primaryLight,
     gap: 5,
   },
   btnSecondaryText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#2563EB',
+    color: colors.primary,
   },
   btnDark: {
     flexDirection: 'row',

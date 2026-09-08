@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import React, { useState } from 'react';
 import {
   View,
@@ -25,6 +27,8 @@ import { supabase } from '../../lib/supabase/client';
  * so there's no RLS gap on the write either.
  */
 export default function AddInterviewer() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [department, setDepartment] = useState('');
@@ -113,7 +117,7 @@ export default function AddInterviewer() {
       {/* HEADER */}
       <View style={styles.header}>
         <Pressable style={styles.backBtn} onPress={() => router.back()} hitSlop={10}>
-          <Ionicons name="arrow-back" size={22} color="#0F172A" />
+          <Ionicons name="arrow-back" size={22} color={colors.text} />
         </Pressable>
         <View style={styles.headerTitleWrap}>
           <Text style={styles.title}>Add Interviewer</Text>
@@ -134,7 +138,7 @@ export default function AddInterviewer() {
         <TextInput
           style={styles.input}
           placeholder="e.g. Sarah Connor"
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={colors.mutedText}
           value={name}
           onChangeText={setName}
         />
@@ -145,7 +149,7 @@ export default function AddInterviewer() {
         <TextInput
           style={styles.input}
           placeholder="e.g. sarah.connor@company.com"
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={colors.mutedText}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -156,13 +160,13 @@ export default function AddInterviewer() {
         <TextInput
           style={styles.input}
           placeholder="e.g. Engineering"
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={colors.mutedText}
           value={department}
           onChangeText={setDepartment}
         />
 
         <View style={styles.infoBanner}>
-          <Ionicons name="information-circle-outline" size={18} color="#2563EB" />
+          <Ionicons name="information-circle-outline" size={18} color={colors.primary} />
           <Text style={styles.infoBannerText}>
             Interviewers will have access to the mobile feedback evaluations for jobs they are assigned to.
           </Text>
@@ -187,10 +191,10 @@ export default function AddInterviewer() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   contentContainer: {
     padding: 16,
@@ -206,11 +210,11 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   headerTitleWrap: {
     flex: 1,
@@ -218,28 +222,28 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
   },
   subtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 18,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   cardHeading: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#0F172A',
+    color: colors.text,
   },
   cardSub: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
     marginBottom: 14,
     lineHeight: 18,
@@ -247,7 +251,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#334155',
+    color: colors.secondaryText,
     marginTop: 12,
     marginBottom: 6,
   },
@@ -255,20 +259,20 @@ const styles = StyleSheet.create({
     color: '#DC2626',
   },
   input: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 14,
-    color: '#0F172A',
+    color: colors.text,
   },
   infoBanner: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     padding: 12,
     borderRadius: 8,
     marginTop: 18,
@@ -281,7 +285,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
   },
   submitBtn: {
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -289,7 +293,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 10,
     marginTop: 14,
-    shadowColor: '#2563EB',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,

@@ -1,3 +1,5 @@
+import { useTheme } from '../../../context/ThemeContext';
+import { ThemeColors } from '../../../theme/colors';
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
@@ -15,6 +17,8 @@ import { getDb } from '../../../lib/sqlite/schema';
 const PANEL_COLORS = ['#2563EB', '#16A34A', '#D97706', '#9333EA', '#DC2626'];
 
 export default function PanelSummaryScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { id: candidateId, stageId: paramStageId } = useLocalSearchParams<{
     id: string;
     stageId?: string;
@@ -197,7 +201,7 @@ export default function PanelSummaryScreen() {
 
         <View style={styles.lockContainer}>
           <View style={styles.lockIconCircle}>
-            <Ionicons name="lock-closed" size={36} color="#2563EB" />
+            <Ionicons name="lock-closed" size={36} color={colors.primary} />
           </View>
           <Text style={styles.lockTitle}>Blind Review In Effect</Text>
           <Text style={styles.lockDescription}>
@@ -224,7 +228,7 @@ export default function PanelSummaryScreen() {
   if (panelLoading && panel.length === 0) {
     return (
       <SafeAreaView style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Loading panel reviews...</Text>
       </SafeAreaView>
     );
@@ -419,20 +423,20 @@ export default function PanelSummaryScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
   },
   loadingText: {
     marginTop: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontSize: 14,
   },
   header: {
@@ -449,7 +453,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   headerSubtitle: {
-    color: '#CBD5E1',
+    color: colors.inputBorder,
     fontSize: 12,
     marginTop: 2,
   },
@@ -463,7 +467,7 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: '#DBEAFE',
+    backgroundColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
@@ -471,12 +475,12 @@ const styles = StyleSheet.create({
   lockTitle: {
     fontSize: 20,
     fontWeight: '900',
-    color: '#0F172A',
+    color: colors.text,
     textAlign: 'center',
   },
   lockDescription: {
     fontSize: 14,
-    color: '#64748B',
+    color: colors.secondaryText,
     textAlign: 'center',
     marginTop: 10,
     lineHeight: 20,
@@ -484,7 +488,7 @@ const styles = StyleSheet.create({
   submitOwnBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     paddingHorizontal: 22,
     paddingVertical: 14,
     borderRadius: 14,
@@ -501,42 +505,42 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   heroCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   avatar: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#DBEAFE',
+    backgroundColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
   },
   avatarText: {
-    color: '#2563EB',
+    color: colors.primary,
     fontSize: 20,
     fontWeight: '900',
   },
   candidateName: {
     fontSize: 17,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
   },
   roleText: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   jobText: {
     fontSize: 12,
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '600',
     marginTop: 2,
   },
@@ -547,28 +551,28 @@ const styles = StyleSheet.create({
   },
   metricBox: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 14,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
     justifyContent: 'center',
   },
   metricLabel: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontWeight: '700',
     textTransform: 'uppercase',
   },
   metricValue: {
     fontSize: 20,
     fontWeight: '900',
-    color: '#2563EB',
+    color: colors.primary,
     marginTop: 4,
   },
   metricSub: {
     fontSize: 11,
-    color: '#94A3B8',
+    color: colors.mutedText,
     marginTop: 2,
   },
   verdictSplit: {
@@ -589,29 +593,29 @@ const styles = StyleSheet.create({
     color: '#16A34A',
   },
   yellowBadge: {
-    backgroundColor: '#FFFBEB',
+    backgroundColor: colors.warningLight,
     color: '#D97706',
   },
   redBadge: {
-    backgroundColor: '#FEF2F2',
+    backgroundColor: colors.dangerLight,
     color: '#DC2626',
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 16,
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   sectionTitle: {
     fontSize: 15,
     fontWeight: '900',
-    color: '#0F172A',
+    color: colors.text,
   },
   sectionHelp: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.secondaryText,
     marginTop: 2,
   },
   critRow: {
@@ -625,37 +629,37 @@ const styles = StyleSheet.create({
   critName: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#334155',
+    color: colors.secondaryText,
   },
   critScore: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#2563EB',
+    color: colors.primary,
   },
   progressBarBg: {
     height: 8,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.divider,
     borderRadius: 4,
     overflow: 'hidden',
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     borderRadius: 4,
   },
   listSectionTitle: {
     fontSize: 16,
     fontWeight: '900',
-    color: '#0F172A',
+    color: colors.text,
     marginVertical: 10,
   },
   reviewCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 16,
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.cardBorder,
   },
   reviewerHeader: {
     flexDirection: 'row',
@@ -671,7 +675,7 @@ const styles = StyleSheet.create({
   reviewerName: {
     fontSize: 14,
     fontWeight: '800',
-    color: '#0F172A',
+    color: colors.text,
     flex: 1,
   },
   verdictPill: {
@@ -683,10 +687,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0FDF4',
   },
   verdictPillYellow: {
-    backgroundColor: '#FFFBEB',
+    backgroundColor: colors.warningLight,
   },
   verdictPillRed: {
-    backgroundColor: '#FEF2F2',
+    backgroundColor: colors.dangerLight,
   },
   verdictPillText: {
     fontSize: 11,
@@ -703,14 +707,14 @@ const styles = StyleSheet.create({
   },
   reviewScoresSection: {
     borderTopWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: colors.divider,
     paddingTop: 10,
     marginBottom: 10,
   },
   reviewSubhead: {
     fontSize: 12,
     fontWeight: '800',
-    color: '#64748B',
+    color: colors.secondaryText,
     textTransform: 'uppercase',
     marginBottom: 6,
   },
@@ -719,17 +723,17 @@ const styles = StyleSheet.create({
   },
   scoreItemName: {
     fontSize: 12,
-    color: '#334155',
+    color: colors.secondaryText,
     fontWeight: '600',
   },
   scoreItemVal: {
     fontSize: 12,
-    color: '#2563EB',
+    color: colors.primary,
     fontWeight: '700',
   },
   scoreItemNote: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontStyle: 'italic',
     marginTop: 2,
   },
@@ -739,11 +743,11 @@ const styles = StyleSheet.create({
   commentLabel: {
     fontSize: 12,
     fontWeight: '800',
-    color: '#334155',
+    color: colors.secondaryText,
   },
   commentBody: {
     fontSize: 13,
-    color: '#475569',
+    color: colors.secondaryText,
     marginTop: 2,
     lineHeight: 18,
   },
@@ -752,12 +756,12 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: colors.divider,
     gap: 16,
   },
   quickDetailText: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.secondaryText,
     fontWeight: '600',
   },
 });

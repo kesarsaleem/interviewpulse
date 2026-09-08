@@ -19,6 +19,7 @@ import { supabase } from '../../lib/supabase/client';
 import { useAuth } from '../../hooks/useAuth';
 import { ROUTES } from '../../constants/routes';
 import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../theme/colors';
 import { getDb } from '../../lib/sqlite/schema';
 import {
   runSync,
@@ -31,6 +32,7 @@ import { ThemeMode, InterviewMode } from '../../types';
 export default function InterviewerSettingsScreen() {
   const { user, signOut, refreshUser } = useAuth();
   const { themeMode, setThemeMode, colors, isDark } = useTheme();
+  const styles = createStyles(colors);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -330,8 +332,8 @@ export default function InterviewerSettingsScreen() {
             <View style={styles.accountDetails}>
               <Text style={[styles.accountName, { color: colors.text }]}>{user?.name || 'Interviewer'}</Text>
               <Text style={[styles.accountEmail, { color: colors.secondaryText }]}>{user?.email || 'interviewer@company.com'}</Text>
-              <View style={[styles.roleBadge, { backgroundColor: isDark ? 'rgba(59, 130, 246, 0.2)' : '#EFF6FF', borderColor: isDark ? 'rgba(59, 130, 246, 0.4)' : '#BFDBFE' }]}>
-                <Ionicons name="shield-checkmark" size={13} color="#2563EB" />
+              <View style={[styles.roleBadge, { backgroundColor: isDark ? 'rgba(59, 130, 246, 0.2)' : '#EFF6FF', borderColor: isDark ? 'rgba(59, 130, 246, 0.4)' : colors.inputBorder }]}>
+                <Ionicons name="shield-checkmark" size={13} color={colors.primary} />
                 <Text style={styles.roleBadgeText}>Interviewer</Text>
               </View>
             </View>
@@ -415,7 +417,7 @@ export default function InterviewerSettingsScreen() {
               <Text style={[styles.themeOptionSubtitle, { color: colors.mutedText }]}>Crisp & bright</Text>
               {themeMode === 'light' && (
                 <View style={styles.checkPill}>
-                  <Ionicons name="checkmark" size={14} color="#2563EB" />
+                  <Ionicons name="checkmark" size={14} color={colors.primary} />
                 </View>
               )}
             </Pressable>
@@ -436,7 +438,7 @@ export default function InterviewerSettingsScreen() {
               <Text style={[styles.themeOptionSubtitle, { color: colors.mutedText }]}>Low-light focus</Text>
               {themeMode === 'dark' && (
                 <View style={styles.checkPill}>
-                  <Ionicons name="checkmark" size={14} color="#2563EB" />
+                  <Ionicons name="checkmark" size={14} color={colors.primary} />
                 </View>
               )}
             </Pressable>
@@ -531,8 +533,8 @@ export default function InterviewerSettingsScreen() {
               <Ionicons name="lock-closed" size={14} color="#0284C7" />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={[styles.ruleItemTitle, { color: isDark ? '#E2E8F0' : '#0C4A6E' }]}>1-Hour Edit Lock Window</Text>
-              <Text style={[styles.ruleItemDesc, { color: isDark ? '#94A3B8' : '#38BDF8' }]}>
+              <Text style={[styles.ruleItemTitle, { color: isDark ? colors.cardBorder : '#0C4A6E' }]}>1-Hour Edit Lock Window</Text>
+              <Text style={[styles.ruleItemDesc, { color: isDark ? colors.mutedText : '#38BDF8' }]}>
                 Submitted scorecards can be adjusted within 60 minutes. After this grace period, records freeze permanently to maintain audit integrity.
               </Text>
             </View>
@@ -543,8 +545,8 @@ export default function InterviewerSettingsScreen() {
               <Ionicons name="eye-off-outline" size={14} color="#0284C7" />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={[styles.ruleItemTitle, { color: isDark ? '#E2E8F0' : '#0C4A6E' }]}>Blind Review Protection</Text>
-              <Text style={[styles.ruleItemDesc, { color: isDark ? '#94A3B8' : '#38BDF8' }]}>
+              <Text style={[styles.ruleItemTitle, { color: isDark ? colors.cardBorder : '#0C4A6E' }]}>Blind Review Protection</Text>
+              <Text style={[styles.ruleItemDesc, { color: isDark ? colors.mutedText : '#38BDF8' }]}>
                 Interviewer ratings are hidden from peers until everyone completes their scorecard to avoid confirmation bias.
               </Text>
             </View>
@@ -555,8 +557,8 @@ export default function InterviewerSettingsScreen() {
               <Ionicons name="star-outline" size={14} color="#0284C7" />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={[styles.ruleItemTitle, { color: isDark ? '#E2E8F0' : '#0C4A6E' }]}>Standardized 0–5 Criteria Scale</Text>
-              <Text style={[styles.ruleItemDesc, { color: isDark ? '#94A3B8' : '#38BDF8' }]}>
+              <Text style={[styles.ruleItemTitle, { color: isDark ? colors.cardBorder : '#0C4A6E' }]}>Standardized 0–5 Criteria Scale</Text>
+              <Text style={[styles.ruleItemDesc, { color: isDark ? colors.mutedText : '#38BDF8' }]}>
                 Ratings require evidence notes. Scores are automatically aggregated into the candidate's holistic competency radar.
               </Text>
             </View>
@@ -591,7 +593,7 @@ export default function InterviewerSettingsScreen() {
           {/* Sync Stats Counters */}
           <View style={[styles.syncStatsGrid, { borderColor: colors.divider }]}>
             <View style={[styles.syncStatCol, { borderColor: colors.divider }]}>
-              <Text style={[styles.syncStatVal, { color: '#2563EB' }]}>{syncStats.synced}</Text>
+              <Text style={[styles.syncStatVal, { color: colors.primary }]}>{syncStats.synced}</Text>
               <Text style={[styles.syncStatLbl, { color: colors.mutedText }]}>Synced</Text>
             </View>
             <View style={[styles.syncStatCol, { borderColor: colors.divider }]}>
@@ -649,7 +651,7 @@ export default function InterviewerSettingsScreen() {
         <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.cardBorder }]}>
           <View style={styles.infoRow}>
             <Text style={[styles.infoLabel, { color: colors.secondaryText }]}>App Version</Text>
-            <View style={[styles.versionBadge, { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : '#F1F5F9' }]}>
+            <View style={[styles.versionBadge, { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : colors.divider }]}>
               <Text style={[styles.versionBadgeText, { color: colors.mutedText }]}>v1.0.0 (Production Build)</Text>
             </View>
           </View>
@@ -785,7 +787,7 @@ export default function InterviewerSettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -887,7 +889,7 @@ const styles = StyleSheet.create({
   roleBadgeText: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#2563EB',
+    color: colors.primary,
   },
   divider: {
     height: 1,
@@ -959,7 +961,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
