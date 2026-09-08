@@ -152,8 +152,7 @@ Deno.serve(async (request) => {
 
     const { data: invite, error: inviteError } =
       await adminClient.auth.admin.inviteUserByEmail(email, {
-        redirectTo: "interviewpulse://",
-        redirectTo: "interviewpulse://",
+        redirectTo: "interviewpulse://accept-invite",
         data: {
           name,
           role: "interviewer",
