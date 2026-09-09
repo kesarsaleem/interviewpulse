@@ -64,33 +64,24 @@ export default function AdminDashboard() {
 
   const loadDashboardData = useCallback(async () => {
     try {
-      // 1. Total Jobs Count
-      const { count: jobsCount, error: jobErr } = await supabase
-        .from('jobs')
-        .select('*', { count: 'exact', head: true });
+      const [
+        { count: jobsCount, error: jobErr },
+        { count: candCount, error: candErr },
+        { count: feedbackCount, error: fbErr },
+        { data: candidatesWithFeedback },
+      ] = await Promise.all([
+        supabase.from('jobs').select('*', { count: 'exact', head: true }),
+        supabase.from('candidates').select('*', { count: 'exact', head: true }),
+        supabase.from('feedback').select('*', { count: 'exact', head: true }),
+        supabase.from('feedback').select('candidate_id'),
+      ]);
 
       if (jobErr) console.warn('Dashboard jobs count error:', jobErr);
-
-      // 2. Total Candidates Count
-      const { count: candCount, error: candErr } = await supabase
-        .from('candidates')
-        .select('*', { count: 'exact', head: true });
-
       if (candErr) console.warn('Dashboard candidates count error:', candErr);
-
-      // 3. Total Interviews (Feedback rows)
-      const { count: feedbackCount, error: fbErr } = await supabase
-        .from('feedback')
-        .select('*', { count: 'exact', head: true });
-
       if (fbErr) console.warn('Dashboard feedback count error:', fbErr);
 
       // 4. Pending Decisions
       // Candidates who have feedback submitted, but have NOT had a hiring decision logged
-      const { data: candidatesWithFeedback } = await supabase
-        .from('feedback')
-        .select('candidate_id');
-
       const uniqueCandIdsWithFb = Array.from(
         new Set(candidatesWithFeedback?.map((f) => f.candidate_id) || [])
       );
@@ -124,59 +115,61 @@ export default function AdminDashboard() {
         pendingDecisions: pendingDecisionsCount,
       });
 
-      // 5. Recent Active Jobs
-      const { data: jobsData } = await supabase
-        .from('jobs')
-        .select(
+      const [
+        { data: jobsData },
+        { count: conflicts, error: conflictErr },
+        { data: activityData, error: actErr },
+      ] = await Promise.all([
+        supabase
+          .from('jobs')
+          .select(
+            `
+            id,
+            title,
+            department,
+            status,
+            candidates(id),
+            stages(id)
           `
-          id,
-          title,
-          department,
-          status,
-          candidates(id),
-          stages(id)
-        `
-        )
-        .order('created_at', { ascending: false })
-        .limit(3);
+          )
+          .order('created_at', { ascending: false })
+          .limit(3),
+        supabase
+          .from('activity_logs')
+          .select('*', { count: 'exact', head: true })
+          .eq('action', 'conflict_detected'),
+        supabase
+          .from('activity_logs')
+          .select(
+            `
+            id,
+            action,
+            metadata,
+            created_at,
+            candidate_id,
+            candidates (
+              full_name,
+              jobs (
+                title
+              )
+            ),
+            profiles (
+              name
+            )
+          `
+          )
+          .order('created_at', { ascending: false })
+          .limit(8),
+      ]);
 
       setRecentJobs(jobsData || []);
-
-      const { count: conflicts, error: conflictErr } = await supabase
-        .from('activity_logs')
-        .select('*', { count: 'exact', head: true })
-        .eq('action', 'conflict_detected');
       if (conflictErr) {
         console.warn('Dashboard conflict count error:', conflictErr);
       } else {
         setConflictCount(conflicts || 0);
       }
 
-      // 6. Recent Activity Logs
       console.log('[DASHBOARD] Fetching recent activity logs...');
-      const { data: activityData, error: actErr } = await supabase
-        .from('activity_logs')
-        .select(
-          `
-          id,
-          action,
-          metadata,
-          created_at,
-          candidate_id,
-          candidates (
-            full_name,
-            jobs (
-              title
-            )
-          ),
-          profiles (
-            name
-          )
-        `
-        )
-        .order('created_at', { ascending: false })
-        .limit(8);
-
       if (actErr) {
         console.warn('Dashboard activity logs fetch error:', actErr);
       }

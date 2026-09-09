@@ -29,34 +29,30 @@ export default function AdminReportsScreen() {
 
   const loadReportsData = useCallback(async () => {
     try {
-      // 1. Total Candidates
-      const { count: cCount } = await supabase
-        .from('candidates')
-        .select('*', { count: 'exact', head: true });
+      const [
+        { count: cCount },
+        { data: fbData },
+        { count: hiredCountFromDb },
+        { count: rejectedCountFromDb },
+        { data: jobsData },
+      ] = await Promise.all([
+        supabase.from('candidates').select('*', { count: 'exact', head: true }),
+        supabase.from('feedback').select('overall_verdict, feedback_scores(score)'),
+        supabase
+          .from('activity_logs')
+          .select('*', { count: 'exact', head: true })
+          .eq('action', 'marked_hire'),
+        supabase
+          .from('activity_logs')
+          .select('*', { count: 'exact', head: true })
+          .eq('action', 'marked_reject'),
+        supabase.from('jobs').select('id, title, department, status, candidates(id)'),
+      ]);
+
       setCandidatesCount(cCount || 0);
-
-      // 2. Feedback — only verdicts and scores are needed for report stats.
-      const { data: fbData } = await supabase
-        .from('feedback')
-        .select('overall_verdict, feedback_scores(score)');
       setFeedbackList(fbData || []);
-
-      // 3. Count decisions server-side instead of downloading activity logs.
-      const { count: hiredCountFromDb } = await supabase
-        .from('activity_logs')
-        .select('*', { count: 'exact', head: true })
-        .eq('action', 'marked_hire');
-      const { count: rejectedCountFromDb } = await supabase
-        .from('activity_logs')
-        .select('*', { count: 'exact', head: true })
-        .eq('action', 'marked_reject');
       setHiredCount(hiredCountFromDb || 0);
       setRejectedCount(rejectedCountFromDb || 0);
-
-      // 4. Jobs with status
-      const { data: jobsData } = await supabase
-        .from('jobs')
-        .select('id, title, department, status, candidates(id)');
       setJobs(jobsData || []);
     } catch (err: any) {
       console.warn('Error loading reports:', err);

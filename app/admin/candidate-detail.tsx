@@ -75,66 +75,73 @@ export default function CandidateDetail() {
       if (candErr) throw candErr;
       setCandidate(cand);
 
-      if (cand?.job_id) {
-        const { data: stageData } = await supabase
-          .from('stages')
-          .select('*')
-          .eq('job_id', cand.job_id)
-          .order('position', { ascending: true });
-        setStages(stageData || []);
-
-        const { data: critData } = await supabase
-          .from('criteria')
-          .select('*')
-          .eq('job_id', cand.job_id)
-          .order('position', { ascending: true });
-        setCriteria(critData || []);
-      }
-
-      const { data: fbData, error: fbErr } = await supabase
-        .from('feedback')
-        .select(
+      const [
+        { data: stageData },
+        { data: critData },
+        { data: fbData, error: fbErr },
+        { data: logsData, error: logsErr },
+      ] = await Promise.all([
+        cand?.job_id
+          ? supabase
+              .from('stages')
+              .select('*')
+              .eq('job_id', cand.job_id)
+              .order('position', { ascending: true })
+          : Promise.resolve({ data: null }),
+        cand?.job_id
+          ? supabase
+              .from('criteria')
+              .select('*')
+              .eq('job_id', cand.job_id)
+              .order('position', { ascending: true })
+          : Promise.resolve({ data: null }),
+        supabase
+          .from('feedback')
+          .select(
+            `
+            *,
+            stages (
+              name,
+              position
+            ),
+            profiles (
+              id,
+              name,
+              email
+            ),
+            feedback_scores (
+              id,
+              criterion_id,
+              score,
+              note,
+              criteria (
+                name
+              )
+            )
           `
-          *,
-          stages (
-            name,
-            position
-          ),
-          profiles (
-            id,
-            name,
-            email
-          ),
-          feedback_scores (
-            id,
-            criterion_id,
-            score,
-            note,
-            criteria (
+          )
+          .eq('candidate_id', candidateId)
+          .order('submitted_at', { ascending: false }),
+        supabase
+          .from('activity_logs')
+          .select(
+            `
+            *,
+            profiles (
               name
             )
+          `
           )
-        `
-        )
-        .eq('candidate_id', candidateId)
-        .order('submitted_at', { ascending: false });
+          .eq('candidate_id', candidateId)
+          .order('created_at', { ascending: false }),
+      ]);
 
+      if (cand?.job_id) {
+        setStages(stageData || []);
+        setCriteria(critData || []);
+      }
       if (fbErr) console.warn('Feedback query error:', fbErr);
       setFeedbackList(fbData || []);
-
-      const { data: logsData, error: logsErr } = await supabase
-        .from('activity_logs')
-        .select(
-          `
-          *,
-          profiles (
-            name
-          )
-        `
-        )
-        .eq('candidate_id', candidateId)
-        .order('created_at', { ascending: false });
-
       if (logsErr) console.warn('Logs query error:', logsErr);
       setActivityLogs(logsData || []);
 

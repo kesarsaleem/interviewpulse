@@ -17,6 +17,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { Button } from '../../components/ui/Button';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
+import { decode } from 'base64-arraybuffer';
 
 import { supabase } from '../../lib/supabase/client';
 import { useAuth } from '../../hooks/useAuth';
@@ -164,10 +166,10 @@ export default function AddOrEditCandidate() {
   useEffect(() => {
     const init = async () => {
       setFetchingData(true);
-      await fetchJobs();
-      if (isEditing) {
-        await loadCandidateForEdit();
-      }
+      await Promise.all([
+        fetchJobs(),
+        isEditing ? loadCandidateForEdit() : Promise.resolve(),
+      ]);
       setFetchingData(false);
     };
     init();
@@ -213,26 +215,27 @@ export default function AddOrEditCandidate() {
 
       const file = result.assets[0];
 
-            const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+      const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
       if (file.size && file.size > MAX_SIZE_BYTES) {
         Alert.alert('File Too Large', 'Resume PDF must be under 5MB. Please choose a smaller file.');
         return;
       }
-      
+
       setUploadingResume(true);
 
-      // React Native's fetch() can read a local file:// URI directly into
-      // a Blob, which supabase-js accepts for storage uploads — no base64/
-      // Buffer polyfill needed.
-      const fileResponse = await fetch(file.uri);
-      const fileBlob = await fileResponse.blob();
+      // Read local device files as base64 because fetch()+blob() is unreliable
+      // for file:// and content:// URIs in React Native.
+      const base64Data = await FileSystem.readAsStringAsync(file.uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      const arrayBuffer = decode(base64Data);
 
       const safeName = (file.name || 'resume.pdf').replace(/[^a-zA-Z0-9._-]/g, '_');
       const storagePath = `${selectedJobId}/${Date.now()}-${safeName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('resumes')
-        .upload(storagePath, fileBlob, {
+        .upload(storagePath, arrayBuffer, {
           contentType: 'application/pdf',
           upsert: true,
         });

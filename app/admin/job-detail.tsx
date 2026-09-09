@@ -38,69 +38,70 @@ export default function JobDetail() {
     }
 
     try {
-      // 1. Fetch Job + Stages + Criteria
-      const { data: jobData, error: jobErr } = await supabase
-        .from('jobs')
-        .select(
+      const [
+        { data: jobData, error: jobErr },
+        { data: candData, error: candErr },
+        { data: panelData, error: panelErr },
+      ] = await Promise.all([
+        supabase
+          .from('jobs')
+          .select(
+            `
+            *,
+            stages (
+              id,
+              name,
+              position
+            ),
+            criteria (
+              id,
+              name,
+              position
+            )
           `
-          *,
-          stages (
-            id,
-            name,
-            position
-          ),
-          criteria (
-            id,
-            name,
-            position
           )
-        `
-        )
-        .eq('id', id)
-        .single();
+          .eq('id', id)
+          .single(),
+        supabase
+          .from('candidates')
+          .select(
+            `
+            *,
+            stages (
+              id,
+              name,
+              position
+            )
+          `
+          )
+          .eq('job_id', id)
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('job_interviewers')
+          .select(
+            `
+            id,
+            job_id,
+            user_id,
+            invited_email,
+            status,
+            created_at,
+            profiles (
+              id,
+              name,
+              email,
+              avatar_url
+            )
+          `
+          )
+          .eq('job_id', id),
+      ]);
 
       if (jobErr) throw jobErr;
       setJob(jobData);
 
-      // 2. Fetch Candidates for this job
-      const { data: candData, error: candErr } = await supabase
-        .from('candidates')
-        .select(
-          `
-          *,
-          stages (
-            id,
-            name,
-            position
-          )
-        `
-        )
-        .eq('job_id', id)
-        .order('created_at', { ascending: false });
-
       if (candErr) console.warn('Candidates fetch error:', candErr);
       setCandidates(candData || []);
-
-      // 3. Fetch Assigned Interviewers
-      const { data: panelData, error: panelErr } = await supabase
-        .from('job_interviewers')
-        .select(
-          `
-          id,
-          job_id,
-          user_id,
-          invited_email,
-          status,
-          created_at,
-          profiles (
-            id,
-            name,
-            email,
-            avatar_url
-          )
-        `
-        )
-        .eq('job_id', id);
 
       if (panelErr) console.warn('Panel fetch error:', panelErr);
       setInterviewers(panelData || []);

@@ -39,52 +39,54 @@ export default function AssignInterviewerScreen() {
       setLoading(true);
 
       if (mode === 'assign_interviewers_to_job' && jobId) {
-        // 1. Get Job Name
-        const { data: job } = await supabase
-          .from('jobs')
-          .select('title, department')
-          .eq('id', jobId)
-          .single();
+        const [
+          { data: job },
+          { data: interviewers },
+          { data: existing },
+        ] = await Promise.all([
+          supabase
+            .from('jobs')
+            .select('title, department')
+            .eq('id', jobId)
+            .single(),
+          supabase
+            .from('profiles')
+            .select('id, name, email')
+            .eq('role', 'interviewer')
+            .order('name', { ascending: true }),
+          supabase
+            .from('job_interviewers')
+            .select('user_id')
+            .eq('job_id', jobId),
+        ]);
         setTargetName(job ? `${job.title} (${job.department || 'General'})` : 'Job Requisition');
-
-        // 2. Get All Interviewers
-        const { data: interviewers } = await supabase
-          .from('profiles')
-          .select('id, name, email')
-          .eq('role', 'interviewer')
-          .order('name', { ascending: true });
         setItems(interviewers || []);
-
-        // 3. Get Already Assigned Interviewers for this Job
-        const { data: existing } = await supabase
-          .from('job_interviewers')
-          .select('user_id')
-          .eq('job_id', jobId);
 
         const alreadyAssigned = (existing || []).map((e) => e.user_id).filter(Boolean);
         setExistingIds(alreadyAssigned);
         setSelectedIds(alreadyAssigned);
       } else if (userId) {
-        // 1. Get Interviewer Name
-        const { data: prof } = await supabase
-          .from('profiles')
-          .select('name, email')
-          .eq('id', userId)
-          .single();
+        const [
+          { data: prof },
+          { data: jobs },
+          { data: existing },
+        ] = await Promise.all([
+          supabase
+            .from('profiles')
+            .select('name, email')
+            .eq('id', userId)
+            .single(),
+          supabase
+            .from('jobs')
+            .select('id, title, department')
+            .order('title', { ascending: true }),
+          supabase
+            .from('job_interviewers')
+            .select('job_id')
+            .eq('user_id', userId),
+        ]);
         setTargetName(prof?.name || prof?.email || 'Interviewer');
-
-        // 2. Get All Open Jobs
-        const { data: jobs } = await supabase
-          .from('jobs')
-          .select('id, title, department')
-          .order('title', { ascending: true });
         setItems(jobs || []);
-
-        // 3. Get Already Assigned Jobs for this Interviewer
-        const { data: existing } = await supabase
-          .from('job_interviewers')
-          .select('job_id')
-          .eq('user_id', userId);
 
         const alreadyAssigned = (existing || []).map((e) => e.job_id).filter(Boolean);
         setExistingIds(alreadyAssigned);

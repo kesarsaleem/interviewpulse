@@ -59,43 +59,47 @@ export default function InterviewerHome() {
         return;
       }
 
-      const { data: candidateData, error: candidateError } = await supabase
-        .from('candidates')
-        .select(`
-          id,
-          full_name,
-          email,
-          current_role,
-          current_company,
-          interview_date,
-          interview_time,
-          current_stage_id,
-          jobs(
-            title,
-            department
-          ),
-          stages(
-            name
-          )
-        `)
-        .in('job_id', jobIds);
+      const [
+        { data: candidateData, error: candidateError },
+        { data: feedbackData, error: feedbackError },
+      ] = await Promise.all([
+        supabase
+          .from('candidates')
+          .select(`
+            id,
+            full_name,
+            email,
+            current_role,
+            current_company,
+            interview_date,
+            interview_time,
+            current_stage_id,
+            jobs(
+              title,
+              department
+            ),
+            stages(
+              name
+            )
+          `)
+          .in('job_id', jobIds),
+        supabase
+          .from('feedback')
+          .select(`
+            id,
+            overall_verdict,
+            submitted_at,
+            candidate_id,
+            feedback_scores (
+              score
+            )
+          `)
+          .eq('interviewer_id', user.id),
+      ]);
 
       if (candidateError) throw candidateError;
 
       setCandidates(candidateData || []);
-
-      const { data: feedbackData, error: feedbackError } = await supabase
-        .from('feedback')
-        .select(`
-          id,
-          overall_verdict,
-          submitted_at,
-          candidate_id,
-          feedback_scores (
-            score
-          )
-        `)
-        .eq('interviewer_id', user.id);
 
       if (feedbackError) throw feedbackError;
 

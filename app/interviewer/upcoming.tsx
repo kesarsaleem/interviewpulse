@@ -77,39 +77,43 @@ export default function UpcomingInterviewsScreen() {
         return;
       }
 
-      const { data: remoteCandidates, error: candError } = await supabase
-        .from('candidates')
-        .select(`
-          id,
-          full_name,
-          email,
-          current_role,
-          current_company,
-          interview_date,
-          interview_time,
-          current_stage_id,
-          job_id,
-          jobs (
+      const [
+        { data: remoteCandidates, error: candError },
+        { data: remoteFeedbacks },
+      ] = await Promise.all([
+        supabase
+          .from('candidates')
+          .select(`
             id,
-            title,
-            department
-          ),
-          stages (
-            id,
-            name
-          )
-        `)
-        .in('job_id', jobIds);
+            full_name,
+            email,
+            current_role,
+            current_company,
+            interview_date,
+            interview_time,
+            current_stage_id,
+            job_id,
+            jobs (
+              id,
+              title,
+              department
+            ),
+            stages (
+              id,
+              name
+            )
+          `)
+          .in('job_id', jobIds),
+        supabase
+          .from('feedback')
+          .select('id, candidate_id, stage_id, overall_verdict')
+          .eq('interviewer_id', user.id),
+      ]);
 
       if (candError) throw candError;
 
       if (remoteCandidates) {
         setInterviews(remoteCandidates);
-
-        const { data: remoteFeedbacks } = await supabase
-          .from('feedback')
-          .select('id, candidate_id, stage_id, overall_verdict')
-          .eq('interviewer_id', user.id);
 
         if (remoteFeedbacks) {
           const updatedFbMap = { ...fbMap };

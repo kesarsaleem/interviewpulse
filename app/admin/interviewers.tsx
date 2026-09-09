@@ -29,31 +29,33 @@ export default function InterviewersScreen() {
 
   const loadInterviewers = useCallback(async () => {
     try {
-      // 1. Fetch interviewer profiles
-      const { data: profilesData, error: profErr } = await supabase
-        .from('profiles')
-        .select('id, name, email, role, avatar_url, created_at')
-        .eq('role', 'interviewer')
-        .order('created_at', { ascending: false });
+      const [
+        { data: profilesData, error: profErr },
+        { data: assignments, error: assignErr },
+      ] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('id, name, email, role, avatar_url, created_at')
+          .eq('role', 'interviewer')
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('job_interviewers')
+          .select(
+            `
+            id,
+            user_id,
+            job_id,
+            status,
+            jobs (
+              id,
+              title,
+              department
+            )
+          `
+          ),
+      ]);
 
       if (profErr) throw profErr;
-
-      // 2. Fetch assigned jobs for all interviewers
-      const { data: assignments, error: assignErr } = await supabase
-        .from('job_interviewers')
-        .select(
-          `
-          id,
-          user_id,
-          job_id,
-          status,
-          jobs (
-            id,
-            title,
-            department
-          )
-        `
-        );
 
       if (assignErr) console.warn('Assignments fetch error:', assignErr);
 

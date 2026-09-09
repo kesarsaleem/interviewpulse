@@ -60,21 +60,38 @@ export default function AdminCandidatesScreen() {
       if (candErr) throw candErr;
       const candidateIds = (candData || []).map((candidate) => candidate.id);
       const lastActivityByCandidate: Record<string, string> = {};
-      if (candidateIds.length > 0) {
-        const { data: activityData, error: activityErr } = await supabase
+      const activityPromise =
+        candidateIds.length > 0
+          ? supabase
+              .from('activity_logs')
+              .select('candidate_id, created_at')
+              .in('candidate_id', candidateIds)
+              .order('created_at', { ascending: false })
+          : Promise.resolve({ data: null, error: null });
+      const [
+        { data: activityData, error: activityErr },
+        { data: jobsData, error: jobsErr },
+        { data: logsData },
+      ] = await Promise.all([
+        activityPromise,
+        supabase
+          .from('jobs')
+          .select('id, title, department')
+          .order('title', { ascending: true }),
+        supabase
           .from('activity_logs')
-          .select('candidate_id, created_at')
-          .in('candidate_id', candidateIds)
-          .order('created_at', { ascending: false });
-        if (activityErr) {
-          console.warn('Candidate activity fetch error:', activityErr);
-        } else {
-          (activityData || []).forEach((activity) => {
-            if (!lastActivityByCandidate[activity.candidate_id]) {
-              lastActivityByCandidate[activity.candidate_id] = activity.created_at;
-            }
-          });
-        }
+          .select('candidate_id, action, created_at')
+          .in('action', ['marked_hire', 'marked_reject'])
+          .order('created_at', { ascending: false }),
+      ]);
+      if (activityErr) {
+        console.warn('Candidate activity fetch error:', activityErr);
+      } else {
+        (activityData || []).forEach((activity) => {
+          if (!lastActivityByCandidate[activity.candidate_id]) {
+            lastActivityByCandidate[activity.candidate_id] = activity.created_at;
+          }
+        });
       }
       setCandidates(
         (candData || []).map((candidate) => ({
@@ -84,21 +101,8 @@ export default function AdminCandidatesScreen() {
         }))
       );
 
-      // 2. Fetch Jobs for filter
-      const { data: jobsData, error: jobsErr } = await supabase
-        .from('jobs')
-        .select('id, title, department')
-        .order('title', { ascending: true });
-
       if (jobsErr) console.warn('Jobs fetch error:', jobsErr);
       setJobs(jobsData || []);
-
-      // 3. Fetch Decisions
-      const { data: logsData } = await supabase
-        .from('activity_logs')
-        .select('candidate_id, action, created_at')
-        .in('action', ['marked_hire', 'marked_reject'])
-        .order('created_at', { ascending: false });
 
       const dMap: Record<string, 'hired' | 'rejected'> = {};
       (candData || []).forEach((c: any) => {

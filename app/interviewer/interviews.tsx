@@ -81,39 +81,42 @@ export default function MyInterviews() {
         return;
       }
 
-      const { data: candidates, error: candError } = await supabase
-        .from('candidates')
-        .select(`
-          id,
-          full_name,
-          email,
-          current_role,
-          current_company,
-          interview_date,
-          interview_time,
-          current_stage_id,
-          job_id,
-          jobs (
-            title,
-            department
-          ),
-          stages (
-            name
-          )
-        `)
-        .in('job_id', jobIds);
+      const [
+        { data: candidates, error: candError },
+        { data: onlineFeedback },
+      ] = await Promise.all([
+        supabase
+          .from('candidates')
+          .select(`
+            id,
+            full_name,
+            email,
+            current_role,
+            current_company,
+            interview_date,
+            interview_time,
+            current_stage_id,
+            job_id,
+            jobs (
+              title,
+              department
+            ),
+            stages (
+              name
+            )
+          `)
+          .in('job_id', jobIds),
+        supabase
+          .from('feedback')
+          .select('id, candidate_id, stage_id, overall_verdict')
+          .eq('interviewer_id', user.id),
+      ]);
 
       if (candError) throw candError;
 
       if (candidates) {
         setInterviews(candidates);
       }
-
-      // Fetch user's feedback online
-      const { data: onlineFeedback } = await supabase
-        .from('feedback')
-        .select('id, candidate_id, stage_id, overall_verdict')
-        .eq('interviewer_id', user.id);
 
       if (onlineFeedback) {
         const updatedFbMap = { ...fbMap };

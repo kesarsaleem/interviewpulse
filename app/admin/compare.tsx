@@ -81,39 +81,40 @@ export default function CompareCandidatesScreen() {
     try {
       setLoading(true);
 
-      // Stages
-      const { data: stageData } = await supabase
-        .from('stages')
-        .select('*')
-        .eq('job_id', jobIdToLoad)
-        .order('position', { ascending: true });
-      setStages(stageData || []);
-
-      // Criteria
-      const { data: critData } = await supabase
-        .from('criteria')
-        .select('*')
-        .eq('job_id', jobIdToLoad)
-        .order('position', { ascending: true });
-      setCriteria(critData || []);
-
-      // Candidates
-      const { data: candData, error: candErr } = await supabase
-        .from('candidates')
-        .select(
+      const [
+        { data: stageData },
+        { data: critData },
+        { data: candData, error: candErr },
+      ] = await Promise.all([
+        supabase
+          .from('stages')
+          .select('*')
+          .eq('job_id', jobIdToLoad)
+          .order('position', { ascending: true }),
+        supabase
+          .from('criteria')
+          .select('*')
+          .eq('job_id', jobIdToLoad)
+          .order('position', { ascending: true }),
+        supabase
+          .from('candidates')
+          .select(
+            `
+            *,
+            stages (
+              id,
+              name,
+              position
+            )
           `
-          *,
-          stages (
-            id,
-            name,
-            position
           )
-        `
-        )
-        .eq('job_id', jobIdToLoad)
-        .order('created_at', { ascending: false });
+          .eq('job_id', jobIdToLoad)
+          .order('created_at', { ascending: false }),
+      ]);
 
       if (candErr) throw candErr;
+      setStages(stageData || []);
+      setCriteria(critData || []);
       setCandidates(candData || []);
 
       // Fetch Feedback for all candidates in this job

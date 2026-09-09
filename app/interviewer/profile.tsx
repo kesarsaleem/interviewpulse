@@ -64,10 +64,16 @@ export default function InterviewerProfileScreen() {
       }
 
       // 2. Fetch remote stats from Supabase
-      const { data: assignedJobs } = await supabase
-        .from('job_interviewers')
-        .select('job_id')
-        .eq('user_id', user.id);
+      const [{ data: assignedJobs }, { count: fbCount }] = await Promise.all([
+        supabase
+          .from('job_interviewers')
+          .select('job_id')
+          .eq('user_id', user.id),
+        supabase
+          .from('feedback')
+          .select('id', { count: 'exact', head: true })
+          .eq('interviewer_id', user.id),
+      ]);
 
       const jobIds = assignedJobs?.map((x) => x.job_id) || [];
       if (jobIds.length > 0) {
@@ -80,11 +86,6 @@ export default function InterviewerProfileScreen() {
       } else {
         setTotalAssigned(0);
       }
-
-      const { count: fbCount } = await supabase
-        .from('feedback')
-        .select('id', { count: 'exact', head: true })
-        .eq('interviewer_id', user.id);
 
       if (fbCount !== null) {
         setFeedbackSubmitted(fbCount);
