@@ -133,15 +133,6 @@ export default function AdminReportsScreen() {
     return count > 0 ? (sum / count).toFixed(1) : '—';
   }, [feedbackList]);
 
-  if (loading && !refreshing) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Computing Pipeline Reports...</Text>
-      </View>
-    );
-  }
-
   return (
     <ScrollView
       style={styles.container}
@@ -154,6 +145,12 @@ export default function AdminReportsScreen() {
         <Text style={styles.subtitle}>Hiring funnel health & evaluation metrics</Text>
       </View>
 
+      {loading && !refreshing ? (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <>
       {/* HIRING FUNNEL OVERVIEW */}
       <Text style={styles.sectionTitle}>Pipeline Conversion Funnel</Text>
       <View style={styles.funnelCard}>
@@ -307,6 +304,8 @@ export default function AdminReportsScreen() {
           ))
         )}
       </View>
+        </>
+      )}
     </ScrollView>
   );
 }

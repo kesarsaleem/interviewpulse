@@ -512,16 +512,7 @@ export default function CandidateDetail() {
     return count > 0 ? (totalScore / count).toFixed(1) : '—';
   }, [feedbackList]);
 
-  if (loading && !refreshing) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Loading Candidate Profile...</Text>
-      </View>
-    );
-  }
-
-  if (!candidate) {
+  if (!candidate && !loading) {
     return (
       <View style={styles.center}>
         <Ionicons name="alert-circle-outline" size={48} color="#DC2626" />
@@ -547,7 +538,7 @@ export default function CandidateDetail() {
           <Ionicons name="arrow-back" size={20} color={colors.text} />
         </Pressable>
         <Text style={styles.navTitle} numberOfLines={1}>
-          {candidate.full_name}
+          {candidate?.full_name || 'Candidate Profile'}
         </Text>
         <View style={styles.navActionsRow}>
           <Pressable
@@ -573,6 +564,12 @@ export default function CandidateDetail() {
         </View>
       </View>
 
+      {loading && !refreshing ? (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <>
       <View style={styles.heroCard}>
         <View style={styles.heroTop}>
           <View style={styles.avatar}>
@@ -923,6 +920,8 @@ export default function CandidateDetail() {
             </View>
           )}
         </View>
+      )}
+        </>
       )}
     </ScrollView>
   );

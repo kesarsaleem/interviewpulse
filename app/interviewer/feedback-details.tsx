@@ -216,9 +216,20 @@ export default function FeedbackDetails() {
 
   if (loading && !feedback) {
     return (
-      <SafeAreaView style={styles.center}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Loading evaluation details...</Text>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.topHeader}>
+          <Pressable onPress={() => router.back()} hitSlop={10} style={styles.backIconBtn}>
+            <Ionicons name="chevron-back" size={26} color="#fff" />
+          </Pressable>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.headerTitle}>Feedback Details</Text>
+            <Text style={styles.headerSubtitle}>Loading evaluation...</Text>
+          </View>
+          <View style={{ width: 28 }} />
+        </View>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
       </SafeAreaView>
     );
   }
@@ -605,11 +616,6 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.background,
     padding: 20,
-  },
-  loadingText: {
-    marginTop: 12,
-    color: colors.secondaryText,
-    fontSize: 14,
   },
   notFoundTitle: {
     fontSize: 17,

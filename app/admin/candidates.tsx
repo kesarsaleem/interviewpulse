@@ -279,15 +279,6 @@ export default function AdminCandidatesScreen() {
     return name.slice(0, 2).toUpperCase();
   };
 
-  if (loading && !refreshing) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Loading Candidates...</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       {/* HEADER */}
@@ -308,6 +299,12 @@ export default function AdminCandidatesScreen() {
         </Pressable>
       </View>
 
+      {loading && !refreshing ? (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <>
       {/* SEARCH BAR */}
       <View style={styles.searchSection}>
         <View style={styles.searchBar}>
@@ -589,6 +586,8 @@ export default function AdminCandidatesScreen() {
           })
         )}
       </ScrollView>
+        </>
+      )}
     </View>
   );
 }

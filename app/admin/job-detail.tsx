@@ -358,16 +358,7 @@ export default function JobDetail() {
     );
   };
 
-  if (loading && !refreshing) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Loading Job Details...</Text>
-      </View>
-    );
-  }
-
-  if (!job) {
+  if (!job && !loading) {
     return (
       <View style={styles.center}>
         <Ionicons name="alert-circle-outline" size={48} color="#DC2626" />
@@ -377,6 +368,29 @@ export default function JobDetail() {
         </Pressable>
       </View>
     );
+  }
+
+  if (loading && !job) {
+    return (
+      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+        <View style={styles.topNav}>
+          <Pressable style={styles.navBackBtn} onPress={() => router.back()} hitSlop={10}>
+            <Ionicons name="arrow-back" size={20} color={colors.text} />
+          </Pressable>
+          <Text style={styles.navTitle} numberOfLines={1}>
+            Loading Job...
+          </Text>
+          <View style={{ width: 28 }} />
+        </View>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 60 }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      </ScrollView>
+    );
+  }
+
+  if (!job) {
+    return null;
   }
 
   const sortedStages = [...(job.stages || [])].sort((a, b) => a.position - b.position);

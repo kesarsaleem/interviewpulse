@@ -131,15 +131,6 @@ export default function InterviewersScreen() {
     return name.includes(q) || email.includes(q);
   });
 
-  if (loading && !refreshing) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Loading Interviewers...</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       {/* HEADER */}
@@ -160,6 +151,12 @@ export default function InterviewersScreen() {
         </Pressable>
       </View>
 
+      {loading && !refreshing ? (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <>
       {/* SEARCH BAR */}
       <View style={styles.searchSection}>
         <View style={styles.searchBar}>
@@ -285,6 +282,8 @@ export default function InterviewersScreen() {
           })
         )}
       </ScrollView>
+        </>
+      )}
     </View>
   );
 }

@@ -116,15 +116,6 @@ export default function JobsScreen() {
     }
   };
 
-  if (loading && !refreshing) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Loading Job Openings...</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       {/* SCREEN HEADER */}
@@ -145,6 +136,12 @@ export default function JobsScreen() {
         </Pressable>
       </View>
 
+      {loading && !refreshing ? (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <>
       {/* SEARCH BAR */}
       <View style={styles.searchSection}>
         <View style={styles.searchBar}>
@@ -319,6 +316,8 @@ export default function JobsScreen() {
           })
         )}
       </ScrollView>
+        </>
+      )}
     </View>
   );
 }

@@ -329,15 +329,6 @@ export default function AdminDashboard() {
     }
   };
 
-  if (loading && !refreshing) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Loading Hiring Dashboard...</Text>
-      </View>
-    );
-  }
-
   return (
     <ScrollView
       style={styles.container}
@@ -368,6 +359,12 @@ export default function AdminDashboard() {
         </View>
       </View>
 
+      {loading && !refreshing ? (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <>
       {conflictCount > 0 && (
         <View
           style={{
@@ -601,6 +598,8 @@ export default function AdminDashboard() {
             );
           })}
         </View>
+      )}
+        </>
       )}
     </ScrollView>
   );

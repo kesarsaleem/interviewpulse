@@ -108,15 +108,6 @@ export default function AdminInterviewsScreen() {
     });
   }, [interviews, tab, search, todayStr]);
 
-  if (loading && !refreshing) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Loading Interview Sessions...</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       {/* HEADER */}
@@ -129,6 +120,12 @@ export default function AdminInterviewsScreen() {
         </View>
       </View>
 
+      {loading && !refreshing ? (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <>
       {/* SEARCH & TABS */}
       <View style={styles.searchSection}>
         <View style={styles.searchBar}>
@@ -260,6 +257,8 @@ export default function AdminInterviewsScreen() {
           })
         )}
       </ScrollView>
+        </>
+      )}
     </View>
   );
 }

@@ -207,17 +207,6 @@ export default function CandidatesScreen() {
     return name.slice(0, 2).toUpperCase();
   };
 
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <View style={styles.loadingCard}>
-          <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loadingText}>Loading assigned candidates...</Text>
-        </View>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <InterviewerDrawer visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
@@ -278,6 +267,12 @@ export default function CandidatesScreen() {
         </View>
       </View>
 
+      {loading ? (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <>
       {/* HORIZONTAL STAGE FILTER PILLS */}
       {availableStages.length > 0 && (
         <View style={styles.filterSection}>
@@ -507,6 +502,8 @@ export default function CandidatesScreen() {
           })
         )}
       </ScrollView>
+        </>
+      )}
     </View>
   );
 }
@@ -517,23 +514,6 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.background,
-  },
-  loadingCard: {
-    padding: 24,
-    borderRadius: 22,
-    backgroundColor: colors.card,
-    alignItems: 'center',
-    shadowColor: colors.text,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    elevation: 4,
-  },
-  loadingText: {
-    marginTop: 12,
-    color: colors.secondaryText,
-    fontSize: 14,
-    fontWeight: '600',
   },
   container: {
     flex: 1,

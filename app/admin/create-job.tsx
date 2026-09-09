@@ -392,15 +392,6 @@ export default function CreateOrEditJob() {
     }
   };
 
-  if (initialLoading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Loading Job Details...</Text>
-      </View>
-    );
-  }
-
   return (
     <ScrollView
       style={styles.container}
@@ -422,6 +413,12 @@ export default function CreateOrEditJob() {
         </View>
       </View>
 
+      {initialLoading ? (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <>
       {/* JOB INFORMATION CARD */}
       <View style={styles.card}>
         <Text style={styles.sectionHeading}>Job Details</Text>
@@ -609,6 +606,8 @@ export default function CreateOrEditJob() {
         }
         fullWidth
       />
+        </>
+      )}
     </ScrollView>
   );
 }

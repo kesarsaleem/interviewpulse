@@ -428,15 +428,6 @@ export default function AddOrEditCandidate() {
     }
   };
 
-  if (fetchingData) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Loading details...</Text>
-      </View>
-    );
-  }
-
   return (
     <ScrollView
       style={styles.container}
@@ -460,6 +451,12 @@ export default function AddOrEditCandidate() {
         </View>
       </View>
 
+      {fetchingData ? (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <>
       {/* JOB & STAGE ASSIGNMENT CARD */}
       <View style={styles.card}>
         <Text style={styles.cardHeading}>Job & Interview Stage</Text>
@@ -712,6 +709,8 @@ export default function AddOrEditCandidate() {
         }
         fullWidth
       />
+        </>
+      )}
     </ScrollView>
   );
 }

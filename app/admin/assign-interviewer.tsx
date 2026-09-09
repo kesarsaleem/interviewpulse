@@ -195,15 +195,6 @@ export default function AssignInterviewerScreen() {
     }
   };
 
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Loading panel information...</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       {/* HEADER */}
@@ -223,6 +214,12 @@ export default function AssignInterviewerScreen() {
         </View>
       </View>
 
+      {loading ? (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <>
       <ScrollView style={styles.list} contentContainerStyle={styles.listContent}>
         <Text style={styles.instruction}>
           {mode === 'assign_interviewers_to_job'
@@ -276,6 +273,8 @@ export default function AssignInterviewerScreen() {
           fullWidth
         />
       </View>
+        </>
+      )}
     </View>
   );
 }

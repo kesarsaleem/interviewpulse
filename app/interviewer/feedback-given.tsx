@@ -210,17 +210,6 @@ export default function FeedbackGiven() {
     return (sum / withScores.length).toFixed(1);
   }, [feedbackList]);
 
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <View style={styles.loadingCard}>
-          <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loadingText}>Loading submitted evaluations...</Text>
-        </View>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <InterviewerDrawer visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
@@ -269,6 +258,12 @@ export default function FeedbackGiven() {
         </View>
       </View>
 
+      {loading ? (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <>
       <ScrollView
         style={styles.scrollArea}
         contentContainerStyle={styles.scrollContent}
@@ -481,6 +476,8 @@ export default function FeedbackGiven() {
           })
         )}
       </ScrollView>
+        </>
+      )}
     </View>
   );
 }
@@ -491,23 +488,6 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.background,
-  },
-  loadingCard: {
-    padding: 24,
-    borderRadius: 22,
-    backgroundColor: colors.card,
-    alignItems: 'center',
-    shadowColor: colors.text,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    elevation: 4,
-  },
-  loadingText: {
-    marginTop: 12,
-    color: colors.secondaryText,
-    fontSize: 14,
-    fontWeight: '600',
   },
   container: {
     flex: 1,

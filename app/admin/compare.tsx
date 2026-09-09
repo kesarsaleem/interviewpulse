@@ -472,9 +472,8 @@ export default function CompareCandidatesScreen() {
 
       {/* COMPARISON CONTENT */}
       {loading && !refreshing ? (
-        <View style={styles.center}>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loadingText}>Analyzing Candidate Evaluations...</Text>
         </View>
       ) : (
         <ScrollView
