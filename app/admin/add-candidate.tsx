@@ -210,6 +210,13 @@ export default function AddOrEditCandidate() {
       if (result.canceled || !result.assets?.[0]) return;
 
       const file = result.assets[0];
+
+            const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+      if (file.size && file.size > MAX_SIZE_BYTES) {
+        Alert.alert('File Too Large', 'Resume PDF must be under 5MB. Please choose a smaller file.');
+        return;
+      }
+      
       setUploadingResume(true);
 
       // React Native's fetch() can read a local file:// URI directly into
@@ -230,18 +237,9 @@ export default function AddOrEditCandidate() {
 
       if (uploadError) throw uploadError;
 
-      // Bucket is private — a signed URL is needed for the app to be able
-      // to open it later via Linking.openURL. Ten-year expiry is used as
-      // a practical stand-in for "permanent" given the current schema
-      // only stores a single URL string per candidate.
-      const TEN_YEARS_SECONDS = 60 * 60 * 24 * 365 * 10;
-      const { data: signedData, error: signError } = await supabase.storage
-        .from('resumes')
-        .createSignedUrl(storagePath, TEN_YEARS_SECONDS);
-
-      if (signError) throw signError;
-
-      setResumeUrl(signedData.signedUrl);
+      // Signed URL ab generate NAHI hota upload ke waqt.
+      // Sirf storage PATH save hoga — signed URL view karte waqt on-demand banega.
+      setResumeUrl(storagePath);
       setResumeFileName(file.name || 'resume.pdf');
     } catch (err: any) {
       Alert.alert('Upload Failed', err.message || 'Could not upload the resume PDF.');

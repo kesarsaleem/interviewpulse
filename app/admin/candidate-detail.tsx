@@ -448,13 +448,25 @@ export default function CandidateDetail() {
     );
   };
 
-  const openResume = async (url: string) => {
-    if (!url) return;
-    const canOpen = await Linking.canOpenURL(url);
-    if (canOpen) {
-      await Linking.openURL(url);
-    } else {
-      Alert.alert('Invalid Link', 'Cannot open the provided resume URL');
+  const openResume = async (path: string) => {
+    try {
+      if (!path) {
+        Alert.alert('Error', 'Resume not found.');
+        return;
+      }
+
+      const { data, error } = await supabase.storage
+        .from('resumes')
+        .createSignedUrl(path, 600); // sirf 10 minute ke liye valid
+
+      if (error || !data?.signedUrl) {
+        Alert.alert('Error', 'Could not open the resume. Please try again.');
+        return;
+      }
+
+      Linking.openURL(data.signedUrl);
+    } catch (err) {
+      Alert.alert('Error', 'Unable to open the resume.');
     }
   };
 

@@ -187,7 +187,7 @@ function humanizeAuthError(message: string | undefined | null): string {
     console.error('Auth error:', safeMessage);
   }
 
-  if (lower.includes('invalid login')) {
+  if (lower.includes('invalid login') || lower.includes('user not found') || lower.includes('unable to validate')) {
     return 'Incorrect email or password.';
   }
 
@@ -197,10 +197,6 @@ function humanizeAuthError(message: string | undefined | null): string {
 
   if (lower.includes('rate limit')) {
     return 'Too many attempts. Please wait a bit before trying again.';
-  }
-
-  if (lower.includes('user not found') || lower.includes('unable to validate')) {
-    return 'No account found with that email address.';
   }
 
   if (lower.includes('email') && lower.includes('invalid')) {
