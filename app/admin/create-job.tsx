@@ -17,7 +17,8 @@ import * as DocumentPicker from 'expo-document-picker';
 
 import { supabase } from '../../lib/supabase/client';
 import { useAuth } from '../../hooks/useAuth';
-
+import { Button } from '../../components/ui/Button';
+import Input from '../../components/ui/Input';
 export default function CreateOrEditJob() {
   const { colors } = useTheme();
   const styles = createStyles(colors);
@@ -427,10 +428,8 @@ export default function CreateOrEditJob() {
         <Text style={styles.label}>
           Job Title <Text style={styles.required}>*</Text>
         </Text>
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="e.g. Senior Frontend Engineer"
-          placeholderTextColor={colors.mutedText}
           value={title}
           onChangeText={setTitle}
         />
@@ -438,19 +437,16 @@ export default function CreateOrEditJob() {
         <Text style={styles.label}>
           Department <Text style={styles.required}>*</Text>
         </Text>
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="e.g. Engineering, Product, Design"
-          placeholderTextColor={colors.mutedText}
           value={department}
           onChangeText={setDepartment}
         />
 
         <Text style={styles.label}>Job Description (Optional)</Text>
-        <TextInput
-          style={[styles.input, styles.textArea]}
+        <Input
+          style={styles.textArea}
           placeholder="Brief description of the position, key responsibilities, and qualifications..."
-          placeholderTextColor={colors.mutedText}
           value={description}
           onChangeText={setDescription}
           multiline
@@ -597,27 +593,21 @@ export default function CreateOrEditJob() {
         </View>
       </View>
 
-      {/* SUBMIT BUTTON */}
-      <Pressable
-        style={[styles.submitButton, loading && styles.submitButtonDisabled]}
+           {/* SUBMIT BUTTON */}
+      <Button
+        label={isEditing ? 'Save Changes' : 'Create Job Opening'}
         onPress={handleSubmit}
+        loading={loading}
         disabled={loading}
-      >
-        {loading ? (
-          <ActivityIndicator size="small" color="#FFFFFF" />
-        ) : (
-          <>
-            <Ionicons
-              name={isEditing ? 'checkmark-circle-outline' : 'save-outline'}
-              size={18}
-              color="#FFFFFF"
-            />
-            <Text style={styles.submitButtonText}>
-              {isEditing ? 'Save Changes' : 'Create Job Opening'}
-            </Text>
-          </>
-        )}
-      </Pressable>
+        icon={
+          <Ionicons
+            name={isEditing ? 'checkmark-circle-outline' : 'save-outline'}
+            size={18}
+            color="#FFFFFF"
+          />
+        }
+        fullWidth
+      />
     </ScrollView>
   );
 }

@@ -22,6 +22,9 @@ import { getDb } from '../../lib/sqlite/schema';
 import { runSync } from '../../lib/sync/syncEngine';
 import { getLocalInterviews } from '../../services/feedbackService';
 import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
+import { EmptyState } from '../../components/ui/EmptyState';
+import Input from '../../components/ui/Input';
+import { Button } from '../../components/ui/Button';
 
 type SortOption = 'date_asc' | 'date_desc' | 'name_asc' | 'stage';
 
@@ -243,34 +246,27 @@ export default function MyInterviews() {
             <Text style={styles.headerSub}>Assigned candidate rounds & evaluations</Text>
           </View>
 
-          <Pressable
-            style={styles.syncBtn}
+          <Button
+            label={syncing ? 'Syncing...' : 'Sync'}
             onPress={syncNow}
+            loading={syncing}
             disabled={syncing}
-            hitSlop={8}
-          >
-            {syncing ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
-            ) : (
-              <>
-                <Ionicons name="sync-outline" size={15} color="#FFFFFF" />
-                <Text style={styles.syncText}>Sync</Text>
-              </>
-            )}
-          </Pressable>
+            size="sm"
+            icon={<Ionicons name="sync-outline" size={15} color="#FFFFFF" />}
+          />
         </View>
 
         {/* SEARCH & SORT INPUT */}
         <View style={styles.searchRow}>
-          <View style={styles.searchBox}>
+          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
             <Ionicons name="search-outline" size={18} color={colors.mutedText} />
-            <TextInput
-              placeholder="Search candidate, role, or stage..."
-              placeholderTextColor={colors.mutedText}
-              value={search}
-              onChangeText={setSearch}
-              style={styles.searchInput}
-            />
+            <View style={{ flex: 1, marginLeft: 8 }}>
+              <Input
+                placeholder="Search candidate, role, or stage..."
+                value={search}
+                onChangeText={setSearch}
+              />
+            </View>
             {search ? (
               <Pressable onPress={() => setSearch('')} hitSlop={6}>
                 <Ionicons name="close-circle" size={18} color={colors.mutedText} />
@@ -347,27 +343,22 @@ export default function MyInterviews() {
       >
         {processedInterviews.length === 0 ? (
           <View style={styles.emptyCard}>
-            <View style={styles.emptyIconCircle}>
-              <Ionicons
-                name={tab === 'upcoming' ? 'calendar-outline' : 'archive-outline'}
-                size={36}
-                color={colors.mutedText}
-              />
-            </View>
-            <Text style={styles.emptyTitle}>
-              {search
-                ? 'No matching candidates'
-                : tab === 'upcoming'
-                ? 'No Upcoming Interviews'
-                : 'No Past Interviews'}
-            </Text>
-            <Text style={styles.emptySubtitle}>
-              {search
-                ? `No assigned candidates match "${search}". Try clearing the search query.`
-                : tab === 'upcoming'
-                ? 'When candidates are scheduled for your assigned interview rounds, they will appear here.'
-                : 'Candidates you evaluated previously will appear in your past interview archive.'}
-            </Text>
+            <EmptyState
+              title={
+                search
+                  ? 'No matching candidates'
+                  : tab === 'upcoming'
+                  ? 'No Upcoming Interviews'
+                  : 'No Past Interviews'
+              }
+              description={
+                search
+                  ? `No assigned candidates match "${search}". Try clearing the search query.`
+                  : tab === 'upcoming'
+                  ? 'When candidates are scheduled for your assigned interview rounds, they will appear here.'
+                  : 'Candidates you evaluated previously will appear in your past interview archive.'
+              }
+            />
             {search ? (
               <Pressable style={styles.clearSearchBtn} onPress={() => setSearch('')}>
                 <Text style={styles.clearSearchText}>Clear Search</Text>

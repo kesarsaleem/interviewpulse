@@ -20,6 +20,9 @@ import { useAuth } from '../../hooks/useAuth';
 import { runSync } from '../../lib/sync/syncEngine';
 import { getLocalInterviewerFeedback } from '../../services/feedbackService';
 import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
+import Input from '../../components/ui/Input';
+import { Button } from '../../components/ui/Button';
+import { EmptyState } from '../../components/ui/EmptyState';
 
 export default function FeedbackGiven() {
   const { colors } = useTheme();
@@ -237,33 +240,26 @@ export default function FeedbackGiven() {
             <Text style={styles.headerSubtitle}>Candidate evaluation audit history</Text>
           </View>
 
-          <Pressable
-            style={styles.syncBtn}
+          <Button
+            label={syncing ? 'Syncing...' : 'Sync'}
             onPress={syncNow}
+            loading={syncing}
             disabled={syncing}
-            hitSlop={8}
-          >
-            {syncing ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
-            ) : (
-              <>
-                <Ionicons name="sync-outline" size={15} color="#FFFFFF" />
-                <Text style={styles.syncText}>Sync</Text>
-              </>
-            )}
-          </Pressable>
+            size="sm"
+            icon={<Ionicons name="sync-outline" size={15} color="#FFFFFF" />}
+          />
         </View>
 
         {/* SEARCH BAR (INTEGRATED IN HEADER CARD) */}
-        <View style={styles.searchBar}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Ionicons name="search-outline" size={18} color={colors.mutedText} />
-          <TextInput
-            placeholder="Search candidate, role, or stage..."
-            placeholderTextColor={colors.mutedText}
-            value={search}
-            onChangeText={setSearch}
-            style={styles.searchInput}
-          />
+          <View style={{ flex: 1, marginLeft: 8 }}>
+            <Input
+              placeholder="Search candidate, role, or stage..."
+              value={search}
+              onChangeText={setSearch}
+            />
+          </View>
           {search ? (
             <Pressable onPress={() => setSearch('')} hitSlop={6}>
               <Ionicons name="close-circle" size={18} color={colors.mutedText} />
@@ -372,15 +368,14 @@ export default function FeedbackGiven() {
         {/* EVALUATION CARDS (HORIZONTAL LAYOUT: LEFT AVATAR, CENTER INFO, RIGHT VERDICT + SCORE + CHEVRON) */}
         {filtered.length === 0 ? (
           <View style={styles.emptyCard}>
-            <View style={styles.emptyIconWrap}>
-              <Ionicons name="chatbox-ellipses-outline" size={36} color={colors.mutedText} />
-            </View>
-            <Text style={styles.emptyTitle}>No Feedback Records Found</Text>
-            <Text style={styles.emptySubtitle}>
-              {search || selectedJobId !== 'all'
-                ? 'No evaluations match your search filter criteria. Try adjusting keywords.'
-                : 'You have not submitted candidate feedback yet. Go to My Interviews to start evaluating.'}
-            </Text>
+            <EmptyState
+              title="No Feedback Records Found"
+              description={
+                search || selectedJobId !== 'all'
+                  ? 'No evaluations match your search filter criteria. Try adjusting keywords.'
+                  : 'You have not submitted candidate feedback yet. Go to My Interviews to start evaluating.'
+              }
+            />
             {search || selectedJobId !== 'all' ? (
               <Pressable
                 style={styles.resetFilterBtn}

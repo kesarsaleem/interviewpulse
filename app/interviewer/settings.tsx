@@ -26,6 +26,8 @@ import {
 } from '../../lib/sync/syncEngine';
 import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
 import { ThemeMode, InterviewMode } from '../../types';
+import Input from '../../components/ui/Input';
+import { Button } from '../../components/ui/Button';
 
 export default function InterviewerSettingsScreen() {
   const { user, signOut, refreshUser } = useAuth();
@@ -294,18 +296,14 @@ export default function InterviewerSettingsScreen() {
           <Text style={styles.headerSubtitle}>Account, preferences & offline controls</Text>
         </View>
 
-        <Pressable
-          style={styles.headerIconBtn}
+        <Button
+          label={syncing ? 'Syncing...' : 'Sync'}
           onPress={handleSyncNow}
+          loading={syncing}
           disabled={syncing}
-          hitSlop={10}
-        >
-          {syncing ? (
-            <ActivityIndicator size="small" color="#FFFFFF" />
-          ) : (
-            <Ionicons name="sync-outline" size={20} color="#FFFFFF" />
-          )}
-        </Pressable>
+          size="sm"
+          icon={<Ionicons name="sync-outline" size={20} color="#FFFFFF" />}
+        />
       </View>
 
       <ScrollView
@@ -607,36 +605,25 @@ export default function InterviewerSettingsScreen() {
 
           {/* Action buttons */}
           <View style={styles.syncButtonsRow}>
-            <Pressable
-              style={[styles.syncPrimaryBtn, { backgroundColor: colors.primary }]}
+            <Button
+              label={syncing ? 'Syncing...' : 'Sync Now'}
               onPress={handleSyncNow}
+              loading={syncing}
               disabled={syncing}
-            >
-              {syncing ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
-              ) : (
-                <>
-                  <Ionicons name="refresh-outline" size={16} color="#FFFFFF" style={{ marginRight: 6 }} />
-                  <Text style={styles.syncBtnText}>Sync Now</Text>
-                </>
-              )}
-            </Pressable>
+              size="sm"
+              icon={<Ionicons name="refresh-outline" size={16} color="#FFFFFF" />}
+            />
 
             {syncStats.failed > 0 && (
-              <Pressable
-                style={[styles.syncRetryBtn, { borderColor: '#EF4444' }]}
+              <Button
+                label="Retry Failed"
                 onPress={handleRetryFailed}
+                loading={retrying}
                 disabled={retrying}
-              >
-                {retrying ? (
-                  <ActivityIndicator size="small" color="#EF4444" />
-                ) : (
-                  <>
-                    <Ionicons name="repeat-outline" size={16} color="#EF4444" style={{ marginRight: 4 }} />
-                    <Text style={[styles.syncBtnText, { color: '#EF4444' }]}>Retry Failed</Text>
-                  </>
-                )}
-              </Pressable>
+                variant="outline"
+                size="sm"
+                icon={<Ionicons name="repeat-outline" size={16} color="#EF4444" />}
+              />
             )}
           </View>
         </View>
@@ -686,12 +673,10 @@ export default function InterviewerSettingsScreen() {
               Enter your full name as it should appear on interview summaries and scorecards.
             </Text>
 
-            <TextInput
-              style={[styles.modalInput, { backgroundColor: colors.inputBackground, borderColor: colors.inputBorder, color: colors.text }]}
+            <Input
               value={newName}
               onChangeText={setNewName}
               placeholder="e.g. Sarah Connor"
-              placeholderTextColor={colors.mutedText}
               autoFocus
             />
 
@@ -704,17 +689,13 @@ export default function InterviewerSettingsScreen() {
                 <Text style={[styles.modalBtnCancelText, { color: colors.secondaryText }]}>Cancel</Text>
               </Pressable>
 
-              <Pressable
-                style={[styles.modalBtnSave, { backgroundColor: colors.primary }]}
+              <Button
+                label="Save Name"
                 onPress={handleSaveName}
+                loading={updatingName}
                 disabled={updatingName}
-              >
-                {updatingName ? (
-                  <ActivityIndicator size="small" color="#FFFFFF" />
-                ) : (
-                  <Text style={styles.modalBtnSaveText}>Save Name</Text>
-                )}
-              </Pressable>
+                size="sm"
+              />
             </View>
           </View>
         </View>
@@ -731,21 +712,17 @@ export default function InterviewerSettingsScreen() {
               Enter your new credentials. Minimum 6 characters required.
             </Text>
 
-            <TextInput
-              style={[styles.modalInput, { backgroundColor: colors.inputBackground, borderColor: colors.inputBorder, color: colors.text, marginBottom: 12 }]}
+            <Input
               value={newPassword}
               onChangeText={setNewPassword}
               placeholder="New password (min 6 chars)"
-              placeholderTextColor={colors.mutedText}
               secureTextEntry
             />
 
-            <TextInput
-              style={[styles.modalInput, { backgroundColor: colors.inputBackground, borderColor: colors.inputBorder, color: colors.text }]}
+            <Input
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               placeholder="Confirm new password"
-              placeholderTextColor={colors.mutedText}
               secureTextEntry
             />
 
@@ -762,17 +739,13 @@ export default function InterviewerSettingsScreen() {
                 <Text style={[styles.modalBtnCancelText, { color: colors.secondaryText }]}>Cancel</Text>
               </Pressable>
 
-              <Pressable
-                style={[styles.modalBtnSave, { backgroundColor: colors.primary }]}
+              <Button
+                label="Update Password"
                 onPress={handleChangePassword}
+                loading={updatingPassword}
                 disabled={updatingPassword}
-              >
-                {updatingPassword ? (
-                  <ActivityIndicator size="small" color="#FFFFFF" />
-                ) : (
-                  <Text style={styles.modalBtnSaveText}>Update Password</Text>
-                )}
-              </Pressable>
+                size="sm"
+              />
             </View>
           </View>
         </View>

@@ -19,6 +19,7 @@ import GradientBackground from '../../components/ui/GradientBackground';
 import { useTheme } from '../../context/ThemeContext';
 import { ThemeColors } from '../../theme/colors';
 import { useAuth } from '../../hooks/useAuth';
+import { Button } from '../../components/ui/Button';
 
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -213,37 +214,13 @@ export default function ForgotPasswordScreen() {
 
 
 
-            <Pressable
-
-              style={[
-                styles.button,
-                loading && styles.disabled
-              ]}
-
-              disabled={loading}
-
+            <Button
+              label="Send Reset Link"
               onPress={handleSendResetLink}
-
-            >
-
-              {
-                loading ? (
-
-                  <ActivityIndicator
-                    color="#FFFFFF"
-                  />
-
-                ) : (
-
-                  <Text style={styles.buttonText}>
-                    Send Reset Link
-                  </Text>
-
-                )
-              }
-
-
-            </Pressable>
+              loading={loading}
+              disabled={loading}
+              fullWidth
+            />
 
 
 

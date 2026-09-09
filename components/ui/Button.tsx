@@ -17,11 +17,11 @@ interface ButtonProps extends Omit<PressableProps, 'style'> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  primary: 'bg-primary active:bg-primary-700',
-  secondary: 'bg-accent active:bg-accent-600',
-  outline: 'bg-transparent border border-border active:bg-background',
-  danger: 'bg-error active:opacity-90',
-  ghost: 'bg-transparent active:bg-background',
+  primary: '',
+  secondary: '',
+  outline: 'border',
+  danger: '',
+  ghost: '',
 };
 
 const sizeClasses: Record<Size, string> = {

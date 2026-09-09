@@ -19,6 +19,8 @@ import { RadarChart, RadarSeries } from '../../components/charts/RadarChart';
 import { useAuth } from '../../hooks/useAuth';
 import { getLocalFeedbackDetails, isFeedbackEditable } from '../../services/feedbackService';
 import { getDb } from '../../lib/sqlite/schema';
+import { Button } from '../../components/ui/Button';
+import { EmptyState } from '../../components/ui/EmptyState';
 
 export default function FeedbackDetails() {
   const { colors } = useTheme();
@@ -222,12 +224,11 @@ export default function FeedbackDetails() {
   if (!feedback) {
     return (
       <SafeAreaView style={styles.center}>
-        <Ionicons name="document-text-outline" size={48} color={colors.mutedText} />
-        <Text style={styles.notFoundTitle}>Feedback not found</Text>
-        <Text style={styles.notFoundSub}>This feedback record could not be loaded.</Text>
-        <Pressable style={styles.backButtonCenter} onPress={() => router.back()}>
-          <Text style={styles.backButtonText}>Go Back</Text>
-        </Pressable>
+        <EmptyState
+          title="Feedback not found"
+          description="This feedback record could not be loaded."
+        />
+        <Button label="Go Back" onPress={() => router.back()} />
       </SafeAreaView>
     );
   }

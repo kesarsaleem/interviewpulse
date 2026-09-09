@@ -6,7 +6,7 @@ export function Card({ children, className = '', ...rest }: ViewProps & { classN
   const { colors } = useTheme();
   return (
     <View
-      className={`bg-surface rounded-card border border-border p-4 ${className}`}
+      className={`rounded-card p-4 ${className}`}
       style={{ backgroundColor: colors.card, borderColor: colors.cardBorder, borderWidth: 1, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } }}
       {...rest}
     >

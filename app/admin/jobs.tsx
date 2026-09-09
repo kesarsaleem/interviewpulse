@@ -16,6 +16,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 import { supabase } from '../../lib/supabase/client';
+import { EmptyState } from '../../components/ui/EmptyState';
 
 type StatusFilter = 'all' | 'open' | 'closed' | 'archived';
 
@@ -195,19 +196,18 @@ export default function JobsScreen() {
       >
         {filteredJobs.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <View style={styles.emptyIconCircle}>
-              <Ionicons name="briefcase-outline" size={40} color={colors.mutedText} />
-            </View>
-            <Text style={styles.emptyTitle}>
-              {search.trim() || statusFilter !== 'all'
-                ? 'No matching jobs'
-                : 'No job openings yet'}
-            </Text>
-            <Text style={styles.emptySubtitle}>
-              {search.trim() || statusFilter !== 'all'
-                ? 'Try adjusting your search query or status filter.'
-                : 'Create your first job opening to configure hiring stages, criteria, and assign interviewers.'}
-            </Text>
+            <EmptyState
+              title={
+                search.trim() || statusFilter !== 'all'
+                  ? 'No matching jobs'
+                  : 'No job openings yet'
+              }
+              description={
+                search.trim() || statusFilter !== 'all'
+                  ? 'Try adjusting your search query or status filter.'
+                  : 'Create your first job opening to configure hiring stages, criteria, and assign interviewers.'
+              }
+            />
             {search.trim() || statusFilter !== 'all' ? (
               <Pressable
                 style={styles.clearFilterBtn}

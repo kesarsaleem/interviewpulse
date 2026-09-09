@@ -14,6 +14,7 @@ import {
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../lib/supabase/client';
+import { Button } from '../../components/ui/Button';
 
 /**
  * Invites a new interviewer via a secure server-side Edge Function
@@ -172,20 +173,14 @@ export default function AddInterviewer() {
           </Text>
         </View>
 
-        <Pressable
-          style={[styles.submitBtn, loading && styles.submitBtnDisabled]}
+        <Button
+          label="Send Invitation"
           onPress={inviteInterviewer}
+          loading={loading}
           disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator size="small" color="#FFFFFF" />
-          ) : (
-            <>
-              <Ionicons name="mail-outline" size={18} color="#FFFFFF" />
-              <Text style={styles.submitBtnText}>Send Invitation</Text>
-            </>
-          )}
-        </Pressable>
+          icon={<Ionicons name="mail-outline" size={18} color="#FFFFFF" />}
+          fullWidth
+        />
       </View>
     </ScrollView>
   );

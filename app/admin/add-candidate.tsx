@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { router, useLocalSearchParams, useSegments } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { Button } from '../../components/ui/Button';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
 
@@ -693,26 +694,20 @@ export default function AddOrEditCandidate() {
       </View>
 
       {/* SUBMIT BUTTON */}
-      <Pressable
-        style={[styles.submitBtn, loading && styles.submitBtnDisabled]}
+      <Button
+        label={isEditing ? 'Update Candidate' : 'Add Candidate'}
         onPress={handleSave}
+        loading={loading}
         disabled={loading}
-      >
-        {loading ? (
-          <ActivityIndicator size="small" color="#FFFFFF" />
-        ) : (
-          <>
-            <Ionicons
-              name={isEditing ? 'checkmark-circle-outline' : 'person-add'}
-              size={18}
-              color="#FFFFFF"
-            />
-            <Text style={styles.submitBtnText}>
-              {isEditing ? 'Update Candidate' : 'Add Candidate'}
-            </Text>
-          </>
-        )}
-      </Pressable>
+        icon={
+          <Ionicons
+            name={isEditing ? 'checkmark-circle-outline' : 'person-add'}
+            size={18}
+            color="#FFFFFF"
+          />
+        }
+        fullWidth
+      />
     </ScrollView>
   );
 }

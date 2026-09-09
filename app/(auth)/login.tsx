@@ -16,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Logo from "../../components/ui/Logo";
 import GradientBackground from "../../components/ui/GradientBackground";
 import { useAuth } from "../../hooks/useAuth";
+import { Button } from "../../components/ui/Button";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -159,15 +160,13 @@ export default function LoginScreen() {
               <Text style={styles.forgot}>Forgot password?</Text>
             </Pressable>
 
-            <Pressable
-              style={[styles.button, loading && styles.disabled]}
-              disabled={loading}
+            <Button
+              label="Login"
               onPress={handleLogin}
-            >
-              <Text style={styles.buttonText}>
-                {loading ? "Logging in..." : "Login"}
-              </Text>
-            </Pressable>
+              loading={loading}
+              disabled={loading}
+              fullWidth
+            />
 
           </View>
         </ScrollView>

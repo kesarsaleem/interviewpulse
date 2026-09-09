@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { supabase } from '../../lib/supabase/client';
+import { Button } from '../../components/ui/Button';
 export default function ResetPasswordScreen() {
 
   const [password, setPassword] = useState('');
@@ -115,19 +116,13 @@ export default function ResetPasswordScreen() {
       />
 
 
-      <Pressable
-        style={styles.button}
+      <Button
+        label="Update Password"
         onPress={handleUpdatePassword}
+        loading={loading}
         disabled={loading}
-      >
-
-        <Text style={styles.buttonText}>
-          {loading
-            ? 'Updating...'
-            : 'Update Password'}
-        </Text>
-
-      </Pressable>
+        fullWidth
+      />
 
 
     </View>

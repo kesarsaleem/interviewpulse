@@ -21,6 +21,9 @@ import { getDb } from '../../lib/sqlite/schema';
 import { runSync } from '../../lib/sync/syncEngine';
 import { getLocalInterviews } from '../../services/feedbackService';
 import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { Button } from '../../components/ui/Button';
+import Input from '../../components/ui/Input';
 
 export default function CandidatesScreen() {
   const { colors } = useTheme();
@@ -242,34 +245,27 @@ export default function CandidatesScreen() {
             <Text style={styles.addBtnText}>Add</Text>
           </Pressable>
 
-          <Pressable
-            style={styles.syncBtn}
+          <Button
+            label={syncing ? 'Syncing...' : 'Sync'}
             onPress={handleManualSync}
+            loading={syncing}
             disabled={syncing}
-            hitSlop={10}
-          >
-            {syncing ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
-            ) : (
-              <>
-                <Ionicons name="sync-outline" size={15} color="#FFFFFF" />
-                <Text style={styles.syncBtnText}>Sync</Text>
-              </>
-            )}
-          </Pressable>
+            size="sm"
+            icon={<Ionicons name="sync-outline" size={15} color="#FFFFFF" />}
+          />
         </View>
 
         {/* SEARCH BAR (INTEGRATED IN HEADER CARD) */}
-        <View style={styles.searchBar}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Ionicons name="search-outline" size={18} color={colors.mutedText} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search candidate, role, company, or job..."
-            placeholderTextColor={colors.mutedText}
-            value={search}
-            onChangeText={setSearch}
-            returnKeyType="search"
-          />
+          <View style={{ flex: 1, marginLeft: 8 }}>
+            <Input
+              placeholder="Search candidate, role, company, or job..."
+              value={search}
+              onChangeText={setSearch}
+              returnKeyType="search"
+            />
+          </View>
           {search.length > 0 && (
             <Pressable onPress={() => setSearch('')} hitSlop={8}>
               <Ionicons name="close-circle" size={18} color={colors.mutedText} />
@@ -329,15 +325,14 @@ export default function CandidatesScreen() {
       >
         {filteredCandidates.length === 0 ? (
           <View style={styles.emptyCard}>
-            <View style={styles.emptyIconCircle}>
-              <Ionicons name="people-outline" size={36} color={colors.mutedText} />
-            </View>
-            <Text style={styles.emptyTitle}>No Candidates Found</Text>
-            <Text style={styles.emptySubtitle}>
-              {search.trim() || selectedStage !== 'all'
-                ? 'Try modifying your search keywords or stage filter.'
-                : 'When hiring managers assign you to candidate interview loops, they will appear here.'}
-            </Text>
+            <EmptyState
+              title="No Candidates Found"
+              description={
+                search.trim() || selectedStage !== 'all'
+                  ? 'Try modifying your search keywords or stage filter.'
+                  : 'When hiring managers assign you to candidate interview loops, they will appear here.'
+              }
+            />
             {(search.trim() || selectedStage !== 'all') && (
               <Pressable
                 style={styles.clearFilterBtn}

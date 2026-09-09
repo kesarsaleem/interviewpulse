@@ -16,6 +16,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 import { supabase } from '../../lib/supabase/client';
+import { EmptyState } from '../../components/ui/EmptyState';
 
 type SortOption = 'newest' | 'oldest' | 'name_asc' | 'interview_date' | 'last_activity';
 
@@ -431,19 +432,18 @@ export default function AdminCandidatesScreen() {
       >
         {filteredCandidates.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <View style={styles.emptyIconCircle}>
-              <Ionicons name="people-outline" size={40} color={colors.mutedText} />
-            </View>
-            <Text style={styles.emptyTitle}>
-              {search.trim() || selectedJobId !== 'all' || selectedStageName !== 'all'
-                ? 'No matching candidates'
-                : 'No candidates in system'}
-            </Text>
-            <Text style={styles.emptySubtitle}>
-              {search.trim() || selectedJobId !== 'all' || selectedStageName !== 'all'
-                ? 'Try clearing filters or adjusting your search term.'
-                : 'Add your first candidate to an active job opening to begin interview evaluations.'}
-            </Text>
+            <EmptyState
+              title={
+                search.trim() || selectedJobId !== 'all' || selectedStageName !== 'all'
+                  ? 'No matching candidates'
+                  : 'No candidates in system'
+              }
+              description={
+                search.trim() || selectedJobId !== 'all' || selectedStageName !== 'all'
+                  ? 'Try clearing filters or adjusting your search term.'
+                  : 'Add your first candidate to an active job opening to begin interview evaluations.'
+              }
+            />
             {search.trim() || selectedJobId !== 'all' || selectedStageName !== 'all' ? (
               <Pressable
                 style={styles.resetBtn}

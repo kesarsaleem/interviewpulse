@@ -18,6 +18,7 @@ import { supabase } from '../../lib/supabase/client';
 import { useAuth } from '../../hooks/useAuth';
 import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
 import { runSync } from '../../lib/sync/syncEngine';
+import { Button } from '../../components/ui/Button';
 
 export default function InterviewerHome() {
   const { colors } = useTheme();
@@ -179,18 +180,14 @@ export default function InterviewerHome() {
           </Pressable>
 
           <View style={styles.headerRightActions}>
-            <Pressable
-              style={styles.headerIconBtn}
+            <Button
+              label={syncing ? 'Syncing...' : 'Sync'}
               onPress={handleSync}
+              loading={syncing}
               disabled={syncing}
-              hitSlop={8}
-            >
-              {syncing ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
-              ) : (
-                <Ionicons name="sync-outline" size={20} color="#FFFFFF" />
-              )}
-            </Pressable>
+              size="sm"
+              icon={<Ionicons name="sync-outline" size={20} color="#FFFFFF" />}
+            />
 
             <Pressable
               style={styles.avatarWrap}
@@ -381,21 +378,14 @@ export default function InterviewerHome() {
             </View>
           </View>
 
-          <Pressable
-            style={styles.syncCardBtn}
+          <Button
+            label={syncing ? 'Syncing...' : 'Sync Now'}
             onPress={handleSync}
+            loading={syncing}
             disabled={syncing}
-            hitSlop={8}
-          >
-            {syncing ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
-            ) : (
-              <>
-                <Ionicons name="refresh" size={15} color="#FFFFFF" style={{ marginRight: 5 }} />
-                <Text style={styles.syncCardBtnText}>Sync Now</Text>
-              </>
-            )}
-          </Pressable>
+            size="sm"
+            icon={<Ionicons name="refresh" size={15} color="#FFFFFF" />}
+          />
         </View>
       </ScrollView>
     </View>

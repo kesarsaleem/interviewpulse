@@ -21,6 +21,9 @@ import { getDb } from '../../lib/sqlite/schema';
 import { runSync } from '../../lib/sync/syncEngine';
 import { getLocalInterviews } from '../../services/feedbackService';
 import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
+import { EmptyState } from '../../components/ui/EmptyState';
+import Input from '../../components/ui/Input';
+import { Button } from '../../components/ui/Button';
 
 export default function UpcomingInterviewsScreen() {
   const { colors } = useTheme();
@@ -262,34 +265,27 @@ export default function UpcomingInterviewsScreen() {
             </Text>
           </View>
 
-          <Pressable
-            style={styles.syncBtn}
+          <Button
+            label={syncing ? 'Syncing...' : 'Sync'}
             onPress={handleManualSync}
+            loading={syncing}
             disabled={syncing}
-            hitSlop={10}
-          >
-            {syncing ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
-            ) : (
-              <>
-                <Ionicons name="sync-outline" size={15} color="#FFFFFF" />
-                <Text style={styles.syncBtnText}>Sync</Text>
-              </>
-            )}
-          </Pressable>
+            size="sm"
+            icon={<Ionicons name="sync-outline" size={15} color="#FFFFFF" />}
+          />
         </View>
 
         {/* SEARCH BAR */}
-        <View style={styles.searchBar}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Ionicons name="search-outline" size={18} color={colors.mutedText} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search by candidate, role, or position..."
-            placeholderTextColor={colors.mutedText}
-            value={search}
-            onChangeText={setSearch}
-            returnKeyType="search"
-          />
+          <View style={{ flex: 1, marginLeft: 8 }}>
+            <Input
+              placeholder="Search by candidate, role, or position..."
+              value={search}
+              onChangeText={setSearch}
+              returnKeyType="search"
+            />
+          </View>
           {search.length > 0 && (
             <Pressable onPress={() => setSearch('')} hitSlop={8}>
               <Ionicons name="close-circle" size={18} color={colors.mutedText} />
@@ -331,15 +327,14 @@ export default function UpcomingInterviewsScreen() {
       >
         {upcomingList.length === 0 ? (
           <View style={styles.emptyCard}>
-            <View style={styles.emptyIconCircle}>
-              <Ionicons name="calendar-outline" size={36} color={colors.mutedText} />
-            </View>
-            <Text style={styles.emptyTitle}>No Upcoming Interviews</Text>
-            <Text style={styles.emptySubtitle}>
-              {search.trim() || filterScope !== 'all'
-                ? 'No scheduled interviews match your search or filter timeframe.'
-                : 'You are completely caught up! New candidate loops will appear here as they are booked.'}
-            </Text>
+            <EmptyState
+              title="No Upcoming Interviews"
+              description={
+                search.trim() || filterScope !== 'all'
+                  ? 'No scheduled interviews match your search or filter timeframe.'
+                  : 'You are completely caught up! New candidate loops will appear here as they are booked.'
+              }
+            />
             {(search.trim() || filterScope !== 'all') && (
               <Pressable
                 style={styles.clearFilterBtn}

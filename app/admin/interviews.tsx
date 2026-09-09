@@ -16,6 +16,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 import { supabase } from '../../lib/supabase/client';
+import { EmptyState } from '../../components/ui/EmptyState';
 
 export default function AdminInterviewsScreen() {
   const { colors } = useTheme();
@@ -174,13 +175,14 @@ export default function AdminInterviewsScreen() {
       >
         {filteredInterviews.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Ionicons name="calendar-outline" size={40} color={colors.mutedText} />
-            <Text style={styles.emptyTitle}>No interviews found</Text>
-            <Text style={styles.emptySubtitle}>
-              {tab === 'upcoming'
-                ? 'No interviews currently scheduled. Set interview dates when adding or editing candidates.'
-                : 'No past interview records found.'}
-            </Text>
+            <EmptyState
+              title="No interviews found"
+              description={
+                tab === 'upcoming'
+                  ? 'No interviews currently scheduled. Set interview dates when adding or editing candidates.'
+                  : 'No past interview records found.'
+              }
+            />
           </View>
         ) : (
           filteredInterviews.map((item) => {

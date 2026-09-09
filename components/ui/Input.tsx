@@ -13,7 +13,13 @@ const Input = forwardRef<TextInput, TextInputProps>(
     const { colors } = useTheme();
 
     return (
-      <View style={[styles.container, { backgroundColor: colors.inputBackground, borderColor: colors.inputBorder }]}>
+      <View
+        style={[
+          styles.container,
+          props.multiline && styles.multilineContainer,
+          { backgroundColor: colors.inputBackground, borderColor: colors.inputBorder },
+        ]}
+      >
 
         <TextInput
           ref={ref}
@@ -49,6 +55,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 10,
     elevation: 3,
+  },
+  multilineContainer: {
+    height: 100,
+    justifyContent: 'flex-start',
+    paddingVertical: 14,
   },
 
 

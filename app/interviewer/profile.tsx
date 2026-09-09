@@ -26,6 +26,7 @@ import {
   type FeedbackConflict,
 } from '../../lib/sync/syncEngine';
 import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
+import { Button } from '../../components/ui/Button';
 
 export default function InterviewerProfileScreen() {
   const { colors } = useTheme();
@@ -197,18 +198,14 @@ export default function InterviewerProfileScreen() {
           <Text style={styles.headerSubtitle}>Account & Sync Settings</Text>
         </View>
 
-        <Pressable
-          style={styles.headerIconBtn}
+        <Button
+          label={syncing ? 'Syncing...' : 'Sync'}
           onPress={handleSyncNow}
+          loading={syncing}
           disabled={syncing}
-          hitSlop={10}
-        >
-          {syncing ? (
-            <ActivityIndicator size="small" color="#FFFFFF" />
-          ) : (
-            <Ionicons name="sync-outline" size={22} color="#FFFFFF" />
-          )}
-        </Pressable>
+          size="sm"
+          icon={<Ionicons name="sync-outline" size={20} color="#FFFFFF" />}
+        />
       </View>
 
       <ScrollView
@@ -296,36 +293,25 @@ export default function InterviewerProfileScreen() {
           <View style={styles.divider} />
 
           <View style={styles.syncActions}>
-            <Pressable
-              style={[styles.syncBtn, syncing && styles.syncBtnDisabled]}
+            <Button
+              label={syncing ? 'Syncing...' : 'Sync Now'}
               onPress={handleSyncNow}
+              loading={syncing}
               disabled={syncing}
-            >
-              {syncing ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
-              ) : (
-                <>
-                  <Ionicons name="sync" size={16} color="#FFFFFF" />
-                  <Text style={styles.syncBtnText}>Sync Now</Text>
-                </>
-              )}
-            </Pressable>
+              size="sm"
+              icon={<Ionicons name="sync" size={16} color="#FFFFFF" />}
+            />
 
             {syncStats.failed > 0 && (
-              <Pressable
-                style={[styles.retryBtn, retrying && styles.syncBtnDisabled]}
+              <Button
+                label={`Retry Failed (${syncStats.failed})`}
                 onPress={handleRetryFailed}
+                loading={retrying}
                 disabled={retrying}
-              >
-                {retrying ? (
-                  <ActivityIndicator size="small" color="#DC2626" />
-                ) : (
-                  <>
-                    <Ionicons name="refresh-outline" size={16} color="#DC2626" />
-                    <Text style={styles.retryBtnText}>Retry Failed ({syncStats.failed})</Text>
-                  </>
-                )}
-              </Pressable>
+                variant="outline"
+                size="sm"
+                icon={<Ionicons name="refresh-outline" size={16} color="#DC2626" />}
+              />
             )}
           </View>
         </View>

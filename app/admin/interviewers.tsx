@@ -16,6 +16,7 @@ import { useFocusEffect, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 import { supabase } from '../../lib/supabase/client';
+import { EmptyState } from '../../components/ui/EmptyState';
 
 export default function InterviewersScreen() {
   const { colors } = useTheme();
@@ -185,17 +186,14 @@ export default function InterviewersScreen() {
       >
         {filteredInterviewers.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <View style={styles.emptyIconCircle}>
-              <Ionicons name="people-outline" size={40} color={colors.mutedText} />
-            </View>
-            <Text style={styles.emptyTitle}>
-              {search.trim() ? 'No matching interviewers' : 'No interviewers found'}
-            </Text>
-            <Text style={styles.emptySubtitle}>
-              {search.trim()
-                ? 'Try a different search term.'
-                : 'Create interviewer accounts so team members can evaluate candidates and submit scores.'}
-            </Text>
+            <EmptyState
+              title={search.trim() ? 'No matching interviewers' : 'No interviewers found'}
+              description={
+                search.trim()
+                  ? 'Try a different search term.'
+                  : 'Create interviewer accounts so team members can evaluate candidates and submit scores.'
+              }
+            />
             {search.trim() ? (
               <Pressable style={styles.clearBtn} onPress={() => setSearch('')}>
                 <Text style={styles.clearBtnText}>Clear Search</Text>

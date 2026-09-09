@@ -14,6 +14,7 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 import { supabase } from '../../lib/supabase/client';
+import { Button } from '../../components/ui/Button';
 
 export default function AssignInterviewerScreen() {
   const { colors } = useTheme();
@@ -264,22 +265,14 @@ export default function AssignInterviewerScreen() {
 
       {/* FOOTER SAVE BUTTON */}
       <View style={styles.footer}>
-        <Pressable
-          style={[styles.saveBtn, saving && styles.saveBtnDisabled]}
+        <Button
+          label={`Save Assignments (${selectedIds.length})`}
           onPress={handleSave}
+          loading={saving}
           disabled={saving}
-        >
-          {saving ? (
-            <ActivityIndicator size="small" color="#FFFFFF" />
-          ) : (
-            <>
-              <Ionicons name="save-outline" size={18} color="#FFFFFF" />
-              <Text style={styles.saveBtnText}>
-                Save Assignments ({selectedIds.length})
-              </Text>
-            </>
-          )}
-        </Pressable>
+          icon={<Ionicons name="save-outline" size={18} color="#FFFFFF" />}
+          fullWidth
+        />
       </View>
     </View>
   );

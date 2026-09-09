@@ -31,6 +31,7 @@ import { getDb } from '../../lib/sqlite/schema';
 import { supabase } from '../../lib/supabase/client';
 import { runSync } from '../../lib/sync/syncEngine';
 import { StarRating } from '../../components/feedback/StarRating';
+import { Button } from '../../components/ui/Button';
 
 export default function FeedbackFormScreen() {
   const { colors } = useTheme();
@@ -657,24 +658,20 @@ export default function FeedbackFormScreen() {
 
         {/* SUBMIT BUTTON */}
         {!isLocked ? (
-          <Pressable
-            style={[styles.submitBtn, submitting && styles.disabledBtn]}
-            onPress={onSubmit}
-            disabled={submitting}
-          >
-            {submitting ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Ionicons name="checkmark-done" size={20} color="#fff" />
-            )}
-            <Text style={styles.submitText}>
-              {submitting
+          <Button
+            label={
+              submitting
                 ? 'Saving Feedback...'
                 : existingFeedback
                 ? 'Update Feedback'
-                : 'Submit Feedback'}
-            </Text>
-          </Pressable>
+                : 'Submit Feedback'
+            }
+            onPress={onSubmit}
+            loading={submitting}
+            disabled={submitting}
+            icon={<Ionicons name="checkmark-done" size={20} color="#fff" />}
+            fullWidth
+          />
         ) : (
           <View style={styles.lockedFooter}>
             <Ionicons name="lock-closed" size={18} color={colors.secondaryText} />
