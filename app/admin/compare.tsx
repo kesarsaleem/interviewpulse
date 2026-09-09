@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { supabase } from '../../lib/supabase/client';
 import { useAuth } from '../../hooks/useAuth';
+import { ROUTES } from '../../constants/routes';
 import { RadarChart, RadarSeries } from '../../components/charts/RadarChart';
 
 const VERDICT_CONFIG: Record<string, { label: string; bg: string; text: string; icon: string }> = {
@@ -492,7 +493,7 @@ export default function CompareCandidatesScreen() {
                 style={styles.emptyBtn}
                 onPress={() =>
                   router.push({
-                    pathname: '/admin/add-candidate',
+                    pathname: ROUTES.adminAddCandidate,
                     params: { jobId: selectedJobId },
                   })
                 }

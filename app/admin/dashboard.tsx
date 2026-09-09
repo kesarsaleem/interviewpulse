@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../lib/supabase/client';
 import { useAuth } from '../../hooks/useAuth';
 import { runSync } from '../../lib/sync/syncEngine';
+import { ROUTES } from '../../constants/routes';
 
 interface DashboardStats {
   jobs: number;
@@ -391,7 +392,7 @@ export default function AdminDashboard() {
           <Text style={{ flex: 1, marginLeft: 10, color: colors.text, fontWeight: '600' }}>
             {conflictCount} sync conflict{conflictCount === 1 ? '' : 's'} need review.
           </Text>
-          <Pressable onPress={() => router.push('/admin/compare')}>
+          <Pressable onPress={() => router.push(ROUTES.adminCompare)}>
             <Text style={{ color: colors.primary, fontWeight: '700' }}>Review</Text>
           </Pressable>
         </View>
@@ -402,7 +403,7 @@ export default function AdminDashboard() {
       <View style={styles.statsGrid}>
         <Pressable
           style={[styles.statCard, { borderLeftColor: '#2563EB' }]}
-          onPress={() => router.push('/admin/jobs')}
+          onPress={() => router.push(ROUTES.adminJobs)}
         >
           <View style={[styles.statIconWrap, { backgroundColor: colors.primaryLight }]}>
             <Ionicons name="briefcase-outline" size={20} color={colors.primary} />
@@ -413,7 +414,7 @@ export default function AdminDashboard() {
 
         <Pressable
           style={[styles.statCard, { borderLeftColor: '#0D9488' }]}
-          onPress={() => router.push('/admin/candidates')}
+          onPress={() => router.push(ROUTES.adminCandidates)}
         >
           <View style={[styles.statIconWrap, { backgroundColor: '#F0FDFA' }]}>
             <Ionicons name="people-outline" size={20} color="#0D9488" />
@@ -424,7 +425,7 @@ export default function AdminDashboard() {
 
         <Pressable
           style={[styles.statCard, { borderLeftColor: '#7C3AED' }]}
-          onPress={() => router.push('/admin/interviews')}
+          onPress={() => router.push(ROUTES.adminInterviews)}
         >
           <View style={[styles.statIconWrap, { backgroundColor: colors.primaryLight }]}>
             <Ionicons name="chatbubbles-outline" size={20} color="#7C3AED" />
@@ -435,7 +436,7 @@ export default function AdminDashboard() {
 
         <Pressable
           style={[styles.statCard, { borderLeftColor: '#EA580C' }]}
-          onPress={() => router.push('/admin/compare')}
+          onPress={() => router.push(ROUTES.adminCompare)}
         >
           <View style={[styles.statIconWrap, { backgroundColor: '#FFF7ED' }]}>
             <Ionicons name="hourglass-outline" size={20} color="#EA580C" />
@@ -450,7 +451,7 @@ export default function AdminDashboard() {
       <View style={styles.actionsRow}>
         <Pressable
           style={styles.actionBtn}
-          onPress={() => router.push('/admin/create-job')}
+          onPress={() => router.push(ROUTES.adminCreateJob)}
         >
           <View style={[styles.actionIconCircle, { backgroundColor: colors.primary }]}>
             <Ionicons name="add" size={20} color="#FFFFFF" />
@@ -460,7 +461,7 @@ export default function AdminDashboard() {
 
         <Pressable
           style={styles.actionBtn}
-          onPress={() => router.push('/admin/select-job')}
+          onPress={() => router.push(ROUTES.adminSelectJob)}
         >
           <View style={[styles.actionIconCircle, { backgroundColor: '#0D9488' }]}>
             <Ionicons name="person-add-outline" size={18} color="#FFFFFF" />
@@ -470,7 +471,7 @@ export default function AdminDashboard() {
 
         <Pressable
           style={styles.actionBtn}
-          onPress={() => router.push('/admin/compare')}
+          onPress={() => router.push(ROUTES.adminCompare)}
         >
           <View style={[styles.actionIconCircle, { backgroundColor: '#7C3AED' }]}>
             <Ionicons name="git-compare-outline" size={18} color="#FFFFFF" />
@@ -480,7 +481,7 @@ export default function AdminDashboard() {
 
         <Pressable
           style={styles.actionBtn}
-          onPress={() => router.push('/admin/interviewers')}
+          onPress={() => router.push(ROUTES.adminInterviewers)}
         >
           <View style={[styles.actionIconCircle, { backgroundColor: colors.secondaryText }]}>
             <Ionicons name="people-outline" size={18} color="#FFFFFF" />
@@ -492,7 +493,7 @@ export default function AdminDashboard() {
       {/* ACTIVE JOBS PIPELINE */}
       <View style={styles.sectionHeaderRow}>
         <Text style={styles.sectionTitle}>Active Jobs</Text>
-        <Pressable onPress={() => router.push('/admin/jobs')}>
+        <Pressable onPress={() => router.push(ROUTES.adminJobs)}>
           <Text style={styles.seeAllLink}>View All ({stats.jobs})</Text>
         </Pressable>
       </View>
@@ -506,7 +507,7 @@ export default function AdminDashboard() {
           </Text>
           <Pressable
             style={styles.emptyCta}
-            onPress={() => router.push('/admin/create-job')}
+            onPress={() => router.push(ROUTES.adminCreateJob)}
           >
             <Text style={styles.emptyCtaText}>Create Job Now</Text>
           </Pressable>
@@ -518,7 +519,7 @@ export default function AdminDashboard() {
             style={styles.jobCard}
             onPress={() =>
               router.push({
-                pathname: '/admin/job-detail',
+                pathname: ROUTES.adminJobDetail,
                 params: { id: job.id },
               })
             }

@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { supabase } from '../../lib/supabase/client';
 import { EmptyState } from '../../components/ui/EmptyState';
+import { ROUTES } from '../../constants/routes';
 
 type SortOption = 'newest' | 'oldest' | 'name_asc' | 'interview_date' | 'last_activity';
 
@@ -296,7 +297,7 @@ export default function AdminCandidatesScreen() {
 
         <Pressable
           style={styles.addBtn}
-          onPress={() => router.push('/admin/select-job')}
+          onPress={() => router.push(ROUTES.adminSelectJob)}
         >
           <Ionicons name="person-add" size={16} color="#FFFFFF" />
           <Text style={styles.addBtnText}>Add Candidate</Text>
@@ -458,7 +459,7 @@ export default function AdminCandidatesScreen() {
             ) : (
               <Pressable
                 style={styles.emptyAddBtn}
-                onPress={() => router.push('/admin/select-job')}
+                onPress={() => router.push(ROUTES.adminSelectJob)}
               >
                 <Text style={styles.emptyAddBtnText}>Add Candidate Now</Text>
               </Pressable>
@@ -478,7 +479,7 @@ export default function AdminCandidatesScreen() {
                 style={styles.card}
                 onPress={() =>
                   router.push({
-                    pathname: '/admin/candidate-detail',
+                    pathname: ROUTES.adminCandidateDetail,
                     params: { id: cand.id },
                   })
                 }

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
+import { ROUTES } from '../constants/routes';
 import { supabase } from '../lib/supabase/client';
 import { useTheme } from '../context/ThemeContext';
 
@@ -93,7 +94,7 @@ export default function AcceptInviteScreen() {
     }
 
     Alert.alert('Account ready', 'Your password has been set. You can now sign in.', [
-      { text: 'Go to login', onPress: () => router.replace('/login') },
+      { text: 'Go to login', onPress: () => router.replace(ROUTES.login) },
     ]);
   };
 

@@ -13,6 +13,7 @@ import { useCriteria } from '../../../hooks/useCriteria';
 import { canViewPanelFeedback } from '../../../services/feedbackService';
 import { RadarChart, RadarSeries } from '../../../components/charts/RadarChart';
 import { getDb } from '../../../lib/sqlite/schema';
+import { ROUTES } from '../../../constants/routes';
 
 const PANEL_COLORS = ['#2563EB', '#16A34A', '#D97706', '#9333EA', '#DC2626'];
 
@@ -212,8 +213,8 @@ export default function PanelSummaryScreen() {
             style={styles.submitOwnBtn}
             onPress={() => {
               router.push({
-                pathname: `/feedback/${candidateId}`,
-                params: { stageId: effectiveStageId },
+                pathname: ROUTES.giveFeedback,
+                params: { candidateId, stageId: effectiveStageId },
               } as any);
             }}
           >
@@ -765,4 +766,3 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     fontWeight: '600',
   },
 });
-

@@ -25,6 +25,7 @@ import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
 import { EmptyState } from '../../components/ui/EmptyState';
 import Input from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
+import { ROUTES } from '../../constants/routes';
 
 type SortOption = 'date_asc' | 'date_desc' | 'name_asc' | 'stage';
 
@@ -440,8 +441,8 @@ export default function MyInterviews() {
                         style={styles.panelSummaryBtn}
                         onPress={() => {
                           router.push({
-                            pathname: `/candidates/${item.id}/panel`,
-                            params: { stageId: item.current_stage_id },
+                            pathname: ROUTES.candidatePanel,
+                            params: { id: item.id, stageId: item.current_stage_id },
                           } as any);
                         }}
                       >
@@ -453,7 +454,7 @@ export default function MyInterviews() {
                         style={styles.viewFeedbackBtn}
                         onPress={() => {
                           router.push({
-                            pathname: '/interviewer/feedback-details',
+                            pathname: ROUTES.interviewerFeedbackDetails,
                             params: {
                               feedbackId: existingFeedback.id,
                               candidateId: item.id,
@@ -472,8 +473,8 @@ export default function MyInterviews() {
                         style={styles.panelSummaryBtn}
                         onPress={() => {
                           router.push({
-                            pathname: `/candidates/${item.id}/panel`,
-                            params: { stageId: item.current_stage_id },
+                            pathname: ROUTES.candidatePanel,
+                            params: { id: item.id, stageId: item.current_stage_id },
                           } as any);
                         }}
                       >
@@ -485,8 +486,8 @@ export default function MyInterviews() {
                         style={styles.giveFeedbackBtn}
                         onPress={() => {
                           router.push({
-                            pathname: `/feedback/${item.id}`,
-                            params: { stageId: item.current_stage_id },
+                            pathname: ROUTES.giveFeedback,
+                            params: { candidateId: item.id, stageId: item.current_stage_id },
                           } as any);
                         }}
                       >

@@ -24,6 +24,7 @@ import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { Button } from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
+import { ROUTES } from '../../constants/routes';
 
 export default function CandidatesScreen() {
   const { colors } = useTheme();
@@ -238,7 +239,7 @@ export default function CandidatesScreen() {
 
           <Pressable
             style={styles.addBtn}
-            onPress={() => router.push('/interviewer/add-candidate')}
+            onPress={() => router.push(ROUTES.interviewerAddCandidate)}
             hitSlop={10}
           >
             <Ionicons name="person-add-outline" size={15} color="#FFFFFF" />
@@ -432,7 +433,7 @@ export default function CandidatesScreen() {
                         style={styles.btnSecondary}
                         onPress={() =>
                           router.push({
-                            pathname: '/candidates/[id]/panel',
+                            pathname: ROUTES.candidatePanel,
                             params: {
                               id: candidate.id,
                               stageId: candidate.current_stage_id,
@@ -448,7 +449,7 @@ export default function CandidatesScreen() {
                         style={styles.btnDark}
                         onPress={() =>
                           router.push({
-                            pathname: '/interviewer/feedback-details',
+                            pathname: ROUTES.interviewerFeedbackDetails,
                             params: {
                               feedbackId: userFb.id,
                               candidateId: candidate.id,
@@ -467,7 +468,7 @@ export default function CandidatesScreen() {
                         style={styles.btnSecondary}
                         onPress={() =>
                           router.push({
-                            pathname: '/candidates/[id]/panel',
+                            pathname: ROUTES.candidatePanel,
                             params: {
                               id: candidate.id,
                               stageId: candidate.current_stage_id,
@@ -483,7 +484,7 @@ export default function CandidatesScreen() {
                         style={styles.btnPrimary}
                         onPress={() =>
                           router.push({
-                            pathname: '/feedback/[candidateId]',
+                            pathname: ROUTES.giveFeedback,
                             params: {
                               candidateId: candidate.id,
                               stageId: candidate.current_stage_id,

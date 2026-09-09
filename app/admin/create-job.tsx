@@ -19,6 +19,7 @@ import { supabase } from '../../lib/supabase/client';
 import { useAuth } from '../../hooks/useAuth';
 import { Button } from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
+import { ROUTES } from '../../constants/routes';
 export default function CreateOrEditJob() {
   const { colors } = useTheme();
   const styles = createStyles(colors);
@@ -377,7 +378,7 @@ export default function CreateOrEditJob() {
             text: 'View Job Details',
             onPress: () =>
               router.replace({
-                pathname: '/admin/job-detail',
+                pathname: ROUTES.adminJobDetail,
                 params: { id: createdJob.id },
               }),
           },

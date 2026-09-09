@@ -24,6 +24,7 @@ router
 import {
 supabase
 } from "../../lib/supabase/client";
+import { ROUTES } from "../../constants/routes";
 
 
 
@@ -208,7 +209,7 @@ onPress={()=>{
 
 router.push({
 
-pathname:"/admin/add-candidate",
+pathname: ROUTES.adminAddCandidate,
 
 params:{
 

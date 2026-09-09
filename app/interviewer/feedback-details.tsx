@@ -21,6 +21,7 @@ import { getLocalFeedbackDetails, isFeedbackEditable } from '../../services/feed
 import { getDb } from '../../lib/sqlite/schema';
 import { Button } from '../../components/ui/Button';
 import { EmptyState } from '../../components/ui/EmptyState';
+import { ROUTES } from '../../constants/routes';
 
 export default function FeedbackDetails() {
   const { colors } = useTheme();
@@ -204,8 +205,9 @@ export default function FeedbackDetails() {
     }
 
     router.push({
-      pathname: `/feedback/${candidate?.id || feedback?.candidate_id}`,
+      pathname: ROUTES.giveFeedback,
       params: {
+        candidateId: candidate?.id || feedback?.candidate_id,
         stageId: feedback?.stage_id,
         feedbackId: feedback?.id,
       },
@@ -524,8 +526,8 @@ export default function FeedbackDetails() {
               style={styles.openPanelBtn}
               onPress={() => {
                 router.push({
-                  pathname: `/candidates/${candidate?.id || feedback.candidate_id}/panel`,
-                  params: { stageId: feedback.stage_id },
+                  pathname: ROUTES.candidatePanel,
+                  params: { id: candidate?.id, stageId: feedback.stage_id },
                 } as any);
               }}
             >

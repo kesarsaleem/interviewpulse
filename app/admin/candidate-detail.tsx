@@ -19,6 +19,7 @@ import { supabase } from '../../lib/supabase/client';
 import { useAuth } from '../../hooks/useAuth';
 import { RadarChart, RadarSeries } from '../../components/charts/RadarChart';
 import { saveCandidateDecision } from '../../services/decisionService';
+import { ROUTES } from '../../constants/routes';
 
 const VERDICT_CONFIG: Record<string, { label: string; bg: string; text: string; icon: string }> = {
   strong_yes: { label: 'Strong Yes', bg: '#DCFCE7', text: '#15803D', icon: 'checkmark-circle' },
@@ -434,7 +435,7 @@ export default function CandidateDetail() {
 
               console.log('ACTION SUCCESS');
               Alert.alert('Deleted', 'Candidate removed from system', [
-                { text: 'OK', onPress: () => router.replace('/admin/candidates') },
+                { text: 'OK', onPress: () => router.replace(ROUTES.adminCandidates) },
               ]);
             } catch (err: any) {
               console.error('[DELETE CANDIDATE] Failed with error:', err);
@@ -546,7 +547,7 @@ export default function CandidateDetail() {
             style={styles.navEditBtn}
             onPress={() =>
               router.push({
-                pathname: '/admin/add-candidate',
+                pathname: ROUTES.adminAddCandidate,
                 params: { candidateId: candidate.id },
               })
             }
@@ -646,7 +647,7 @@ export default function CandidateDetail() {
             style={styles.advanceBtn}
             onPress={() =>
               router.push({
-                pathname: '/feedback/[candidateId]',
+                pathname: ROUTES.giveFeedback,
                 params: {
                   candidateId: candidate.id,
                   stageId: candidate.current_stage_id,

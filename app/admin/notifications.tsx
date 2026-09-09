@@ -15,6 +15,7 @@ import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import { supabase } from "../../lib/supabase/client";
+import { ROUTES } from "../../constants/routes";
 
 interface ActivityLogItem {
   id: string;
@@ -248,7 +249,7 @@ export default function AdminNotificationsScreen() {
     const candidateId = item.candidate_id || item.candidates?.id;
     if (candidateId) {
       router.push({
-        pathname: "/admin/candidate-detail",
+        pathname: ROUTES.adminCandidateDetail,
         params: { id: candidateId },
       });
     }
@@ -260,7 +261,7 @@ export default function AdminNotificationsScreen() {
       <View style={styles.topNav}>
         <Pressable
           style={styles.backBtn}
-          onPress={() => router.push("/admin/dashboard")}
+          onPress={() => router.push(ROUTES.adminDashboard)}
           hitSlop={8}
         >
           <Ionicons name="arrow-back" size={22} color={colors.text} />

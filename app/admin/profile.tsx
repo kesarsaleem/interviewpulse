@@ -16,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { supabase } from "../../lib/supabase/client";
 import { useAuth } from "../../hooks/useAuth";
+import { ROUTES } from "../../constants/routes";
 
 export default function AdminProfileScreen() {
   const { colors } = useTheme();
@@ -151,7 +152,7 @@ export default function AdminProfileScreen() {
       <View style={styles.topNav}>
         <Pressable
           style={styles.backBtn}
-          onPress={() => router.push("/admin/dashboard")}
+          onPress={() => router.push(ROUTES.adminDashboard)}
           hitSlop={8}
         >
           <Ionicons name="arrow-back" size={22} color={colors.text} />
@@ -159,7 +160,7 @@ export default function AdminProfileScreen() {
         <Text style={styles.navTitle}>Admin Profile</Text>
         <Pressable
           style={styles.settingsBtn}
-          onPress={() => router.push("/admin/settings")}
+          onPress={() => router.push(ROUTES.adminSettings)}
           hitSlop={8}
         >
           <Ionicons name="settings-outline" size={22} color={colors.text} />
@@ -306,7 +307,7 @@ export default function AdminProfileScreen() {
         <View style={styles.card}>
           <Pressable
             style={styles.navRow}
-            onPress={() => router.push("/admin/settings")}
+            onPress={() => router.push(ROUTES.adminSettings)}
           >
             <View style={styles.navRowLeft}>
               <View style={[styles.navIconBox, { backgroundColor: colors.primaryLight }]}>
@@ -321,7 +322,7 @@ export default function AdminProfileScreen() {
 
           <Pressable
             style={styles.navRow}
-            onPress={() => router.push("/admin/notifications")}
+            onPress={() => router.push(ROUTES.adminNotifications)}
           >
             <View style={styles.navRowLeft}>
               <View style={[styles.navIconBox, { backgroundColor: colors.primaryLight }]}>

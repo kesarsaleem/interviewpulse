@@ -15,6 +15,7 @@ import { supabase } from "../../lib/supabase/client";
 import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from '../../context/ThemeContext';
 import { ThemeColors } from '../../theme/colors';
+import { ROUTES } from '../../constants/routes';
 
 export default function AdminSettingsScreen() {
   const { user, signOut } = useAuth();
@@ -79,7 +80,7 @@ export default function AdminSettingsScreen() {
       <View style={styles.topNav}>
         <Pressable
           style={styles.backBtn}
-          onPress={() => router.push("/admin/dashboard")}
+          onPress={() => router.push(ROUTES.adminDashboard)}
           hitSlop={8}
         >
           <Ionicons name="arrow-back" size={22} color={colors.text} />
@@ -95,7 +96,7 @@ export default function AdminSettingsScreen() {
         {/* ACCOUNT PREVIEW CARD */}
         <Pressable
           style={styles.accountCard}
-          onPress={() => router.push("/admin/profile")}
+          onPress={() => router.push(ROUTES.adminProfile)}
         >
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>
@@ -268,7 +269,7 @@ export default function AdminSettingsScreen() {
 
           <Pressable
             style={styles.linkRow}
-            onPress={() => router.push("/admin/notifications")}
+            onPress={() => router.push(ROUTES.adminNotifications)}
           >
             <View style={styles.linkRowLeft}>
               <Ionicons name="time-outline" size={20} color={colors.secondaryText} style={{ marginRight: 10 }} />

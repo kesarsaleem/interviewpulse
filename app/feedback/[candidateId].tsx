@@ -32,6 +32,7 @@ import { supabase } from '../../lib/supabase/client';
 import { runSync } from '../../lib/sync/syncEngine';
 import { StarRating } from '../../components/feedback/StarRating';
 import { Button } from '../../components/ui/Button';
+import { ROUTES } from '../../constants/routes';
 
 export default function FeedbackFormScreen() {
   const { colors } = useTheme();
@@ -315,7 +316,7 @@ export default function FeedbackFormScreen() {
           [
             {
               text: 'OK',
-              onPress: () => router.replace('/interviewer'),
+              onPress: () => router.replace(ROUTES.interviewerHome),
             },
           ]
         );

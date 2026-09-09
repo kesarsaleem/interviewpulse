@@ -10,6 +10,7 @@ import {
 import { router } from 'expo-router';
 import { supabase } from '../../lib/supabase/client';
 import { Button } from '../../components/ui/Button';
+import { ROUTES } from '../../constants/routes';
 export default function ResetPasswordScreen() {
 
   const [password, setPassword] = useState('');
@@ -63,7 +64,7 @@ export default function ResetPasswordScreen() {
         [
           {
             text: 'OK',
-            onPress: () => router.replace('/login'),
+            onPress: () => router.replace(ROUTES.login),
           },
         ]
       );

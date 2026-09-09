@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { supabase } from '../../lib/supabase/client';
 import { EmptyState } from '../../components/ui/EmptyState';
+import { ROUTES } from '../../constants/routes';
 
 export default function AdminInterviewsScreen() {
   const { colors } = useTheme();
@@ -195,7 +196,7 @@ export default function AdminInterviewsScreen() {
                 style={styles.card}
                 onPress={() =>
                   router.push({
-                    pathname: '/admin/candidate-detail',
+                    pathname: ROUTES.adminCandidateDetail,
                     params: { id: item.id },
                   })
                 }

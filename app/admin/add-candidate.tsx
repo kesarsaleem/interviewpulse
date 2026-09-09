@@ -23,6 +23,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { getDb } from '../../lib/sqlite/schema';
 import { enqueueMutation } from '../../lib/sync/syncEngine';
 import uuid from 'react-native-uuid';
+import { ROUTES } from '../../constants/routes';
 
 const REFERRAL_SOURCES = [
   { id: 'linkedin', label: 'LinkedIn' },
@@ -365,7 +366,7 @@ export default function AddOrEditCandidate() {
             {
               text: 'OK',
               onPress: () =>
-                router.replace(isInterviewer ? '/interviewer/candidates' : '/admin/candidates'),
+                router.replace(isInterviewer ? ROUTES.interviewerCandidates : ROUTES.adminCandidates),
             },
           ]);
           return;
@@ -392,10 +393,10 @@ export default function AddOrEditCandidate() {
             text: 'View Profile',
             onPress: () => {
               if (isInterviewer) {
-                router.replace('/interviewer/candidates');
+                router.replace(ROUTES.interviewerCandidates);
               } else {
                 router.replace({
-                  pathname: '/admin/candidate-detail',
+                  pathname: ROUTES.adminCandidateDetail,
                   params: { id: newCandidate.id },
                 });
               }

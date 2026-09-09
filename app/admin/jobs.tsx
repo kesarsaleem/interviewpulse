@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { supabase } from '../../lib/supabase/client';
 import { EmptyState } from '../../components/ui/EmptyState';
+import { ROUTES } from '../../constants/routes';
 
 type StatusFilter = 'all' | 'open' | 'closed' | 'archived';
 
@@ -137,7 +138,7 @@ export default function JobsScreen() {
 
         <Pressable
           style={styles.createButton}
-          onPress={() => router.push('/admin/create-job')}
+          onPress={() => router.push(ROUTES.adminCreateJob)}
         >
           <Ionicons name="add" size={18} color="#FFFFFF" />
           <Text style={styles.createText}>Create Job</Text>
@@ -221,7 +222,7 @@ export default function JobsScreen() {
             ) : (
               <Pressable
                 style={styles.emptyCta}
-                onPress={() => router.push('/admin/create-job')}
+                onPress={() => router.push(ROUTES.adminCreateJob)}
               >
                 <Text style={styles.emptyCtaText}>Create First Job</Text>
               </Pressable>
@@ -241,7 +242,7 @@ export default function JobsScreen() {
                 style={styles.card}
                 onPress={() =>
                   router.push({
-                    pathname: '/admin/job-detail',
+                    pathname: ROUTES.adminJobDetail,
                     params: { id: String(job.id) },
                   })
                 }

@@ -17,6 +17,7 @@ import Logo from "../../components/ui/Logo";
 import GradientBackground from "../../components/ui/GradientBackground";
 import { useAuth } from "../../hooks/useAuth";
 import { Button } from "../../components/ui/Button";
+import { ROUTES } from "../../constants/routes";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -156,7 +157,7 @@ export default function LoginScreen() {
               <Text style={styles.fieldError}>{passwordError}</Text>
             ) : null}
 
-            <Pressable onPress={() => router.push("/(auth)/forgot-password")}>
+            <Pressable onPress={() => router.push(ROUTES.forgotPassword)}>
               <Text style={styles.forgot}>Forgot password?</Text>
             </Pressable>
 

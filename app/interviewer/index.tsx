@@ -19,6 +19,7 @@ import { useAuth } from '../../hooks/useAuth';
 import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
 import { runSync } from '../../lib/sync/syncEngine';
 import { Button } from '../../components/ui/Button';
+import { ROUTES } from '../../constants/routes';
 
 export default function InterviewerHome() {
   const { colors } = useTheme();
@@ -191,7 +192,7 @@ export default function InterviewerHome() {
 
             <Pressable
               style={styles.avatarWrap}
-              onPress={() => router.push('/interviewer/profile')}
+              onPress={() => router.push(ROUTES.interviewerProfile)}
               hitSlop={6}
             >
               <Text style={styles.avatarText}>{userInitial}</Text>
@@ -261,7 +262,7 @@ export default function InterviewerHome() {
           <View style={styles.quickActionsRow}>
             <Pressable
               style={styles.quickActionBtn}
-              onPress={() => router.push('/interviewer/interviews')}
+              onPress={() => router.push(ROUTES.interviewerInterviews)}
             >
               <View style={[styles.quickActionIcon, { backgroundColor: colors.primaryLight }]}>
                 <Ionicons name="list" size={20} color={colors.primary} />
@@ -271,7 +272,7 @@ export default function InterviewerHome() {
 
             <Pressable
               style={styles.quickActionBtn}
-              onPress={() => router.push('/interviewer/candidates')}
+              onPress={() => router.push(ROUTES.interviewerCandidates)}
             >
               <View style={[styles.quickActionIcon, { backgroundColor: colors.successLight }]}>
                 <Ionicons name="people" size={20} color={colors.success} />
@@ -281,7 +282,7 @@ export default function InterviewerHome() {
 
             <Pressable
               style={styles.quickActionBtn}
-              onPress={() => router.push('/interviewer/FeedbackGiven')}
+              onPress={() => router.push(ROUTES.interviewerFeedbackGiven)}
             >
               <View style={[styles.quickActionIcon, { backgroundColor: colors.dangerLight }]}>
                 <Ionicons name="newspaper" size={20} color={colors.danger} />
@@ -291,7 +292,7 @@ export default function InterviewerHome() {
 
             <Pressable
               style={styles.quickActionBtn}
-              onPress={() => router.push('/interviewer/settings')}
+              onPress={() => router.push(ROUTES.interviewerSettings)}
             >
               <View style={[styles.quickActionIcon, { backgroundColor: colors.primaryLight }]}>
                 <Ionicons name="settings" size={20} color="#9333EA" />

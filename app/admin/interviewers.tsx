@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { supabase } from '../../lib/supabase/client';
 import { EmptyState } from '../../components/ui/EmptyState';
+import { ROUTES } from '../../constants/routes';
 
 export default function InterviewersScreen() {
   const { colors } = useTheme();
@@ -150,7 +151,7 @@ export default function InterviewersScreen() {
 
         <Pressable
           style={styles.addBtn}
-          onPress={() => router.push('/admin/add-interviewer')}
+          onPress={() => router.push(ROUTES.adminAddInterviewer)}
         >
           <Ionicons name="person-add" size={16} color="#FFFFFF" />
           <Text style={styles.addBtnText}>Add Interviewer</Text>
@@ -201,7 +202,7 @@ export default function InterviewersScreen() {
             ) : (
               <Pressable
                 style={styles.emptyAddBtn}
-                onPress={() => router.push('/admin/add-interviewer')}
+                onPress={() => router.push(ROUTES.adminAddInterviewer)}
               >
                 <Text style={styles.emptyAddBtnText}>Add First Interviewer</Text>
               </Pressable>
@@ -240,7 +241,7 @@ export default function InterviewersScreen() {
                       style={styles.assignLink}
                       onPress={() =>
                         router.push({
-                          pathname: '/admin/assign-interviewer',
+                          pathname: ROUTES.adminAssignInterviewer,
                           params: { userId: item.id },
                         })
                       }

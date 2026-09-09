@@ -12,6 +12,7 @@ import { router } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../context/ThemeContext";
 import { ThemeColors } from "../../theme/colors";
+import { ROUTES } from "../../constants/routes";
 
 type Props = {
 onMenuPress:()=>void;
@@ -56,7 +57,7 @@ Admin Panel
 
 <Pressable
   style={styles.profileButton}
-  onPress={() => router.push('/admin/profile')}
+  onPress={() => router.push(ROUTES.adminProfile)}
   hitSlop={8}
 >
   <Text style={styles.profileButtonText}>

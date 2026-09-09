@@ -15,6 +15,7 @@ import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 import { supabase } from '../../lib/supabase/client';
+import { ROUTES } from '../../constants/routes';
 
 export default function JobDetail() {
   const { colors } = useTheme();
@@ -340,7 +341,7 @@ export default function JobDetail() {
                 {
                   text: 'OK',
                   onPress: () => {
-                    router.replace('/admin/jobs');
+                    router.replace(ROUTES.adminJobs);
                   },
                 },
               ]);
@@ -400,7 +401,7 @@ export default function JobDetail() {
             style={styles.navEditBtn}
             onPress={() =>
               router.push({
-                pathname: '/admin/create-job',
+                pathname: ROUTES.adminCreateJob,
                 params: { jobId: job.id },
               })
             }
@@ -488,7 +489,7 @@ export default function JobDetail() {
             style={styles.primaryActionBtn}
             onPress={() =>
               router.push({
-                pathname: '/admin/add-candidate',
+                pathname: ROUTES.adminAddCandidate,
                 params: { jobId: job.id },
               })
             }
@@ -501,7 +502,7 @@ export default function JobDetail() {
             style={styles.secondaryActionBtn}
             onPress={() =>
               router.push({
-                pathname: '/admin/assign-interviewer',
+                pathname: ROUTES.adminAssignInterviewer,
                 params: { jobId: job.id },
               })
             }
@@ -593,7 +594,7 @@ export default function JobDetail() {
                 style={styles.emptySubBtn}
                 onPress={() =>
                   router.push({
-                    pathname: '/admin/add-candidate',
+                    pathname: ROUTES.adminAddCandidate,
                     params: { jobId: job.id },
                   })
                 }
@@ -608,7 +609,7 @@ export default function JobDetail() {
                 style={styles.candidateCard}
                 onPress={() =>
                   router.push({
-                    pathname: '/admin/candidate-detail',
+                    pathname: ROUTES.adminCandidateDetail,
                     params: { id: cand.id },
                   })
                 }
@@ -690,7 +691,7 @@ export default function JobDetail() {
                 style={styles.emptySubBtn}
                 onPress={() =>
                   router.push({
-                    pathname: '/admin/assign-interviewer',
+                    pathname: ROUTES.adminAssignInterviewer,
                     params: { jobId: job.id },
                   })
                 }

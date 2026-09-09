@@ -20,6 +20,7 @@ supabase
 import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../context/ThemeContext";
 import { ThemeColors } from "../../theme/colors";
+import { ROUTES } from "../../constants/routes";
 
 export default function Sidebar({
 closeDrawer
@@ -41,49 +42,49 @@ const mainMenu=[
 {
 title:"Dashboard",
 icon:"⌂",
-route:"/admin/dashboard"
+route: ROUTES.adminDashboard
 },
 
 
 {
 title:"Jobs",
 icon:"▣",
-route:"/admin/jobs"
+route: ROUTES.adminJobs
 },
 
 
 {
 title:"Candidates",
 icon:"♙",
-route:"/admin/candidates"
+route: ROUTES.adminCandidates
 },
 
 
 {
 title:"Interviewers",
 icon:"♧",
-route:"/admin/interviewers"
+route: ROUTES.adminInterviewers
 },
 
 
 {
 title:"Interviews",
 icon:"▤",
-route:"/admin/interviews"
+route: ROUTES.adminInterviews
 },
 
 
 {
 title:"Compare",
 icon:"⇄",
-route:"/admin/compare"
+route: ROUTES.adminCompare
 },
 
 
 {
 title:"Reports & Analytics",
 icon:"▥",
-route:"/admin/reports"
+route: ROUTES.adminReports
 },
 
 
@@ -99,7 +100,7 @@ const settingsMenu=[
 {
 title:"Notifications",
 icon:"♧",
-route:"/admin/notifications",
+route: ROUTES.adminNotifications,
 badge:"3"
 },
 
@@ -107,14 +108,14 @@ badge:"3"
 {
 title:"Settings",
 icon:"⚙",
-route:"/admin/settings"
+route: ROUTES.adminSettings
 },
 
 
 {
 title:"Profile",
 icon:"◉",
-route:"/admin/profile"
+route: ROUTES.adminProfile
 },
 
 

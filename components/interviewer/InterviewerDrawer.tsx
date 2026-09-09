@@ -29,6 +29,7 @@ import {
   useAuth
 } from "../../hooks/useAuth";
 import { useTheme } from "../../context/ThemeContext";
+import { ROUTES } from "../../constants/routes";
 
 import {
   supabase
@@ -134,7 +135,7 @@ export default function InterviewerDrawer({
 
     // Don't navigate if already on dashboard
     if (
-      path === "/interviewer" &&
+      path === ROUTES.interviewerHome &&
       currentPage === "index"
     ) {
       return;
@@ -282,7 +283,7 @@ export default function InterviewerDrawer({
             }
 
             onPress={() =>
-              navigate("/interviewer")
+              navigate(ROUTES.interviewerHome)
             }
           />
 
@@ -299,7 +300,7 @@ export default function InterviewerDrawer({
 
             onPress={() =>
               navigate(
-                "/interviewer/interviews"
+                ROUTES.interviewerInterviews
               )
             }
           />
@@ -317,7 +318,7 @@ export default function InterviewerDrawer({
 
             onPress={() =>
               navigate(
-                "/interviewer/candidates"
+                ROUTES.interviewerCandidates
               )
             }
           />
@@ -330,12 +331,12 @@ export default function InterviewerDrawer({
             title="Feedback Given"
 
             active={
-              currentPage === "feedback"
+              currentPage === "feedback-given"
             }
 
             onPress={() =>
               navigate(
-                "/interviewer/feedback"
+                ROUTES.interviewerFeedbackGiven
               )
             }
           />
@@ -353,7 +354,7 @@ export default function InterviewerDrawer({
 
             onPress={() =>
               navigate(
-                "/interviewer/upcoming"
+                ROUTES.interviewerUpcoming
               )
             }
           />
@@ -411,7 +412,7 @@ export default function InterviewerDrawer({
 
             onPress={() =>
               navigate(
-                "/interviewer/settings"
+                ROUTES.interviewerSettings
               )
             }
           />
@@ -429,7 +430,7 @@ export default function InterviewerDrawer({
 
             onPress={() =>
               navigate(
-                "/interviewer/profile"
+                ROUTES.interviewerProfile
               )
             }
           />

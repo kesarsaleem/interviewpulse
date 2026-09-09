@@ -23,6 +23,7 @@ import InterviewerDrawer from '../../components/interviewer/InterviewerDrawer';
 import Input from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { EmptyState } from '../../components/ui/EmptyState';
+import { ROUTES } from '../../constants/routes';
 
 export default function FeedbackGiven() {
   const { colors } = useTheme();
@@ -143,7 +144,7 @@ export default function FeedbackGiven() {
 
   const openFeedbackDetails = (item: any) => {
     router.push({
-      pathname: '/interviewer/feedback-details',
+      pathname: ROUTES.interviewerFeedbackDetails,
       params: {
         feedbackId: item.id,
         candidateId: item.candidate_id || item.candidates?.id,
