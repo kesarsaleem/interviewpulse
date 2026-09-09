@@ -23,7 +23,8 @@ export default function AdminReportsScreen() {
 
   const [candidatesCount, setCandidatesCount] = useState(0);
   const [feedbackList, setFeedbackList] = useState<any[]>([]);
-  const [activityLogs, setActivityLogs] = useState<any[]>([]);
+  const [hiredCount, setHiredCount] = useState(0);
+  const [rejectedCount, setRejectedCount] = useState(0);
   const [jobs, setJobs] = useState<any[]>([]);
 
   const loadReportsData = useCallback(async () => {
@@ -34,17 +35,23 @@ export default function AdminReportsScreen() {
         .select('*', { count: 'exact', head: true });
       setCandidatesCount(cCount || 0);
 
-      // 2. Feedback with scores
+      // 2. Feedback — only verdicts and scores are needed for report stats.
       const { data: fbData } = await supabase
         .from('feedback')
-        .select('*, feedback_scores(score), candidates(job_id)');
+        .select('overall_verdict, feedback_scores(score)');
       setFeedbackList(fbData || []);
 
-      // 3. Activity Logs for Decisions
-      const { data: logsData } = await supabase
+      // 3. Count decisions server-side instead of downloading activity logs.
+      const { count: hiredCountFromDb } = await supabase
         .from('activity_logs')
-        .select('action, created_at');
-      setActivityLogs(logsData || []);
+        .select('*', { count: 'exact', head: true })
+        .eq('action', 'marked_hire');
+      const { count: rejectedCountFromDb } = await supabase
+        .from('activity_logs')
+        .select('*', { count: 'exact', head: true })
+        .eq('action', 'marked_reject');
+      setHiredCount(hiredCountFromDb || 0);
+      setRejectedCount(rejectedCountFromDb || 0);
 
       // 4. Jobs with status
       const { data: jobsData } = await supabase
@@ -76,16 +83,6 @@ export default function AdminReportsScreen() {
   };
 
   // Funnel Calculations
-  const hiredCount = useMemo(
-    () => activityLogs.filter((l) => l.action === 'marked_hire').length,
-    [activityLogs]
-  );
-
-  const rejectedCount = useMemo(
-    () => activityLogs.filter((l) => l.action === 'marked_reject').length,
-    [activityLogs]
-  );
-
   const hiringConversionRate = useMemo(
     () => (candidatesCount > 0 ? Math.round((hiredCount / candidatesCount) * 100) : 0),
     [hiredCount, candidatesCount]

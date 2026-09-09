@@ -61,13 +61,25 @@ their screen bodies written — mechanical work, no open design questions:
 
 ## Setup
 
+### Fresh Supabase project
+
 1. Create a Supabase project.
-2. Run `lib/supabase/schema.sql` in the SQL editor.
+2. Run `lib/supabase/schema.sql` in the SQL editor. It contains the current
+   schema and RLS policies; no separate migration files are required for a
+   fresh project.
 3. Create 4 demo auth users (1 admin, 3 interviewers), then run
    `lib/supabase/seed.sql`, substituting real UUIDs.
 4. Copy `.env.example` to `.env` and fill in your project URL/anon key.
-5. `npm install`
-6. `npx expo start`
+5. Run `npm install`.
+6. Run `npx expo start`.
+
+### Existing Supabase project
+
+Do not re-run `schema.sql` against a live project with data. Apply the SQL
+changes from `lib/supabase/migrations/` in filename/date order when that
+directory is present, and keep a record of the last migration applied.
+Re-run only migrations designed to be idempotent (`IF NOT EXISTS` or
+`DROP POLICY IF EXISTS`); otherwise review each migration before applying it.
 
 ## Why I didn't generate the remaining screens as filler
 

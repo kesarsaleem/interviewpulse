@@ -206,12 +206,6 @@ export default function RootLayout(){
   
 
   useEffect(()=>{
-    if (!__DEV__) {
-      console.log = () => undefined;
-      console.warn = () => undefined;
-      console.error = () => undefined;
-    }
-
     try{
 
 
