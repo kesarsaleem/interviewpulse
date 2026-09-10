@@ -4,7 +4,6 @@ import React, { useMemo, useState, useEffect } from 'react';
 import {
   View,
   Text,
-  TextInput,
   ScrollView,
   Pressable,
   Alert,
@@ -32,6 +31,7 @@ import { supabase } from '../../lib/supabase/client';
 import { runSync } from '../../lib/sync/syncEngine';
 import { StarRating } from '../../components/feedback/StarRating';
 import { Button } from '../../components/ui/Button';
+import Input from '../../components/ui/Input';
 import { ROUTES } from '../../constants/routes';
 
 export default function FeedbackFormScreen() {
@@ -506,13 +506,11 @@ export default function FeedbackFormScreen() {
                     control={control}
                     name={`scores.${index}.note`}
                     render={({ field: { value, onChange } }) => (
-                      <TextInput
+                      <Input
                         value={value || ''}
                         onChangeText={onChange}
                         placeholder={`Optional notes for ${item.name}...`}
-                        placeholderTextColor={colors.mutedText}
                         editable={!isLocked}
-                        style={styles.criterionNoteInput}
                       />
                     )}
                   />
@@ -576,14 +574,12 @@ export default function FeedbackFormScreen() {
             control={control}
             name="duration_minutes"
             render={({ field: { value, onChange } }) => (
-              <TextInput
+              <Input
                 keyboardType="numeric"
                 value={value ? String(value) : ''}
                 onChangeText={(v) => onChange(v ? parseInt(v, 10) || 0 : 0)}
                 placeholder="45"
-                placeholderTextColor={colors.mutedText}
                 editable={!isLocked}
-                style={styles.numericInput}
               />
             )}
           />
@@ -710,15 +706,13 @@ function FormField({
         control={control}
         name={name}
         render={({ field: { value, onChange } }) => (
-          <TextInput
+          <Input
             value={value || ''}
             onChangeText={onChange}
             placeholder={placeholder}
-            placeholderTextColor={colors.mutedText}
             multiline
             numberOfLines={4}
             editable={editable}
-            style={[styles.textArea, error ? styles.inputErrorBorder : null]}
           />
         )}
       />

@@ -8,7 +8,6 @@ import {
   ScrollView,
   Pressable,
   ActivityIndicator,
-  TextInput,
   RefreshControl,
   Alert,
 } from 'react-native';
@@ -17,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { supabase } from '../../lib/supabase/client';
 import { EmptyState } from '../../components/ui/EmptyState';
+import Input from '../../components/ui/Input';
 import { ROUTES } from '../../constants/routes';
 
 type StatusFilter = 'all' | 'open' | 'closed' | 'archived';
@@ -146,13 +146,10 @@ export default function JobsScreen() {
       <View style={styles.searchSection}>
         <View style={styles.searchBar}>
           <Ionicons name="search-outline" size={18} color={colors.secondaryText} style={styles.searchIcon} />
-          <TextInput
+          <Input
             placeholder="Search by title, department..."
-            placeholderTextColor={colors.mutedText}
             value={search}
             onChangeText={setSearch}
-            style={styles.searchInput}
-            returnKeyType="search"
           />
           {search.length > 0 && (
             <Pressable onPress={() => setSearch('')} hitSlop={8}>

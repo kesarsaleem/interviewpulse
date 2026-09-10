@@ -7,7 +7,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 import * as Linking from 'expo-linking';
@@ -15,6 +14,7 @@ import { router } from 'expo-router';
 import { ROUTES } from '../constants/routes';
 import { supabase } from '../lib/supabase/client';
 import { useTheme } from '../context/ThemeContext';
+import Input from '../components/ui/Input';
 
 function readAuthParams(url: string) {
   const [, hash = ''] = url.split('#');
@@ -108,18 +108,14 @@ export default function AcceptInviteScreen() {
         <Text style={styles.title}>Accept invitation</Text>
         <Text style={styles.subtitle}>Create a password to activate your InterviewPulse account.</Text>
         {!ready && !error && <ActivityIndicator color={colors.primary} />}
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="New password"
-          placeholderTextColor={colors.mutedText}
           secureTextEntry
           value={password}
           onChangeText={setPassword}
         />
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="Confirm password"
-          placeholderTextColor={colors.mutedText}
           secureTextEntry
           value={confirmPassword}
           onChangeText={setConfirmPassword}

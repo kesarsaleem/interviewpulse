@@ -5,7 +5,6 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   Pressable,
   ActivityIndicator,
   Alert,
@@ -15,6 +14,7 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../lib/supabase/client';
 import { Button } from '../../components/ui/Button';
+import Input from '../../components/ui/Input';
 
 /**
  * Invites a new interviewer via a secure server-side Edge Function
@@ -136,10 +136,8 @@ export default function AddInterviewer() {
         <Text style={styles.label}>
           Full Name <Text style={styles.required}>*</Text>
         </Text>
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="e.g. Sarah Connor"
-          placeholderTextColor={colors.mutedText}
           value={name}
           onChangeText={setName}
         />
@@ -147,10 +145,8 @@ export default function AddInterviewer() {
         <Text style={styles.label}>
           Work Email <Text style={styles.required}>*</Text>
         </Text>
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="e.g. sarah.connor@company.com"
-          placeholderTextColor={colors.mutedText}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -158,10 +154,8 @@ export default function AddInterviewer() {
         />
 
         <Text style={styles.label}>Department (optional)</Text>
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="e.g. Engineering"
-          placeholderTextColor={colors.mutedText}
           value={department}
           onChangeText={setDepartment}
         />

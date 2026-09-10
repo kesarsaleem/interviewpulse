@@ -7,7 +7,6 @@ import {
   StyleSheet,
   ScrollView,
   Pressable,
-  TextInput,
   Alert,
   ActivityIndicator,
 } from "react-native";
@@ -17,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "../../lib/supabase/client";
 import { useAuth } from "../../hooks/useAuth";
 import { ROUTES } from "../../constants/routes";
+import Input from "../../components/ui/Input";
 
 export default function AdminProfileScreen() {
   const { colors } = useTheme();
@@ -231,17 +231,14 @@ export default function AdminProfileScreen() {
         <Text style={styles.sectionHeading}>PROFILE INFORMATION</Text>
         <View style={styles.card}>
           <Text style={styles.fieldLabel}>Display Name</Text>
-          <TextInput
-            style={styles.input}
+          <Input
             value={name}
             onChangeText={setName}
             placeholder="Enter your full name"
-            placeholderTextColor={colors.mutedText}
           />
 
           <Text style={styles.fieldLabel}>Email Address</Text>
-          <TextInput
-            style={[styles.input, styles.inputDisabled]}
+          <Input
             value={user?.email || ""}
             editable={false}
           />
@@ -267,23 +264,19 @@ export default function AdminProfileScreen() {
         <Text style={styles.sectionHeading}>SECURITY</Text>
         <View style={styles.card}>
           <Text style={styles.fieldLabel}>New Password</Text>
-          <TextInput
-            style={styles.input}
+          <Input
             value={newPassword}
             onChangeText={setNewPassword}
             secureTextEntry
             placeholder="Minimum 6 characters"
-            placeholderTextColor={colors.mutedText}
           />
 
           <Text style={styles.fieldLabel}>Confirm New Password</Text>
-          <TextInput
-            style={styles.input}
+          <Input
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             secureTextEntry
             placeholder="Re-enter new password"
-            placeholderTextColor={colors.mutedText}
           />
 
           <Pressable

@@ -6,7 +6,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TextInput,
   Pressable,
   Alert,
   ActivityIndicator,
@@ -15,6 +14,7 @@ import {
 import { router, useLocalSearchParams, useSegments } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '../../components/ui/Button';
+import Input from '../../components/ui/Input';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
@@ -515,19 +515,15 @@ export default function AddOrEditCandidate() {
         <Text style={styles.label}>
           Full Name <Text style={styles.required}>*</Text>
         </Text>
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="e.g. Alex Johnson"
-          placeholderTextColor={colors.mutedText}
           value={fullName}
           onChangeText={setFullName}
         />
 
         <Text style={styles.label}>Email Address</Text>
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="e.g. alex.johnson@example.com"
-          placeholderTextColor={colors.mutedText}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -535,10 +531,8 @@ export default function AddOrEditCandidate() {
         />
 
         <Text style={styles.label}>Phone Number</Text>
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="e.g. +1 (555) 234-5678"
-          placeholderTextColor={colors.mutedText}
           value={phone}
           onChangeText={setPhone}
           keyboardType="phone-pad"
@@ -547,10 +541,8 @@ export default function AddOrEditCandidate() {
         <View style={styles.row}>
           <View style={{ flex: 1, marginRight: 8 }}>
             <Text style={styles.label}>Current Role</Text>
-            <TextInput
-              style={styles.input}
+            <Input
               placeholder="e.g. Frontend Engineer"
-              placeholderTextColor={colors.mutedText}
               value={currentRole}
               onChangeText={setCurrentRole}
             />
@@ -558,10 +550,8 @@ export default function AddOrEditCandidate() {
 
           <View style={{ flex: 1, marginLeft: 8 }}>
             <Text style={styles.label}>Current Company</Text>
-            <TextInput
-              style={styles.input}
+            <Input
               placeholder="e.g. Stripe, Acme Corp"
-              placeholderTextColor={colors.mutedText}
               value={currentCompany}
               onChangeText={setCurrentCompany}
             />
@@ -569,10 +559,8 @@ export default function AddOrEditCandidate() {
         </View>
 
         <Text style={styles.label}>Resume Link / Portfolio URL</Text>
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="e.g. https://linkedin.com/in/alex or Drive link"
-          placeholderTextColor={colors.mutedText}
           value={resumeUrl}
           onChangeText={(text) => {
             setResumeUrl(text);
