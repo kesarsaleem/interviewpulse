@@ -184,17 +184,16 @@ export default function AddOrEditCandidate() {
   const validateEmail = (val: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
   };
-
   /**
    * Picks a PDF and uploads it to the private `resumes` storage bucket.
    * Object paths are `{job_id}/...` because the storage RLS policies
    * (see lib/supabase/schema.sql) scope access by the job folder, so a
    * job must be selected before a resume can be attached.
    *
-   * The bucket is private, so we store a long-lived signed URL in
-   * `resume_url` rather than a path — this keeps the existing
-   * `Linking.openURL(candidate.resume_url)` call in candidate-detail.tsx
-   * working without changes.
+   * The bucket is private, so `resume_url` stores only the storage PATH
+   * (not a URL). A fresh short-lived (10-minute) signed URL is generated
+   * on-demand each time the resume is viewed — see openResume() in
+   * candidate-detail.tsx.
    */
   const pickAndUploadResume = async () => {
     if (!selectedJobId) {
