@@ -294,17 +294,19 @@ return(
     <Text style={[styles.closeText, { color: colors.secondaryText }]}>×</Text>
   </Pressable>
 
-  <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
+  <View style={styles.avatarRing}>
+  <View style={styles.avatar}>
     <Text style={styles.avatarText}>
-      {user?.name?.charAt(0).toUpperCase() || 'A'}
+      {user?.name?.charAt(0).toUpperCase() || "A"}
     </Text>
   </View>
+</View>
 
   <Text style={styles.adminName}>
     {user?.name || 'Administrator'}
   </Text>
 
-  <Text style={[styles.email, { color: colors.secondaryText }]}>
+  <Text style={[styles.email, { color: "rgba(255,255,255,0.75)"  }]}>
     {user?.email || 'admin@interviewpulse.com'}
   </Text>
 
@@ -499,39 +501,30 @@ color:colors.inputBorder,
 
 
 
-avatar:{
-
-
-height:52,
-
-width:52,
-
-borderRadius:26,
-
-backgroundColor: colors.primary,
-
-alignItems:"center",
-
-justifyContent:"center",
-
-marginBottom:12,
-
-
+avatarRing: {
+  height: 64,
+  width: 64,
+  borderRadius: 32,
+  backgroundColor: "rgba(255,255,255,0.18)",
+  alignItems: "center",
+  justifyContent: "center",
+  marginBottom: 14,
 },
 
-
-
-
-
-
-avatarText:{
-
-
-fontSize:25,
-
+avatar: {
+  height: 54,
+  width: 54,
+  borderRadius: 27,
+  backgroundColor: "rgba(255,255,255,0.95)",
+  alignItems: "center",
+  justifyContent: "center",
 },
 
-
+avatarText: {
+  fontSize: 22,
+  fontWeight: "800",
+  color: colors.primaryDark,
+},
 
 
 

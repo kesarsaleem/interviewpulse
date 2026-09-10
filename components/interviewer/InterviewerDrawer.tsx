@@ -25,6 +25,14 @@ import {
   Ionicons
 } from "@expo/vector-icons";
 
+import Svg, {
+  Defs,
+  LinearGradient as SvgLinearGradient,
+  Stop,
+  Rect,
+  Circle,
+} from "react-native-svg";
+
 import {
   useAuth
 } from "../../hooks/useAuth";
@@ -63,31 +71,55 @@ export default function InterviewerDrawer({
     new Animated.Value(-300)
   ).current;
 
+  const fadeAnim = useRef(
+    new Animated.Value(0)
+  ).current;
+
 
   // Drawer open animation
   useEffect(() => {
 
     if (visible) {
 
-      Animated.timing(
-        slideAnim,
-        {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true
-        }
-      ).start();
+      Animated.parallel([
+        Animated.timing(
+          slideAnim,
+          {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true
+          }
+        ),
+        Animated.timing(
+          fadeAnim,
+          {
+            toValue: 1,
+            duration: 220,
+            useNativeDriver: true
+          }
+        ),
+      ]).start();
 
     } else {
 
-      Animated.timing(
-        slideAnim,
-        {
-          toValue: -300,
-          duration: 200,
-          useNativeDriver: true
-        }
-      ).start();
+      Animated.parallel([
+        Animated.timing(
+          slideAnim,
+          {
+            toValue: -300,
+            duration: 200,
+            useNativeDriver: true
+          }
+        ),
+        Animated.timing(
+          fadeAnim,
+          {
+            toValue: 0,
+            duration: 180,
+            useNativeDriver: true
+          }
+        ),
+      ]).start();
 
     }
 
@@ -161,16 +193,23 @@ export default function InterviewerDrawer({
       onRequestClose={onClose}
     >
 
-      <View style={[styles.overlay, { backgroundColor: colors.overlay }]}>
+      <View style={styles.overlay}>
 
         {/* 
           Background area
           Tap anywhere outside drawer to close
         */}
-        <Pressable
-          style={StyleSheet.absoluteFill}
-          onPress={onClose}
-        />
+        <Animated.View
+          style={[
+            StyleSheet.absoluteFill,
+            { backgroundColor: colors.overlay, opacity: fadeAnim }
+          ]}
+        >
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={onClose}
+          />
+        </Animated.View>
 
 
         {/* DRAWER */}
@@ -194,22 +233,46 @@ export default function InterviewerDrawer({
             contentContainerStyle={styles.drawerScroll}
           >
 
-          {/* BLUE HEADER */}
+          {/* HEADER */}
 
           <View style={styles.drawerHeader}>
+
+          <View style={styles.headerGradient} pointerEvents="none">
+            <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
+              <Defs>
+                <SvgLinearGradient id="interviewerHeaderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <Stop offset="0%" stopColor={colors.primaryDark} stopOpacity="1" />
+                  <Stop offset="100%" stopColor={"#06235C"} stopOpacity="1" />
+                </SvgLinearGradient>
+              </Defs>
+              <Rect x="0" y="0" width="100%" height="100%" fill="url(#interviewerHeaderGrad)" />
+              <Circle cx="94%" cy="8%" r="72" fill="#FFFFFF" opacity={0.06} />
+              <Circle cx="8%" cy="92%" r="50" fill="#FFFFFF" opacity={0.05} />
+            </Svg>
+          </View>
+
+          <Pressable
+            style={styles.closeButton}
+            onPress={onClose}
+            hitSlop={10}
+          >
+            <Ionicons name="close" size={20} color="#FFFFFF" />
+          </Pressable>
 
           {/* LOGO */}
 
           <View style={styles.logoContainer}>
 
-            <Image
-              source={
-                require("../../assets/images/logo.png")
-              }
-              style={styles.logo}
-            />
+            <View style={styles.logoBadge}>
+              <Image
+                source={
+                  require("../../assets/images/logo.png")
+                }
+                style={styles.logo}
+              />
+            </View>
 
-            <Text style={[styles.logoText, { color: colors.text }]}>
+            <Text style={styles.logoText}>
               InterviewPulse
             </Text>
 
@@ -220,23 +283,25 @@ export default function InterviewerDrawer({
 
           <View style={styles.profile}>
 
-            <View style={styles.avatar}>
+            <View style={styles.avatarRing}>
+              <View style={styles.avatar}>
 
-              <Text style={styles.avatarText}>
+                <Text style={styles.avatarText}>
 
-                {
-                  user?.name?.charAt(0) ||
-                  "I"
-                }
+                  {
+                    user?.name?.charAt(0) ||
+                    "I"
+                  }
 
-              </Text>
+                </Text>
 
+              </View>
             </View>
 
 
-            <View>
+            <View style={styles.profileInfo}>
 
-              <Text style={[styles.name, { color: colors.text }]}>
+              <Text style={styles.name}>
 
                 {
                   user?.name ||
@@ -246,7 +311,7 @@ export default function InterviewerDrawer({
               </Text>
 
 
-              <Text style={[styles.email, { color: colors.secondaryText }]}>
+              <Text style={styles.email}>
 
                 {
                   user?.email ||
@@ -257,7 +322,7 @@ export default function InterviewerDrawer({
 
 
               <View style={styles.roleBadge}>
-
+                <View style={styles.roleDot} />
                 <Text style={styles.roleText}>
                   Interviewer
                 </Text>
@@ -360,44 +425,7 @@ export default function InterviewerDrawer({
           />
 
 
-          {/* SYNC DATA */}
 
-          <Menu
-            icon="sync-outline"
-            title="Sync Data"
-
-            active={false}
-
-            onPress={() => {
-
-              Alert.alert(
-                "Sync Data",
-                "Data sync feature coming soon."
-              );
-
-            }}
-          />
-
-
-          {/* NOTIFICATIONS */}
-
-          <Menu
-            icon="notifications-outline"
-            title="Notifications"
-
-            badge="3"
-
-            active={false}
-
-            onPress={() => {
-
-              Alert.alert(
-                "Notifications",
-                "Notifications screen coming soon."
-              );
-
-            }}
-          />
 
 
           {/* SETTINGS */}
@@ -444,15 +472,20 @@ export default function InterviewerDrawer({
           {/* LOGOUT */}
 
           <Pressable
-            style={styles.logout}
+            style={({ pressed }) => [
+              styles.logout,
+              { opacity: pressed ? 0.85 : 1 }
+            ]}
             onPress={logout}
           >
 
-            <Ionicons
-              name="log-out-outline"
-              size={22}
-              color={colors.danger}
-            />
+            <View style={styles.logoutIconBox}>
+              <Ionicons
+                name="log-out-outline"
+                size={18}
+                color={colors.danger}
+              />
+            </View>
 
             <Text style={styles.logoutText}>
               Logout
@@ -503,19 +536,30 @@ function Menu({
 
     >
 
+      { active && <View style={styles.activeBar} /> }
+
       <View style={styles.menuLeft}>
 
-        <Ionicons
+        <View
+          style={[
+            styles.iconBox,
+            { backgroundColor: active ? colors.primary : colors.background }
+          ]}
+        >
 
-          name={icon}
+          <Ionicons
 
-          size={21}
+            name={icon}
 
-          color={
-            active ? colors.primary : colors.secondaryText
-          }
+            size={17}
 
-        />
+            color={
+              active ? '#FFFFFF' : colors.secondaryText
+            }
+
+          />
+
+        </View>
 
 
         <Text
@@ -572,7 +616,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       flex: 1,
 
-      backgroundColor: colors.overlay,
+      backgroundColor: "transparent",
 
     },
 
@@ -587,53 +631,82 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
     drawer: {
 
-      width: "80%",
+      width: "70%",
+
+      maxWidth: 320,
 
       height: "100%",
 
       backgroundColor: colors.card,
 
-      paddingTop: 52,
-
-      paddingHorizontal: 18,
+      paddingHorizontal: 16,
 
       borderTopRightRadius: 28,
       borderBottomRightRadius: 28,
-      shadowColor: colors.text,
+      overflow: "hidden",
+      shadowColor: "#000",
       shadowOffset: { width: 8, height: 0 },
-      shadowOpacity: 0.12,
-      shadowRadius: 18,
-      elevation: 12,
+      shadowOpacity: 0.18,
+      shadowRadius: 20,
+      elevation: 16,
 
     },
 
 
-    /* LOGO */
+    /* HEADER */
 
     drawerHeader: {
-      backgroundColor: "#06235C",
-      marginHorizontal: -18,
-      marginTop: -52,
-      paddingTop: 60,
-      paddingHorizontal: 18,
-      paddingBottom: 24,
-      borderBottomLeftRadius: 28,
-      borderBottomRightRadius: 28,
-      marginBottom: 20,
+       marginHorizontal: -16,
+       paddingTop: 56,
+      paddingHorizontal: 0,
+      paddingBottom: 22,
+      overflow: "hidden",
+      position: "relative",
+      marginBottom: 18,
+    },
+
+    headerGradient: {
+      position: "absolute",
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    },
+
+    closeButton: {
+      position: "absolute",
+      right: 16,
+      top: 16,
+      width: 30,
+      height: 30,
+      borderRadius: 15,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "rgba(255,255,255,0.16)",
     },
 
     logoContainer: {
       flexDirection: "row",
       alignItems: "center",
-      marginBottom: 18,
+      marginBottom: 20,
+    },
+
+    logoBadge: {
+      height: 40,
+      width: 40,
+      borderRadius: 12,
+      backgroundColor: "rgba(255,255,255,0.16)",
+      alignItems: "center",
+      justifyContent: "center",
+      marginRight: 10,
     },
 
 
     logo: {
 
-      height: 45,
+      height: 26,
 
-      width: 45,
+      width: 26,
 
       resizeMode: "contain",
 
@@ -644,12 +717,11 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       color: "#FFFFFF",
 
-      fontSize: 20,
+      fontSize: 18,
 
       fontWeight: "900",
 
-      marginLeft: 10,
-      letterSpacing: -0.4,
+      letterSpacing: -0.3,
 
     },
 
@@ -662,46 +734,48 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       alignItems: "center",
 
-      paddingBottom: 20,
-      paddingTop: 16,
-      paddingHorizontal: 12,
-      borderRadius: 18,
-      backgroundColor: "transparent",
-
-      marginBottom: 0,
-
     },
 
 
+    avatarRing: {
+      height: 56,
+      width: 56,
+      borderRadius: 28,
+      backgroundColor: "rgba(255,255,255,0.18)",
+      alignItems: "center",
+      justifyContent: "center",
+      marginRight: 12,
+    },
+
     avatar: {
 
-      height: 45,
+      height: 46,
 
-      width: 45,
+      width: 46,
 
       borderRadius: 23,
 
-      backgroundColor: colors.primary,
-      borderWidth: 3,
-      borderColor: colors.primaryLight,
+      backgroundColor: "rgba(255,255,255,0.95)",
 
       justifyContent: "center",
 
       alignItems: "center",
-
-      marginRight: 12,
 
     },
 
 
     avatarText: {
 
-      color: colors.surface,
+      color: colors.primaryDark,
 
       fontWeight: "900",
 
-      fontSize: 20,
+      fontSize: 19,
 
+    },
+
+    profileInfo: {
+      flex: 1,
     },
 
 
@@ -718,7 +792,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
     email: {
 
-      color: "#CBD5E1",
+      color: "rgba(255,255,255,0.7)",
 
       fontSize: 11,
 
@@ -729,24 +803,35 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
     roleBadge: {
 
-      backgroundColor: colors.primaryLight,
+      flexDirection: "row",
+      alignItems: "center",
 
-      paddingHorizontal: 8,
+      backgroundColor: "rgba(255,255,255,0.18)",
 
-      paddingVertical: 3,
+      paddingHorizontal: 9,
 
-      borderRadius: 8,
+      paddingVertical: 4,
 
-      marginTop: 5,
+      borderRadius: 20,
+
+      marginTop: 7,
 
       alignSelf: "flex-start",
 
     },
 
+    roleDot: {
+      width: 6,
+      height: 6,
+      borderRadius: 3,
+      backgroundColor: "#4ADE80",
+      marginRight: 6,
+    },
+
 
     roleText: {
 
-      color: colors.primary,
+      color: "#FFFFFF",
 
       fontSize: 10,
 
@@ -759,11 +844,11 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
     menu: {
 
-      minHeight: 48,
+      minHeight: 50,
 
-      borderRadius: 15,
+      borderRadius: 14,
 
-      paddingHorizontal: 14,
+      paddingHorizontal: 12,
 
       flexDirection: "row",
 
@@ -772,7 +857,11 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
       justifyContent:
         "space-between",
 
-      marginBottom: 7,
+      marginBottom: 5,
+
+      position: "relative",
+
+      overflow: "hidden",
 
     },
 
@@ -782,9 +871,17 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
     activeMenu: {
 
       backgroundColor: colors.primaryLight,
-      borderWidth: 1,
-      borderColor: colors.primaryLight,
 
+    },
+
+    activeBar: {
+      position: "absolute",
+      left: 0,
+      top: 8,
+      bottom: 8,
+      width: 3,
+      borderRadius: 2,
+      backgroundColor: colors.primary,
     },
 
 
@@ -796,14 +893,21 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
     },
 
+    iconBox: {
+      width: 32,
+      height: 32,
+      borderRadius: 9,
+      alignItems: "center",
+      justifyContent: "center",
+      marginRight: 12,
+    },
+
 
     menuText: {
 
       color: colors.secondaryText,
 
       fontSize: 14,
-
-      marginLeft: 12,
 
       fontWeight: "700",
 
@@ -822,13 +926,15 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
     badge: {
 
-      backgroundColor: colors.primary,
+      backgroundColor: colors.danger,
 
-      height: 18,
+      minWidth: 20,
 
-      width: 18,
+      height: 20,
 
-      borderRadius: 9,
+      paddingHorizontal: 5,
+
+      borderRadius: 10,
 
       alignItems: "center",
 
@@ -839,7 +945,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
     badgeText: {
 
-      color: colors.surface,
+      color: "#FFFFFF",
 
       fontSize: 10,
 
@@ -856,7 +962,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       backgroundColor: colors.divider,
 
-      marginTop: 18,
+      marginTop: 16,
       marginBottom: 12,
     },
 
@@ -865,7 +971,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
       fontSize: 10,
       fontWeight: "900",
       letterSpacing: 1.2,
-      marginLeft: 14,
+      marginLeft: 12,
       marginBottom: 8,
     },
 
@@ -882,6 +988,21 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       paddingHorizontal: 12,
 
+      paddingVertical: 8,
+
+      borderRadius: 14,
+
+      backgroundColor: colors.dangerLight,
+
+    },
+
+    logoutIconBox: {
+      width: 40,
+      height: 40,
+      borderRadius: 9,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "rgba(239,68,68,0.12)",
     },
 
 
@@ -889,7 +1010,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       color: colors.danger,
 
-      fontSize: 16,
+      fontSize: 20,
 
       fontWeight: "900",
 
