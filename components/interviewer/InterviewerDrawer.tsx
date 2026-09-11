@@ -266,7 +266,7 @@ export default function InterviewerDrawer({
             <View style={styles.logoBadge}>
               <Image
                 source={
-                  require("../../assets/images/logo.png")
+                  require("../../assets/images/app_icon.png")
                 }
                 style={styles.logo}
               />
@@ -625,13 +625,13 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
     drawerScroll: {
       flexGrow: 1,
-      paddingBottom: 30,
+      paddingBottom: 18,
     },
 
 
     drawer: {
 
-      width: "70%",
+      width: "80%",
 
       maxWidth: 320,
 
@@ -639,7 +639,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       backgroundColor: colors.card,
 
-      paddingHorizontal: 16,
+      paddingHorizontal: 14,
 
       borderTopRightRadius: 28,
       borderBottomRightRadius: 28,
@@ -656,13 +656,13 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
     /* HEADER */
 
     drawerHeader: {
-       marginHorizontal: -16,
-       paddingTop: 56,
+       marginHorizontal: -14,
+       paddingTop: 44,
       paddingHorizontal: 0,
-      paddingBottom: 22,
+      paddingBottom: 16,
       overflow: "hidden",
       position: "relative",
-      marginBottom: 18,
+      marginBottom: 14,
     },
 
     headerGradient: {
@@ -675,11 +675,11 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
     closeButton: {
       position: "absolute",
-      right: 16,
-      top: 16,
-      width: 30,
-      height: 30,
-      borderRadius: 15,
+      right: 12,
+      top: 12,
+      width: 34,
+      height: 34,
+      borderRadius: 17,
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: "rgba(255,255,255,0.16)",
@@ -688,25 +688,25 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
     logoContainer: {
       flexDirection: "row",
       alignItems: "center",
-      marginBottom: 20,
+      paddingHorizontal: 14,
+      marginBottom: 14,
     },
 
     logoBadge: {
-      height: 40,
-      width: 40,
-      borderRadius: 12,
+      height: 36,
+      width: 36,
+      borderRadius: 10,
       backgroundColor: "rgba(255,255,255,0.16)",
       alignItems: "center",
       justifyContent: "center",
-      marginRight: 10,
+      marginRight: 9,
     },
 
 
     logo: {
 
-      height: 26,
-
-      width: 26,
+      height: 30,
+      width: 30,
 
       resizeMode: "contain",
 
@@ -717,7 +717,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       color: "#FFFFFF",
 
-      fontSize: 18,
+      fontSize: 17,
 
       fontWeight: "900",
 
@@ -729,31 +729,28 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
     /* PROFILE */
 
     profile: {
-
       flexDirection: "row",
-
       alignItems: "center",
+      paddingHorizontal: 14,
 
     },
 
 
     avatarRing: {
-      height: 56,
-      width: 56,
-      borderRadius: 28,
+      height: 48,
+      width: 48,
+      borderRadius: 24,
       backgroundColor: "rgba(255,255,255,0.18)",
       alignItems: "center",
       justifyContent: "center",
-      marginRight: 12,
+      marginRight: 10,
     },
 
     avatar: {
 
-      height: 46,
-
-      width: 46,
-
-      borderRadius: 23,
+      height: 40,
+      width: 40,
+      borderRadius: 20,
 
       backgroundColor: "rgba(255,255,255,0.95)",
 
@@ -770,7 +767,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       fontWeight: "900",
 
-      fontSize: 19,
+      fontSize: 17,
 
     },
 
@@ -783,7 +780,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       color: "#FFFFFF",
 
-      fontSize: 15,
+      fontSize: 14,
 
       fontWeight: "900",
 
@@ -794,7 +791,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       color: "rgba(255,255,255,0.7)",
 
-      fontSize: 11,
+      fontSize: 10,
 
       marginTop: 2,
 
@@ -808,13 +805,12 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       backgroundColor: "rgba(255,255,255,0.18)",
 
-      paddingHorizontal: 9,
-
-      paddingVertical: 4,
+      paddingHorizontal: 8,
+      paddingVertical: 3,
 
       borderRadius: 20,
 
-      marginTop: 7,
+      marginTop: 6,
 
       alignSelf: "flex-start",
 
@@ -844,11 +840,11 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
     menu: {
 
-      minHeight: 50,
+      minHeight: 46,
 
       borderRadius: 14,
 
-      paddingHorizontal: 12,
+      paddingHorizontal: 10,
 
       flexDirection: "row",
 
@@ -857,7 +853,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
       justifyContent:
         "space-between",
 
-      marginBottom: 5,
+      marginBottom: 3,
 
       position: "relative",
 
@@ -894,12 +890,12 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
     },
 
     iconBox: {
-      width: 32,
-      height: 32,
-      borderRadius: 9,
+      width: 30,
+      height: 30,
+      borderRadius: 8,
       alignItems: "center",
       justifyContent: "center",
-      marginRight: 12,
+      marginRight: 11,
     },
 
 
@@ -907,7 +903,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       color: colors.secondaryText,
 
-      fontSize: 14,
+      fontSize: 13,
 
       fontWeight: "700",
 
@@ -962,8 +958,8 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       backgroundColor: colors.divider,
 
-      marginTop: 16,
-      marginBottom: 12,
+      marginTop: 12,
+      marginBottom: 9,
     },
 
     sectionLabel: {
@@ -972,7 +968,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
       fontWeight: "900",
       letterSpacing: 1.2,
       marginLeft: 12,
-      marginBottom: 8,
+      marginBottom: 6,
     },
 
 
@@ -984,25 +980,24 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       alignItems: "center",
 
-      gap: 12,
+      gap: 11,
 
-      paddingHorizontal: 12,
+      paddingHorizontal: 10,
 
-      paddingVertical: 8,
-
-      borderRadius: 14,
+      paddingVertical: 7,
+      borderRadius: 12,
 
       backgroundColor: colors.dangerLight,
 
     },
 
     logoutIconBox: {
-      width: 40,
-      height: 40,
-      borderRadius: 9,
+      width: 30,
+      height: 30,
+      borderRadius: 8,
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: "rgba(239,68,68,0.12)",
+      backgroundColor: colors.dangerLight,
     },
 
 
@@ -1010,9 +1005,9 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
 
       color: colors.danger,
 
-      fontSize: 20,
+      fontSize: 13,
 
-      fontWeight: "900",
+      fontWeight: "800",
 
     }
 
