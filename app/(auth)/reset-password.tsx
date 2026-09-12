@@ -23,38 +23,83 @@ export default function ResetPasswordScreen() {
 
   useEffect(() => {
     let mounted = true;
+    const readyRef = { current: false };
 
     const establishSession = async (rawUrl: string | null) => {
+      if (__DEV__) console.log('[ResetPassword] INCOMING URL:', rawUrl);
       if (!rawUrl) return;
 
       const hashPart = rawUrl.split('#')[1] || '';
       const queryPart = rawUrl.split('?')[1]?.split('#')[0] || '';
-      const params = new URLSearchParams(hashPart || queryPart);
+      const params = new URLSearchParams(`${queryPart}&${hashPart}`);
 
+      const tokenHash = params.get('token_hash');
+      const type = params.get('type');
       const accessToken = params.get('access_token');
       const refreshToken = params.get('refresh_token');
+      const code = params.get('code');
 
-      if (!accessToken || !refreshToken) {
-        if (mounted) setLinkError('This reset link is invalid or has expired.');
+      if (__DEV__) {
+        console.log('[ResetPassword] parsed params:', {
+          hasTokenHash: !!tokenHash,
+          type,
+          hasAccessToken: !!accessToken,
+          hasRefreshToken: !!refreshToken,
+          hasCode: !!code,
+        });
+      }
+
+      // Preferred path: token_hash survives the email -> app handoff far
+      // more reliably than a URL fragment does.
+      if (tokenHash) {
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash: tokenHash,
+          type: (type as 'recovery') || 'recovery',
+        });
+        if (mounted) {
+          if (error) setLinkError(error.message);
+          readyRef.current = !error;
+          setReady(!error);
+        }
         return;
       }
 
-      const { error } = await supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      });
-
-      if (mounted) {
-        if (error) setLinkError(error.message);
-        setReady(!error);
+      // PKCE-style redirect (?code=...).
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (mounted) {
+          if (error) setLinkError(error.message);
+          readyRef.current = !error;
+          setReady(!error);
+        }
+        return;
       }
+
+      // Legacy implicit flow (#access_token=...&refresh_token=...).
+      if (accessToken && refreshToken) {
+        const { error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+        if (mounted) {
+          if (error) setLinkError(error.message);
+          readyRef.current = !error;
+          setReady(!error);
+        }
+        return;
+      }
+
+      if (mounted) setLinkError('This reset link is invalid or has expired.');
     };
 
     establishSession(url);
 
     const timeout = setTimeout(() => {
-      if (mounted && !ready) {
-        setLinkError('Could not read the reset link. Please request a new one.');
+      // readyRef (not the stale `ready` state captured at mount) reflects
+      // the latest outcome, so a successful session doesn't get clobbered
+      // by this fallback message after the fact.
+      if (mounted && !readyRef.current) {
+        setLinkError((prev) => prev || 'Could not read the reset link. Please request a new one.');
       }
     }, 8000);
 

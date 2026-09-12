@@ -33,21 +33,43 @@ export default function AcceptInviteScreen() {
   useEffect(() => {
     let mounted = true;
 
+    const readyRef = { current: false };
+
     const handleUrl = async (url: string | null) => {
       if (__DEV__) console.log('[AcceptInvite] INCOMING URL:', url);
 
       if (!url) return;
       const params = readAuthParams(url);
+      const tokenHash = params.get('token_hash');
+      const type = params.get('type');
       const accessToken = params.get('access_token');
       const refreshToken = params.get('refresh_token');
       const code = params.get('code');
 
       if (__DEV__) {
         console.log('[AcceptInvite] parsed params:', {
+          hasTokenHash: !!tokenHash,
+          type,
           hasAccessToken: !!accessToken,
           hasRefreshToken: !!refreshToken,
           hasCode: !!code,
         });
+      }
+
+      // Preferred path: token_hash survives the email -> app handoff far
+      // more reliably than a URL fragment does.
+      if (tokenHash) {
+        const { error: otpError } = await supabase.auth.verifyOtp({
+          token_hash: tokenHash,
+          type: (type as 'invite') || 'invite',
+        });
+        if (__DEV__) console.log('[AcceptInvite] verifyOtp result:', otpError?.message || 'OK');
+        if (mounted) {
+          setError(otpError?.message || '');
+          readyRef.current = !otpError;
+          setReady(!otpError);
+        }
+        return;
       }
 
       if (!accessToken || !refreshToken) {
@@ -56,11 +78,12 @@ export default function AcceptInviteScreen() {
           if (__DEV__) console.log('[AcceptInvite] exchangeCodeForSession result:', exchangeError?.message || 'OK');
           if (mounted) {
             setError(exchangeError?.message || '');
+            readyRef.current = !exchangeError;
             setReady(!exchangeError);
           }
           return;
         }
-        if (__DEV__) console.log('[AcceptInvite] No tokens and no code found in URL.');
+        if (__DEV__) console.log('[AcceptInvite] No token_hash, tokens, or code found in URL.');
         if (mounted) setError('This invitation link is invalid or has expired.');
         return;
       }
@@ -72,6 +95,7 @@ export default function AcceptInviteScreen() {
       if (__DEV__) console.log('[AcceptInvite] setSession result:', sessionError?.message || 'OK');
       if (mounted) {
         setError(sessionError?.message || '');
+        readyRef.current = !sessionError;
         setReady(!sessionError);
       }
     };
@@ -82,9 +106,12 @@ export default function AcceptInviteScreen() {
     });
 
     const timeout = setTimeout(() => {
-      if (mounted && !ready) {
+      // readyRef (not the stale `ready` state captured at mount) reflects
+      // the latest outcome, so a successful session doesn't get clobbered
+      // by this fallback message after the fact.
+      if (mounted && !readyRef.current) {
         if (__DEV__) console.log('[AcceptInvite] Timed out waiting for a valid URL.');
-        setError('Could not read the invite link. Please open the invite email again and tap the link.');
+        setError((prev) => prev || 'Could not read the invite link. Please open the invite email again and tap the link.');
       }
     }, 9000);
 
