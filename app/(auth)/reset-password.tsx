@@ -20,6 +20,7 @@ export default function ResetPasswordScreen() {
   const [loading, setLoading] = useState(false);
   const [ready, setReady] = useState(false);
   const [linkError, setLinkError] = useState('');
+  const [debugUrl, setDebugUrl] = useState('');
 
   useEffect(() => {
     let mounted = true;
@@ -27,6 +28,7 @@ export default function ResetPasswordScreen() {
 
     const establishSession = async (rawUrl: string | null) => {
       if (__DEV__) console.log('[ResetPassword] INCOMING URL:', rawUrl);
+      if (mounted) setDebugUrl(rawUrl || '(no url received)');
       if (!rawUrl) return;
 
       const hashPart = rawUrl.split('#')[1] || '';
@@ -147,6 +149,11 @@ export default function ResetPasswordScreen() {
         <ActivityIndicator color="#4F46E5" style={{ marginBottom: 20 }} />
       )}
       {!!linkError && <Text style={styles.error}>{linkError}</Text>}
+      {!!debugUrl && (
+        <Text selectable style={styles.debug}>
+          DEBUG URL: {debugUrl}
+        </Text>
+      )}
 
       <TextInput
         style={styles.input}
@@ -181,6 +188,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 30, fontWeight: '800', color: '#FFFFFF', marginBottom: 10 },
   subtitle: { color: '#9CA3AF', marginBottom: 30, fontSize: 16 },
   error: { color: '#F87171', marginBottom: 15 },
+  debug: { color: '#9CA3AF', marginBottom: 15, fontSize: 11 },
   input: {
     height: 55,
     borderRadius: 14,

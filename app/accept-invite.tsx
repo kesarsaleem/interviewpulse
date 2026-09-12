@@ -29,6 +29,7 @@ export default function AcceptInviteScreen() {
   const [ready, setReady] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [debugUrl, setDebugUrl] = useState('');
 
   useEffect(() => {
     let mounted = true;
@@ -37,6 +38,7 @@ export default function AcceptInviteScreen() {
 
     const handleUrl = async (url: string | null) => {
       if (__DEV__) console.log('[AcceptInvite] INCOMING URL:', url);
+      if (mounted) setDebugUrl(url || '(no url received)');
 
       if (!url) return;
       const params = readAuthParams(url);
@@ -169,6 +171,11 @@ export default function AcceptInviteScreen() {
           onChangeText={setConfirmPassword}
         />
         {!!error && <Text style={styles.error}>{error}</Text>}
+        {!!debugUrl && (
+          <Text selectable style={styles.debug}>
+            DEBUG URL: {debugUrl}
+          </Text>
+        )}
         <Pressable style={styles.button} onPress={submit} disabled={!ready || saving}>
           {saving ? <ActivityIndicator color="#FFFFFF" /> : <Text style={styles.buttonText}>Set password</Text>}
         </Pressable>
@@ -194,6 +201,7 @@ function createStyles(colors: ReturnType<typeof useTheme>['colors']) {
       marginTop: 12,
     },
     error: { color: colors.danger, marginTop: 12 },
+    debug: { color: colors.secondaryText, marginTop: 12, fontSize: 11 },
     button: {
       height: 50,
       borderRadius: 10,
