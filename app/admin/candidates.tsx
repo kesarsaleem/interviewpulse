@@ -10,13 +10,13 @@ import {
   ActivityIndicator,
   RefreshControl,
   Alert,
+  TextInput,
 } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 import { supabase } from '../../lib/supabase/client';
 import { EmptyState } from '../../components/ui/EmptyState';
-import Input from '../../components/ui/Input';
 import { ROUTES } from '../../constants/routes';
 
 type SortOption = 'newest' | 'oldest' | 'name_asc' | 'interview_date' | 'last_activity';
@@ -309,8 +309,10 @@ export default function AdminCandidatesScreen() {
       <View style={styles.searchSection}>
         <View style={styles.searchBar}>
           <Ionicons name="search-outline" size={18} color={colors.secondaryText} style={styles.searchIcon} />
-          <Input
+          <TextInput
+            style={styles.searchInput}
             placeholder="Search candidate name, role, email..."
+            placeholderTextColor={colors.mutedText}
             value={search}
             onChangeText={setSearch}
           />

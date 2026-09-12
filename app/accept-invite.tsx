@@ -34,21 +34,33 @@ export default function AcceptInviteScreen() {
     let mounted = true;
 
     const handleUrl = async (url: string | null) => {
+      if (__DEV__) console.log('[AcceptInvite] INCOMING URL:', url);
+
       if (!url) return;
       const params = readAuthParams(url);
       const accessToken = params.get('access_token');
       const refreshToken = params.get('refresh_token');
       const code = params.get('code');
 
+      if (__DEV__) {
+        console.log('[AcceptInvite] parsed params:', {
+          hasAccessToken: !!accessToken,
+          hasRefreshToken: !!refreshToken,
+          hasCode: !!code,
+        });
+      }
+
       if (!accessToken || !refreshToken) {
         if (code) {
           const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+          if (__DEV__) console.log('[AcceptInvite] exchangeCodeForSession result:', exchangeError?.message || 'OK');
           if (mounted) {
             setError(exchangeError?.message || '');
             setReady(!exchangeError);
           }
           return;
         }
+        if (__DEV__) console.log('[AcceptInvite] No tokens and no code found in URL.');
         if (mounted) setError('This invitation link is invalid or has expired.');
         return;
       }
@@ -57,6 +69,7 @@ export default function AcceptInviteScreen() {
         access_token: accessToken,
         refresh_token: refreshToken,
       });
+      if (__DEV__) console.log('[AcceptInvite] setSession result:', sessionError?.message || 'OK');
       if (mounted) {
         setError(sessionError?.message || '');
         setReady(!sessionError);
@@ -68,8 +81,16 @@ export default function AcceptInviteScreen() {
       handleUrl(url);
     });
 
+    const timeout = setTimeout(() => {
+      if (mounted && !ready) {
+        if (__DEV__) console.log('[AcceptInvite] Timed out waiting for a valid URL.');
+        setError('Could not read the invite link. Please open the invite email again and tap the link.');
+      }
+    }, 9000);
+
     return () => {
       mounted = false;
+      clearTimeout(timeout);
       subscription.remove();
     };
   }, []);
