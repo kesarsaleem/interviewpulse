@@ -8,13 +8,13 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { router } from 'expo-router';
-import { useURL } from 'expo-linking';
+import * as Linking from 'expo-linking';
 import { supabase } from '../../lib/supabase/client';
 import { Button } from '../../components/ui/Button';
 import { ROUTES } from '../../constants/routes';
+import { getEarlyInitialUrl } from '../../lib/deepLinkCache';
 
 export default function ResetPasswordScreen() {
-  const url = useURL();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,12 +24,14 @@ export default function ResetPasswordScreen() {
 
   useEffect(() => {
     let mounted = true;
+    let handled = false;
     const readyRef = { current: false };
 
     const establishSession = async (rawUrl: string | null) => {
       if (__DEV__) console.log('[ResetPassword] INCOMING URL:', rawUrl);
       if (mounted) setDebugUrl(rawUrl || '(no url received)');
-      if (!rawUrl) return;
+      if (!rawUrl || handled) return;
+      handled = true;
 
       const hashPart = rawUrl.split('#')[1] || '';
       const queryPart = rawUrl.split('?')[1]?.split('#')[0] || '';
@@ -94,7 +96,16 @@ export default function ResetPasswordScreen() {
       if (mounted) setLinkError('This reset link is invalid or has expired.');
     };
 
-    establishSession(url);
+    getEarlyInitialUrl().then((cachedUrl) => {
+      if (cachedUrl) {
+        establishSession(cachedUrl);
+      } else {
+        Linking.getInitialURL().then(establishSession);
+      }
+    });
+    const subscription = Linking.addEventListener('url', ({ url: incomingUrl }) => {
+      establishSession(incomingUrl);
+    });
 
     const timeout = setTimeout(() => {
       // readyRef (not the stale `ready` state captured at mount) reflects
@@ -107,9 +118,10 @@ export default function ResetPasswordScreen() {
 
     return () => {
       mounted = false;
+      subscription.remove();
       clearTimeout(timeout);
     };
-  }, [url]);
+  }, []);
 
   const handleUpdatePassword = async () => {
     if (!password || password.length < 6) {

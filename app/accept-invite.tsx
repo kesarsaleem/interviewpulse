@@ -13,6 +13,7 @@ import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 import { ROUTES } from '../constants/routes';
 import { supabase } from '../lib/supabase/client';
+import { getEarlyInitialUrl } from '../lib/deepLinkCache';
 import { useTheme } from '../context/ThemeContext';
 import Input from '../components/ui/Input';
 
@@ -102,7 +103,13 @@ export default function AcceptInviteScreen() {
       }
     };
 
-    Linking.getInitialURL().then(handleUrl);
+    getEarlyInitialUrl().then((cachedUrl) => {
+      if (cachedUrl) {
+        handleUrl(cachedUrl);
+      } else {
+        Linking.getInitialURL().then(handleUrl);
+      }
+    });
     const subscription = Linking.addEventListener('url', ({ url }) => {
       handleUrl(url);
     });

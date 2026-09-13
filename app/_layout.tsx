@@ -1,4 +1,5 @@
 import '../global.css';
+import '../lib/deepLinkCache';
 
 import React, { useEffect } from 'react';
 
