@@ -364,6 +364,26 @@ export default function InterviewerHome() {
           </View>
         </View>
 
+        <View style={styles.aiInterviewCard}>
+          <View style={styles.syncCardLeft}>
+            <View style={styles.syncIconCircle}>
+              <Ionicons name="videocam-outline" size={22} color={colors.primary} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.syncCardTitle}>AI Interview Test</Text>
+              <Text style={styles.syncCardDesc}>
+                Try the real-time Anam avatar session.
+              </Text>
+            </View>
+          </View>
+          <Button
+            label="Open"
+            onPress={() => router.push(ROUTES.aiInterviewTest)}
+            size="sm"
+            icon={<Ionicons name="arrow-forward" size={15} color="#FFFFFF" />}
+          />
+        </View>
+
         {/* OFFLINE DATABASE SYNC CARD */}
         <View style={styles.syncCard}>
           <View style={styles.syncCardLeft}>
@@ -693,6 +713,18 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderColor: colors.inputBorder,
     marginTop: 4,
     marginBottom: 24,
+  },
+  aiInterviewCard: {
+    backgroundColor: colors.infoLight,
+    borderRadius: 22,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: colors.info,
+    marginTop: 4,
+    marginBottom: 16,
   },
   syncCardLeft: {
     flexDirection: 'row',

@@ -41,6 +41,7 @@ export const ROUTES = {
   interviewerFeedbackDetails: '/interviewer/feedback-details',
   interviewerProfile: '/interviewer/profile',
   interviewerSettings: '/interviewer/settings',
+  aiInterviewTest: '/interviewer/ai-interview',
 
   // Shared dynamic routes
   candidatePanel: '/candidates/[id]/panel',

@@ -9,9 +9,17 @@ const config: ExpoConfig = {
   userInterfaceStyle: 'automatic',
   icon: './assets/images/app_icon.png',
   plugins: ['expo-router', 'expo-secure-store'],
-  ios: { supportsTablet: false, bundleIdentifier: 'com.interviewpulse.app' },
+  ios: {
+    supportsTablet: false,
+    bundleIdentifier: 'com.interviewpulse.app',
+    infoPlist: {
+      NSCameraUsageDescription: 'InterviewPulse uses the camera for the AI interview avatar session.',
+      NSMicrophoneUsageDescription: 'InterviewPulse uses the microphone for the AI interview conversation.',
+    },
+  },
   android: {
     package: 'com.interviewpulse.app',
+    permissions: ['CAMERA', 'RECORD_AUDIO'],
     adaptiveIcon: {
       foregroundImage: './assets/images/app_icon.png',
       backgroundColor: '#FFFFFF',
@@ -20,12 +28,13 @@ const config: ExpoConfig = {
   extra: {
     supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL,
     supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+    anamApiKey: process.env.EXPO_PUBLIC_ANAM_API_KEY,
+    anamPersonaId: process.env.EXPO_PUBLIC_ANAM_PERSONA_ID,
 
     eas: {
-    projectId: '66a4ce11-f2e2-46ad-82db-0e602a4d245b',
+      projectId: '66a4ce11-f2e2-46ad-82db-0e602a4d245b',
+    },
   },
-  },
-  
 };
 
 export default config;
