@@ -8,11 +8,10 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { router } from 'expo-router';
-import * as Linking from 'expo-linking';
 import { supabase } from '../../lib/supabase/client';
 import { Button } from '../../components/ui/Button';
 import { ROUTES } from '../../constants/routes';
-import { getEarlyInitialUrl } from '../../lib/deepLinkCache';
+import { getEarlyInitialUrl, getLatestUrl, onDeepLinkUrl } from '../../lib/deepLinkCache';
 
 export default function ResetPasswordScreen() {
   const [password, setPassword] = useState('');
@@ -96,15 +95,11 @@ export default function ResetPasswordScreen() {
       if (mounted) setLinkError('This reset link is invalid or has expired.');
     };
 
-    getEarlyInitialUrl().then((cachedUrl) => {
-      if (cachedUrl) {
-        establishSession(cachedUrl);
-      } else {
-        Linking.getInitialURL().then(establishSession);
-      }
-    });
-    const subscription = Linking.addEventListener('url', ({ url: incomingUrl }) => {
+    const unsubscribe = onDeepLinkUrl((incomingUrl) => {
       establishSession(incomingUrl);
+    });
+    getEarlyInitialUrl().then((cachedUrl) => {
+      establishSession(cachedUrl || getLatestUrl());
     });
 
     const timeout = setTimeout(() => {
@@ -118,7 +113,7 @@ export default function ResetPasswordScreen() {
 
     return () => {
       mounted = false;
-      subscription.remove();
+      unsubscribe();
       clearTimeout(timeout);
     };
   }, []);

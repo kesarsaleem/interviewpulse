@@ -2,6 +2,7 @@ import '../global.css';
 import '../lib/deepLinkCache';
 
 import React, { useEffect } from 'react';
+import { registerGlobals } from 'react-native-webrtc';
 
 import {
   Stack,
@@ -32,6 +33,7 @@ import {
 
 import { ROUTES } from '../constants/routes';
 
+registerGlobals();
 
 
 const queryClient = new QueryClient();

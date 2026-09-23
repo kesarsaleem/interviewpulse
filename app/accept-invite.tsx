@@ -9,11 +9,10 @@ import {
   Text,
   View,
 } from 'react-native';
-import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 import { ROUTES } from '../constants/routes';
 import { supabase } from '../lib/supabase/client';
-import { getEarlyInitialUrl } from '../lib/deepLinkCache';
+import { getEarlyInitialUrl, getLatestUrl, onDeepLinkUrl } from '../lib/deepLinkCache';
 import { useTheme } from '../context/ThemeContext';
 import Input from '../components/ui/Input';
 
@@ -34,6 +33,7 @@ export default function AcceptInviteScreen() {
 
   useEffect(() => {
     let mounted = true;
+    let handledUrl: string | null = null;
 
     const readyRef = { current: false };
 
@@ -41,7 +41,8 @@ export default function AcceptInviteScreen() {
       if (__DEV__) console.log('[AcceptInvite] INCOMING URL:', url);
       if (mounted) setDebugUrl(url || '(no url received)');
 
-      if (!url) return;
+      if (!url || handledUrl === url) return;
+      handledUrl = url;
       const params = readAuthParams(url);
       const tokenHash = params.get('token_hash');
       const type = params.get('type');
@@ -103,15 +104,11 @@ export default function AcceptInviteScreen() {
       }
     };
 
-    getEarlyInitialUrl().then((cachedUrl) => {
-      if (cachedUrl) {
-        handleUrl(cachedUrl);
-      } else {
-        Linking.getInitialURL().then(handleUrl);
-      }
-    });
-    const subscription = Linking.addEventListener('url', ({ url }) => {
+    const unsubscribe = onDeepLinkUrl((url) => {
       handleUrl(url);
+    });
+    getEarlyInitialUrl().then((cachedUrl) => {
+      handleUrl(cachedUrl || getLatestUrl());
     });
 
     const timeout = setTimeout(() => {
@@ -127,7 +124,7 @@ export default function AcceptInviteScreen() {
     return () => {
       mounted = false;
       clearTimeout(timeout);
-      subscription.remove();
+      unsubscribe();
     };
   }, []);
 

@@ -30,6 +30,7 @@ const config: ExpoConfig = {
     supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
     anamApiKey: process.env.EXPO_PUBLIC_ANAM_API_KEY,
     anamPersonaId: process.env.EXPO_PUBLIC_ANAM_PERSONA_ID,
+    anamSessionToken: process.env.EXPO_PUBLIC_ANAM_SESSION_TOKEN,
 
     eas: {
       projectId: '66a4ce11-f2e2-46ad-82db-0e602a4d245b',

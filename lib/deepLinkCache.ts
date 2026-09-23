@@ -10,6 +10,7 @@ import * as Linking from 'expo-linking';
 let cachedInitialUrl: string | null | undefined;
 const initialUrlPromise: Promise<string | null> = Linking.getInitialURL().then((url) => {
   cachedInitialUrl = url;
+  if (__DEV__) console.log('[DeepLink] COLD START RAW URL:', url);
   return url;
 });
 
@@ -18,6 +19,7 @@ const listeners = new Set<(url: string) => void>();
 
 Linking.addEventListener('url', ({ url }) => {
   latestUrl = url;
+  if (__DEV__) console.log('[DeepLink] WARM RAW URL:', url);
   listeners.forEach((listener) => listener(url));
 });
 
