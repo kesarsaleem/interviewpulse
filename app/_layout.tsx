@@ -71,24 +71,24 @@ function RouteGuard({
     const inAuthGroup =
       segments[0] === '(auth)';
 
-
+    const isResetPassword =
+      segments.includes('reset-password');
 
     const inAdminGroup =
       segments[0] === 'admin';
 
-
-
     const inInterviewerGroup =
       segments[0] === 'interviewer';
-
-
 
     const inProtectedGroup =
       inAdminGroup ||
       inInterviewerGroup;
 
-
-
+    // Supabase password recovery requires an active session to call updateUser({ password }).
+    // Do not redirect away from the reset-password screen even if user is authenticated.
+    if (isResetPassword) {
+      return;
+    }
 
     if(user && inAuthGroup){
 

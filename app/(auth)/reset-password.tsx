@@ -19,7 +19,6 @@ export default function ResetPasswordScreen() {
   const [loading, setLoading] = useState(false);
   const [ready, setReady] = useState(false);
   const [linkError, setLinkError] = useState('');
-  const [debugUrl, setDebugUrl] = useState('');
 
   useEffect(() => {
     let mounted = true;
@@ -28,7 +27,6 @@ export default function ResetPasswordScreen() {
 
     const establishSession = async (rawUrl: string | null) => {
       if (__DEV__) console.log('[ResetPassword] INCOMING URL:', rawUrl);
-      if (mounted) setDebugUrl(rawUrl || '(no url received)');
       if (!rawUrl || handled) return;
       handled = true;
 
@@ -138,7 +136,13 @@ export default function ResetPasswordScreen() {
       }
 
       Alert.alert('Success', 'Password updated successfully.', [
-        { text: 'OK', onPress: () => router.replace(ROUTES.login) },
+        {
+          text: 'OK',
+          onPress: async () => {
+            await supabase.auth.signOut();
+            router.replace(ROUTES.login);
+          },
+        },
       ]);
     } catch {
       Alert.alert('Error', 'Unable to update password.');
@@ -156,17 +160,14 @@ export default function ResetPasswordScreen() {
         <ActivityIndicator color="#4F46E5" style={{ marginBottom: 20 }} />
       )}
       {!!linkError && <Text style={styles.error}>{linkError}</Text>}
-      {!!debugUrl && (
-        <Text selectable style={styles.debug}>
-          DEBUG URL: {debugUrl}
-        </Text>
-      )}
 
       <TextInput
         style={styles.input}
         placeholder="New Password"
         placeholderTextColor="#9CA3AF"
         secureTextEntry
+        autoCapitalize="none"
+        autoCorrect={false}
         value={password}
         onChangeText={setPassword}
       />
@@ -175,6 +176,8 @@ export default function ResetPasswordScreen() {
         placeholder="Confirm Password"
         placeholderTextColor="#9CA3AF"
         secureTextEntry
+        autoCapitalize="none"
+        autoCorrect={false}
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
@@ -195,7 +198,6 @@ const styles = StyleSheet.create({
   title: { fontSize: 30, fontWeight: '800', color: '#FFFFFF', marginBottom: 10 },
   subtitle: { color: '#9CA3AF', marginBottom: 30, fontSize: 16 },
   error: { color: '#F87171', marginBottom: 15 },
-  debug: { color: '#9CA3AF', marginBottom: 15, fontSize: 11 },
   input: {
     height: 55,
     borderRadius: 14,

@@ -29,7 +29,6 @@ export default function AcceptInviteScreen() {
   const [ready, setReady] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const [debugUrl, setDebugUrl] = useState('');
 
   useEffect(() => {
     let mounted = true;
@@ -39,7 +38,6 @@ export default function AcceptInviteScreen() {
 
     const handleUrl = async (url: string | null) => {
       if (__DEV__) console.log('[AcceptInvite] INCOMING URL:', url);
-      if (mounted) setDebugUrl(url || '(no url received)');
 
       if (!url || handledUrl === url) return;
       handledUrl = url;
@@ -148,7 +146,13 @@ export default function AcceptInviteScreen() {
     }
 
     Alert.alert('Account ready', 'Your password has been set. You can now sign in.', [
-      { text: 'Go to login', onPress: () => router.replace(ROUTES.login) },
+      {
+        text: 'Go to login',
+        onPress: async () => {
+          await supabase.auth.signOut();
+          router.replace(ROUTES.login);
+        },
+      },
     ]);
   };
 
@@ -165,21 +169,20 @@ export default function AcceptInviteScreen() {
         <Input
           placeholder="New password"
           secureTextEntry
+          autoCapitalize="none"
+          autoCorrect={false}
           value={password}
           onChangeText={setPassword}
         />
         <Input
           placeholder="Confirm password"
           secureTextEntry
+          autoCapitalize="none"
+          autoCorrect={false}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
         />
         {!!error && <Text style={styles.error}>{error}</Text>}
-        {!!debugUrl && (
-          <Text selectable style={styles.debug}>
-            DEBUG URL: {debugUrl}
-          </Text>
-        )}
         <Pressable style={styles.button} onPress={submit} disabled={!ready || saving}>
           {saving ? <ActivityIndicator color="#FFFFFF" /> : <Text style={styles.buttonText}>Set password</Text>}
         </Pressable>
@@ -205,7 +208,6 @@ function createStyles(colors: ReturnType<typeof useTheme>['colors']) {
       marginTop: 12,
     },
     error: { color: colors.danger, marginTop: 12 },
-    debug: { color: colors.secondaryText, marginTop: 12, fontSize: 11 },
     button: {
       height: 50,
       borderRadius: 10,

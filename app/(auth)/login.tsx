@@ -1,6 +1,6 @@
 import { useTheme } from '../../context/ThemeContext';
 import { ThemeColors } from '../../theme/colors';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -34,6 +34,10 @@ export default function LoginScreen() {
   const [error, setError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  useEffect(() => {
+    if (passwordError) setPasswordError("");
+  }, [password]);
 
   const validate = () => {
     let valid = true;
@@ -137,10 +141,9 @@ export default function LoginScreen() {
                 placeholder="Enter your password"
                 placeholderTextColor={colors.mutedText}
                 value={password}
-                onChangeText={(v) => {
-                  setPassword(v);
-                  setPasswordError("");
-                }}
+                onChangeText={setPassword}
+                autoCapitalize="none"
+                autoCorrect={false}
                 secureTextEntry={!showPassword}
               />
 
